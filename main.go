@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	tapeLen = 4
+	tapeLen = 20
 )
 
 func readBrainfuck(f string) string {
@@ -82,16 +82,17 @@ func evalExpr(code string, ptr uint, tape [tapeLen]byte) ([tapeLen]byte, uint) {
 			case "-":
 				tape[ptr]--
 			case ".":
-				fmt.Println(string(tape[ptr]))
+				fmt.Printf(string(tape[ptr]))
 			case "[":
 				startIndex, endIndex, loopExpr := matchLoopIndices(index, code)
+				skipCount := endIndex - startIndex
 				if tape[ptr] != 0 {
-					fmt.Println("evaluate expression")
-					fmt.Println("loopexpr", loopExpr)
-				} else {
-					fmt.Println("skip to endIndex")
-					skipChars = endIndex - startIndex
+					for tape[ptr] > 0 {
+						exprTape, exprPtr := evalExpr(loopExpr, ptr, tape)
+						ptr, tape = exprPtr, exprTape
+					}
 				}
+				skipChars = skipCount
 			}
 		}
 	}

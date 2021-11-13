@@ -30,7 +30,7 @@ func runeInSlice(a rune, list []rune) bool {
 func toValidBf(s string) string {
 	return strings.Map(
 		func(r rune) rune {
-			if runeInSlice(r, []rune{'<', '>', '+', '-', '.', '[', ']'}) {
+			if runeInSlice(r, []rune{'<', '>', '+', '-', '.', '[', ']', ','}) {
 				return r
 			}
 			return -1
@@ -83,6 +83,11 @@ func evalExpr(code string, ptr uint, tape [tapeLen]byte) ([tapeLen]byte, uint) {
 				tape[ptr]--
 			case ".":
 				fmt.Printf(string(tape[ptr]))
+			case ",":
+				var bfIn byte
+				fmt.Printf("Brainfuck> ")
+				fmt.Scanln(&bfIn)
+				tape[ptr] = bfIn
 			case "[":
 				startIndex, endIndex, loopExpr := matchLoopIndices(index, code)
 				skipCount := endIndex - startIndex

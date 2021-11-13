@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"strings"
 )
 
@@ -105,6 +106,12 @@ func evalExpr(code string, ptr uint, tape [tapeLen]byte) ([tapeLen]byte, uint) {
 }
 
 func main() {
-	code := readBrainfuck("main.bf")
+	args := os.Args[1:]
+	if len(args) == 0 {
+		fmt.Println("Brainfuck Interpreter")
+		fmt.Println("Usage: ./brainfuck <file>")
+		os.Exit(0)
+	}
+	code := readBrainfuck(args[0])
 	evalExpr(code, 0, [tapeLen]byte{})
 }

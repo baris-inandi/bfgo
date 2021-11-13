@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	tapeLen = 20
+	tapeLen = 30000
 )
 
 func readBrainfuck(f string) string {
@@ -106,6 +106,5 @@ func evalExpr(code string, ptr uint, tape [tapeLen]byte) ([tapeLen]byte, uint) {
 
 func main() {
 	code := readBrainfuck("main.bf")
-	out, _ := evalExpr(code, 0, [tapeLen]byte{})
-	fmt.Println(out)
+	evalExpr(code, 0, [tapeLen]byte{})
 }

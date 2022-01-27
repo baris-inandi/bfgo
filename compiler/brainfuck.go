@@ -149,8 +149,7 @@ func generateIntermediateCode(code string, outFile string) {
 	}
 
 	// cleanup
-	// os.Remove(f.Name())
-	fmt.Println(f.Name())
+	os.Remove(f.Name())
 }
 
 func generateOutFile(fileIn string, specifiedName string) string {

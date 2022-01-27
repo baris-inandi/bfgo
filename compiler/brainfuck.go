@@ -11,6 +11,16 @@ import (
 	"strings"
 )
 
+/*
+
+o  -> byteOut
+i  -> byteIn
+p  -> pointer
+t  -> tape
+b  -> initByte
+
+*/
+
 var intermediate = ""
 var initByteBoilerplateRequired = false
 var fmtBoilerplateRequired = false
@@ -48,12 +58,12 @@ func toValidBf(s string) string {
 func addCode(x string, init bool) {
 	if init {
 		initByteBoilerplateRequired = true
-		addCode("initByte(ptr);", false)
+		addCode("b(p);", false)
 	}
 	intermediate += x
 }
 
-func evalExpr(code string, ptr uint) string {
+func evalExpr(code string) string {
 	code = code + "/"
 	needsInit := true
 	prevChar := ""
@@ -65,33 +75,32 @@ func evalExpr(code string, ptr uint) string {
 			if prevChar == char {
 				repeatedCharCounter += 1
 			} else {
-				fmt.Println("taşak", prevChar, repeatedCharCounter)
 				rep := strconv.Itoa(repeatedCharCounter)
 				switch prevChar {
 				case "<":
 					needsInit = true
-					addCode("ptr-="+rep+";", false)
+					addCode("p-="+rep+";", false)
 				case ">":
 					needsInit = true
-					addCode("ptr+="+rep+";", false)
+					addCode("p+="+rep+";", false)
 				case "+":
-					addCode("tape[ptr]+="+rep+";", needsInit)
+					addCode("t[p]+="+rep+";", needsInit)
 					needsInit = false
 				case "-":
-					addCode("tape[ptr]-="+rep+";", needsInit)
+					addCode("t[p]-="+rep+";", needsInit)
 					needsInit = false
 				case ".":
-					addCode("bo();", true)
+					addCode("o();", true)
 					fmtBoilerplateRequired = true
 					byteOutBoilerplateRequired = true
 				case ",":
-					addCode("bi();", false)
+					addCode("i();", false)
 					fmtBoilerplateRequired = true
 					byteInBoilerplateRequired = true
 				case "[":
 					addCode("for {", false)
 				case "]":
-					addCode("if tape[ptr]==byte(0) {break}};", true)
+					addCode("if t[p]==byte(0) {break}};", true)
 				}
 				repeatedCharCounter = 1
 			}
@@ -109,14 +118,14 @@ func generateIntermediateCode(code string, outFile string) {
 		boilerplate += "import \"fmt\";"
 	}
 	if initByteBoilerplateRequired {
-		boilerplate += "var tape = map[uint64]byte{}; var ptr = uint64(0);"
-		boilerplate += "func initByte(x uint64)byte{if val,ok:=tape[x];ok {return val};return byte(0)};"
+		boilerplate += "var t = map[uint64]byte{}; var p = uint64(0);"
+		boilerplate += "func b(x uint64)byte{if v,ok:=t[x];ok {return v};return byte(0)};"
 	}
 	if byteInBoilerplateRequired {
-		boilerplate += "func bi(){var bfIn byte;fmt.Printf(\"> \");fmt.Scanln(&bfIn);tape[ptr]=bfIn;};"
+		boilerplate += "func i(){var x byte;fmt.Printf(\"> \");fmt.Scanln(&x);t[p]=x;};"
 	}
 	if byteOutBoilerplateRequired {
-		boilerplate += "func bo(){fmt.Printf(string(tape[ptr]))};"
+		boilerplate += "func o(){fmt.Printf(string(t[p]))};"
 	}
 	goOut := boilerplate + "func main(){" + code + "}"
 
@@ -139,10 +148,9 @@ func generateIntermediateCode(code string, outFile string) {
 		fmt.Println("Error: ", stderr.String())
 	}
 
-	fmt.Println(f.Name())
-
 	// cleanup
 	// os.Remove(f.Name())
+	fmt.Println(f.Name())
 }
 
 func generateOutFile(fileIn string, specifiedName string) string {
@@ -171,6 +179,6 @@ func main() {
 		outFile = args[1]
 	}
 	fileIn := readBrainfuck(args[0])
-	out := evalExpr(fileIn, 0)
+	out := evalExpr(fileIn)
 	generateIntermediateCode(out, generateOutFile(args[0], outFile))
 }

@@ -72,7 +72,7 @@ func evalExpr(code string) string {
 	for _, char := range code {
 		char := string(char)
 		if initialRepeat {
-			if prevChar == char {
+			if prevChar == char && (prevChar == "+" || prevChar == "-" || char == "<" || char == ">") {
 				repeatedCharCounter += 1
 			} else {
 				rep := strconv.Itoa(repeatedCharCounter)
@@ -119,7 +119,7 @@ func generateIntermediateCode(code string, outFile string) {
 	}
 	if initByteBoilerplateRequired {
 		boilerplate += "var t = map[uint64]byte{}; var p = uint64(0);"
-		boilerplate += "func b(x uint64)byte{if v,ok:=t[x];ok {return v};return byte(0)};"
+		boilerplate += "func b(x uint64)byte{if v,ok:=t[x];ok {return v};t[x]=byte(0);return byte(0)};"
 	}
 	if byteInBoilerplateRequired {
 		boilerplate += "func i(){var x byte;fmt.Printf(\"> \");fmt.Scanln(&x);t[p]=x;};"

@@ -86,7 +86,7 @@ func evalExpr(code string, ptr uint, tape [tapeLen]byte) ([tapeLen]byte, uint) {
 				fmt.Printf(string(tape[ptr]))
 			case ",":
 				var bfIn byte
-				fmt.Printf("Brainfuck> ")
+				fmt.Printf("> ")
 				fmt.Scanln(&bfIn)
 				tape[ptr] = bfIn
 			case "[":

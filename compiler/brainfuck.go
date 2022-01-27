@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"strconv"
 	"strings"
 )
 
@@ -53,36 +54,51 @@ func addCode(x string, init bool) {
 }
 
 func evalExpr(code string, ptr uint) string {
-	code = "/" + code + "/"
+	code = code + "/"
 	needsInit := true
+	prevChar := ""
+	repeatedCharCounter := 1
+	initialRepeat := false
 	for _, char := range code {
 		char := string(char)
-		switch char {
-		case ".":
-			addCode("bo();", true)
-			fmtBoilerplateRequired = true
-			byteOutBoilerplateRequired = true
-		case ",":
-			addCode("bi();", false)
-			fmtBoilerplateRequired = true
-			byteInBoilerplateRequired = true
-		case "[":
-			addCode("for {", false)
-		case "]":
-			addCode("if tape[ptr]==byte(0) {break}};", true)
-		case "<":
-			needsInit = true
-			addCode("ptr--;", false)
-		case ">":
-			needsInit = true
-			addCode("ptr++;", false)
-		case "+":
-			addCode("tape[ptr]++;", needsInit)
-			needsInit = false
-		case "-":
-			addCode("tape[ptr]--;", needsInit)
-			needsInit = false
+		if initialRepeat {
+			if prevChar == char {
+				repeatedCharCounter += 1
+			} else {
+				fmt.Println("taşak", prevChar, repeatedCharCounter)
+				rep := strconv.Itoa(repeatedCharCounter)
+				switch prevChar {
+				case "<":
+					needsInit = true
+					addCode("ptr-="+rep+";", false)
+				case ">":
+					needsInit = true
+					addCode("ptr+="+rep+";", false)
+				case "+":
+					addCode("tape[ptr]+="+rep+";", needsInit)
+					needsInit = false
+				case "-":
+					addCode("tape[ptr]-="+rep+";", needsInit)
+					needsInit = false
+				case ".":
+					addCode("bo();", true)
+					fmtBoilerplateRequired = true
+					byteOutBoilerplateRequired = true
+				case ",":
+					addCode("bi();", false)
+					fmtBoilerplateRequired = true
+					byteInBoilerplateRequired = true
+				case "[":
+					addCode("for {", false)
+				case "]":
+					addCode("if tape[ptr]==byte(0) {break}};", true)
+				}
+				repeatedCharCounter = 1
+			}
+		} else {
+			initialRepeat = true
 		}
+		prevChar = char
 	}
 	return intermediate
 }
@@ -123,8 +139,10 @@ func generateIntermediateCode(code string, outFile string) {
 		fmt.Println("Error: ", stderr.String())
 	}
 
+	fmt.Println(f.Name())
+
 	// cleanup
-	os.Remove(f.Name())
+	// os.Remove(f.Name())
 }
 
 func generateOutFile(fileIn string, specifiedName string) string {

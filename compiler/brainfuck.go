@@ -98,9 +98,9 @@ func evalExpr(code string) string {
 					fmtBoilerplateRequired = true
 					byteInBoilerplateRequired = true
 				case "[":
-					addCode("for {", false)
+					addCode("for {if t[p]==byte(0) {break};", false)
 				case "]":
-					addCode("if t[p]==byte(0) {break}};", true)
+					addCode("};", true)
 				}
 				repeatedCharCounter = 1
 			}

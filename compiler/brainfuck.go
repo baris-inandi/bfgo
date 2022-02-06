@@ -1,3 +1,6 @@
+// Brainfuck Compiler written in Go.
+// from @baris-inandi <https://github.com/baris-inandi/brainfuck>
+
 package main
 
 import (
@@ -13,11 +16,11 @@ import (
 
 /*
 
-o  -> byteOut
-i  -> byteIn
-p  -> pointer
-t  -> tape
-b  -> initByte
+func o  -> byteOut - a utility function that prints out the byte the pointer is currently on as a string
+func i  -> byteIn - a function that gets user input from stdin and writes the input to the tape as bytes
+func b  -> initByte - a function that writes 0 to the current byte if not initialized, called whenever init param of addCode() is true
+var  p  -> pointer (of type uint64)
+var  t  -> tape (of type map[uint64]byte{})
 
 */
 

@@ -53,35 +53,16 @@ func generateOutFile(fileIn string, specifiedName string) string {
 	return filepath.Join(path, outNoWd)
 }
 
-func compileRun() {
-	// compile code to binary in the temp directory
-	tempBinaryPath := filepath.Join(os.TempDir(), "/brainfuck-temp")
-	compile(tempBinaryPath)
-
-	// run binary
-	// TODO: make this work
-
-	// cleanup
-	os.Remove(tempBinaryPath)
-}
-
-func Compile(filename string, fileOut string, run bool) {
+func Compile(filename string, fileOut string) {
 	/*
 		func Compile
 			compiles contents of filename to a binary file
 			where fileOut is the name of the output file.
 			if fileOut is an empty string, the output file
 			will be named automatically according to the
-			name of the input file. If param run is true,
-			the binary will be immediately executed
-			after compilation.
+			name of the input file.
 	*/
-	brainfuckCode := readBrainfuck(filename) // get valid brainfuck code from file
-	transpile(brainfuckCode)                 // variable `intermediate` will be updated
-	if run {
-		fmt.Println("compiled")
-		compileRun() // will compile to temp directory and run binary
-		return
-	}
+	brainfuckCode := readBrainfuck(filename)    // get valid brainfuck code from file
+	transpile(brainfuckCode)                    // variable `intermediate` will be updated
 	compile(generateOutFile(filename, fileOut)) // will compile to fileOut
 }

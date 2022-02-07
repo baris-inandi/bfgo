@@ -2,5 +2,9 @@
     "python.formatting.provider": "yapf",
     "cSpell.words": [
         "urfave"
-    ]
+    ],
+    "license.author": "baris-inandi",
+    "licenser.projectName": "brainfuck",
+    "licenser.author": "baris-inandi",
+    "licenser.license": "GPLv2"
 }

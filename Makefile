@@ -10,5 +10,4 @@ clean:
 	rm -rf ./bin
 
 install:
-	sudo go build -o /usr/bin/brainfuck ./compiler/brainfuck.go
-	sudo go build -o /usr/bin/brainfuck-interpreter ./interpreter/brainfuck.go
+	sudo go build -o /usr/bin/brainfuck .

@@ -11,3 +11,4 @@ clean:
 
 install:
 	sudo go build -o /usr/bin/brainfuck ./compiler/brainfuck.go
+	sudo go build -o /usr/bin/brainfuck-interpreter ./interpreter/brainfuck.go

@@ -115,6 +115,34 @@ func evalExpr(code string) string {
 	return intermediate
 }
 
+func compile(goOut string, outFile string) {
+	// generate temp .go file
+	f, _ := os.CreateTemp("", "brainfuck-*.go")
+	err := ioutil.WriteFile(f.Name(), []byte(goOut), 0640)
+	if err != nil {
+		fmt.Print(err)
+		fmt.Println("Brainfuck Error: Could not write temporary file.")
+	}
+	tempDir := (path.Dir(f.Name()))
+
+	// compile
+	stdout := &bytes.Buffer{}
+	stderr := &bytes.Buffer{}
+	arg := []string{"build", "-o", outFile, f.Name()}
+	cmd := exec.Command("go", arg...)
+	cmd.Stderr = stderr
+	cmd.Stdout = stdout
+	cmd.Dir = tempDir
+	err = cmd.Run()
+	if err != nil {
+		fmt.Println("Brainfuck Compilation Error:")
+		fmt.Println("Error: ", stderr.String())
+	}
+
+	// cleanup
+	os.Remove(f.Name())
+}
+
 func generateIntermediateCode(code string, outFile string) {
 	boilerplate := "package main;"
 	if fmtBoilerplateRequired {
@@ -131,28 +159,7 @@ func generateIntermediateCode(code string, outFile string) {
 		boilerplate += "func o(){fmt.Printf(string(t[p]))};"
 	}
 	goOut := boilerplate + "func main(){" + code + "}"
-
-	// generate temp .go file
-	f, _ := os.CreateTemp("", "brainfuck-*.go")
-	ioutil.WriteFile(f.Name(), []byte(goOut), 0640)
-	tempDir := (path.Dir(f.Name()))
-
-	// compile
-	stdout := &bytes.Buffer{}
-	stderr := &bytes.Buffer{}
-	arg := []string{"build", "-o", outFile, f.Name()}
-	cmd := exec.Command("go", arg...)
-	cmd.Stderr = stderr
-	cmd.Stdout = stdout
-	cmd.Dir = tempDir
-	err := cmd.Run()
-	if err != nil {
-		fmt.Println("Brainfuck Compilation Error:")
-		fmt.Println("Error: ", stderr.String())
-	}
-
-	// cleanup
-	os.Remove(f.Name())
+	compile(goOut, outFile)
 }
 
 func generateOutFile(fileIn string, specifiedName string) string {

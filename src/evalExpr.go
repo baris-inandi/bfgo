@@ -51,7 +51,7 @@ func EvalExpr(code string) {
 			case "-":
 				tape[ptr]--
 			case ".":
-				fmt.Print(string(tape[ptr])) // TODO: this might be an issue
+				fmt.Print(string(tape[ptr]))
 			case ",":
 				var bfIn byte
 				fmt.Printf("> ")

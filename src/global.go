@@ -12,10 +12,11 @@ import (
 )
 
 var intermediate = "" // store for the whole intermediate code
+const tapeLen = 30000 // default tape length
 
 // global variables needed for the interpreter/repl
-var tape = [30000]byte{} // the tape
-var ptr = uint64(0)      // the pointer
+var tape [tapeLen]byte // the tape declaration
+var ptr = uint64(0)    // the pointer
 
 // other utility functions
 func runeInSlice(a rune, list []rune) bool {

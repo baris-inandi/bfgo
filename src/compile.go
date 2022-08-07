@@ -11,21 +11,23 @@ import (
 	"strings"
 )
 
-func compile(outFile string) {
+func compile(outFile string, intermediate string) {
 	// generate temp .go file
-	f, _ := os.CreateTemp("", "brainfuck-*.go")
-	err := ioutil.WriteFile(f.Name(), []byte(intermediate), 0640)
+	f, _ := os.CreateTemp("", "brainfuck-*.cc")
+	err := ioutil.WriteFile(f.Name(), []byte(intermediate), 0644)
 	if err != nil {
 		fmt.Print(err)
 		fmt.Println("Brainfuck Error: Could not write temporary file.")
 	}
 	tempDir := (path.Dir(f.Name()))
 
+	fmt.Println(f.Name())
+
 	// compile
 	stdout := &bytes.Buffer{}
 	stderr := &bytes.Buffer{}
-	arg := []string{"build", "-o", outFile, f.Name()}
-	cmd := exec.Command("go", arg...)
+	arg := []string{"-o", outFile, f.Name()}
+	cmd := exec.Command("clang++", arg...)
 	cmd.Stderr = stderr
 	cmd.Stdout = stdout
 	cmd.Dir = tempDir
@@ -36,7 +38,7 @@ func compile(outFile string) {
 	}
 
 	// cleanup
-	os.Remove(f.Name())
+	// os.Remove(f.Name())
 }
 
 func generateOutFile(fileIn string, specifiedName string) string {
@@ -62,7 +64,7 @@ func Compile(filename string, fileOut string) {
 			will be named automatically according to the
 			name of the input file.
 	*/
-	brainfuckCode := readBrainfuck(filename)    // get valid brainfuck code from file
-	transpile(brainfuckCode)                    // variable `intermediate` will be updated
-	compile(generateOutFile(filename, fileOut)) // will compile to fileOut
+	brainfuckCode := readBrainfuck(filename)                  // get valid brainfuck code from file
+	intermediate := transpile(brainfuckCode)                  // variable `intermediate` will be updated
+	compile(generateOutFile(filename, fileOut), intermediate) // will compile to fileOut
 }

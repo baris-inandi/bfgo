@@ -11,7 +11,6 @@ import (
 	"strings"
 )
 
-var intermediate = "" // store for the whole intermediate code
 const tapeLen = 30000 // default tape length
 
 // global variables needed for the interpreter/repl

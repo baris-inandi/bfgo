@@ -9,11 +9,15 @@ var Cli = &cli.App{
 			Name: "@baris-inandi",
 		},
 	},
+	Action: func(c *cli.Context) error {
+		Compile(c.Args().Get(0), c.Args().Get(1))
+		return nil
+	},
 	Usage: "A brainfuck compiler and interpreter written in Go",
 	Commands: []*cli.Command{
 		{
 			Name:    "build",
-			Aliases: []string{"compile", "b"},
+			Aliases: []string{"compile"},
 			Usage:   "Compiles given brainfuck code to binary",
 			Action: func(c *cli.Context) error {
 				Compile(c.Args().Get(0), c.Args().Get(1))
@@ -22,7 +26,7 @@ var Cli = &cli.App{
 		},
 		{
 			Name:    "interpret",
-			Aliases: []string{"inter", "i"},
+			Aliases: []string{"inter"},
 			Usage:   "Interprets given brainfuck code",
 			Action: func(c *cli.Context) error {
 				Interpret(c.Args().Get(0))

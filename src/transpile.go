@@ -1,39 +1,52 @@
 package src
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
-var initByteBoilerplateRequired = false // if the initByte function will be required in the intermediate code
+const CXX string = `#include <iostream>
+#include <unordered_map>
+using namespace std;
 
-func addCode(x string, init bool) {
-	/*
-		func addCode
-			appends Go code to `intermediate`,
-			if init is true, it will also call initByte function
-			before the specified code is appended
-			to init a byte only if it is actually needed
-			E.g. in operations +-[],.
-	*/
-	if init {
-		initByteBoilerplateRequired = true
-		addCode("b(p);", false)
-	}
-	intermediate += x
-}
+class Bf
+{
+public:
+    unordered_map<uint_fast16_t, uint_fast8_t> _t =
+        unordered_map<uint_fast16_t, uint_fast8_t>();
+    uint_fast16_t _p = 0;
+    uint_fast8_t c() { return _t[_p]; }          // current
+    bool w() { return c() != 0; }                // while, false if current is 0
+    void p(uint_fast8_t x) { _t[_p] = c() + x; } // plus, increment
+    void m(uint_fast8_t x) { _t[_p] = c() - x; } // minus, decrement
+    void l(uint_fast8_t x) { _p -= x; }          // left
+    void r(uint_fast8_t x) { _p += x; }          // right
+    void o() { printf("%%c", (char)c()); }        // out, print
+    void i()
+    {
+        string x;
+        getline(cin, x);
+        for (uint_fast8_t i = 0; i < x.length(); i++)
+        {
+            _t[_p + i] = x[i];
+        }
+    } // in, read
+};
 
-func transpile(code string) {
-	/*
-		func transpile
-			transpiles brainfuck code to Go code and returns it as a string
-	*/
+void impl(Bf b) {%s}
 
-	// variables needed to keep track of the transpiler
-	fmtBoilerplateRequired := false     // if fmt needs to be imported in the intermediate code
-	byteInBoilerplateRequired := false  // if function byteIn will be required in the intermediate code
-	byteOutBoilerplateRequired := false // if function byteOut will be needed in the intermediate code
+int main()
+{
+    Bf b;
+    impl(b);
+    return 0;
+};
+`
 
-	// transpilation
-	code = code + "/"
-	needsInit := true
+func transpile(code string) string {
+	// transpiles brainfuck code to c++ code and returns it as a string
+	intermediate := ""
+	code += "/"
 	prevChar := ""
 	repeatedCharCounter := 1
 	initialRepeat := false
@@ -46,29 +59,21 @@ func transpile(code string) {
 				rep := strconv.Itoa(repeatedCharCounter)
 				switch prevChar {
 				case "<":
-					needsInit = true
-					addCode("p-="+rep+";", false)
+					intermediate += ("b.l(" + rep + ");")
 				case ">":
-					needsInit = true
-					addCode("p+="+rep+";", false)
+					intermediate += ("b.r(" + rep + ");")
 				case "+":
-					addCode("t[p]+="+rep+";", needsInit)
-					needsInit = false
+					intermediate += ("b.p(" + rep + ");")
 				case "-":
-					addCode("t[p]-="+rep+";", needsInit)
-					needsInit = false
+					intermediate += ("b.m(" + rep + ");")
 				case ".":
-					addCode("o();", true)
-					fmtBoilerplateRequired = true
-					byteOutBoilerplateRequired = true
+					intermediate += ("b.o();")
 				case ",":
-					addCode("i();", false)
-					fmtBoilerplateRequired = true
-					byteInBoilerplateRequired = true
+					intermediate += ("b.i();")
 				case "[":
-					addCode("for {if t[p]==byte(0) {break};", false)
+					intermediate += ("while(b.w()){")
 				case "]":
-					addCode("};", true)
+					intermediate += ("};")
 				}
 				repeatedCharCounter = 1
 			}
@@ -77,28 +82,6 @@ func transpile(code string) {
 		}
 		prevChar = char
 	}
-	/*
-
-		func o  -> byteOut - a utility function that prints out the byte the pointer is currently on as a string
-		func i  -> byteIn - a function that gets user input from stdin and writes the input to the tape as bytes
-		func b  -> initByte - a function that writes 0 to the current byte if not initialized, called whenever init param of addCode() is true
-		var  p  -> pointer (of type uint64)
-		var  t  -> tape (of type map[uint64]byte{})
-
-	*/
-	boilerplate := "package main;"
-	if fmtBoilerplateRequired {
-		boilerplate += "import \"fmt\";"
-	}
-	if initByteBoilerplateRequired {
-		boilerplate += "var t = map[uint64]byte{}; var p = uint64(0);"
-		boilerplate += "func b(x uint64)byte{if v,ok:=t[x];ok {return v};t[x]=byte(0);return byte(0)};"
-	}
-	if byteInBoilerplateRequired {
-		boilerplate += "func i(){var x byte;fmt.Printf(\"> \");fmt.Scanln(&x);t[p]=x;};"
-	}
-	if byteOutBoilerplateRequired {
-		boilerplate += "func o(){fmt.Printf(string(t[p]))};"
-	}
-	intermediate = boilerplate + "func main(){" + intermediate + "}"
+	intermediate = fmt.Sprintf(CXX, intermediate)
+	return intermediate
 }

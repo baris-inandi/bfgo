@@ -13,7 +13,7 @@ import (
 
 func compile(outFile string, intermediate string) {
 	// generate temp .go file
-	f, _ := os.CreateTemp("", "brainfuck-*.cc")
+	f, _ := os.CreateTemp("", "brainfuck-*.rs")
 	err := ioutil.WriteFile(f.Name(), []byte(intermediate), 0644)
 	if err != nil {
 		fmt.Print(err)
@@ -31,7 +31,7 @@ func compile(outFile string, intermediate string) {
 	cmd.Stderr = stderr
 	cmd.Stdout = stdout
 	cmd.Dir = tempDir
-	err = cmd.Run()
+	// err = cmd.Run()
 	if err != nil {
 		fmt.Println("Brainfuck Compilation Error:")
 		fmt.Println("Error: ", stderr.String())

@@ -5,47 +5,62 @@ import (
 	"strconv"
 )
 
-const CXX string = `#include <iostream>
-#include <unordered_map>
-using namespace std;
+const IR string = `
+use std::collections::HashMap;
 
-class Bf
-{
-public:
-    unordered_map<uint_fast16_t, uint_fast8_t> _t =
-        unordered_map<uint_fast16_t, uint_fast8_t>();
-    uint_fast16_t _p = 0;
-    uint_fast8_t c() { return _t[_p]; }          // current
-    bool w() { return c() != 0; }                // while, false if current is 0
-    void p(uint_fast8_t x) { _t[_p] = c() + x; } // plus, increment
-    void m(uint_fast8_t x) { _t[_p] = c() - x; } // minus, decrement
-    void l(uint_fast8_t x) { _p -= x; }          // left
-    void r(uint_fast8_t x) { _p += x; }          // right
-    void o() { printf("%%c", (char)c()); }        // out, print
-    void i()
-    {
-        string x;
-        getline(cin, x);
-        for (uint_fast8_t i = 0; i < x.length(); i++)
-        {
-            _t[_p + i] = x[i];
+struct Bf {
+    tape: HashMap<u16, u8>,
+    pointer: u16,
+}
+
+#[allow(dead_code)]
+impl Bf {
+    pub fn new() -> Bf {
+        Bf {
+            tape: HashMap::new(),
+            pointer: 0,
         }
-    } // in, read
-};
+    }
+    pub fn c(&self) -> u8 {
+        *self.tape.get(&self.pointer).unwrap_or(&0)
+    }
+    pub fn l(&mut self, n: u16) {
+        self.pointer -= n;
+    }
+    pub fn r(&mut self, n: u16) {
+        self.pointer += n;
+    }
+    pub fn p(&mut self, n: u8) {
+        self.tape.insert(
+            self.pointer,
+            self.tape.get(&self.pointer).unwrap_or(&0).wrapping_add(n),
+        );
+    }
+    pub fn m(&mut self, n: u8) {
+        self.tape.insert(
+            self.pointer,
+            self.tape.get(&self.pointer).unwrap_or(&0).wrapping_sub(n),
+        );
+    }
+    pub fn w(&mut self) -> bool {
+        self.c() != 0
+    }
+    pub fn o(&mut self) {
+        print!("{}", self.c() as char);
+    }
+}
 
-void impl(Bf b) {%s}
-
-int main()
-{
-    Bf b;
-    impl(b);
-    return 0;
-};
+#[allow(unused_variables)]
+#[allow(unused_mut)]
+fn main() {
+    let mut b = Bf::new();
+    // brainfuck ir %s
+}
 `
 
 func transpile(code string) string {
 	// transpiles brainfuck code to c++ code and returns it as a string
-	intermediate := ""
+	intermediate := "\n\t"
 	code += "/"
 	prevChar := ""
 	repeatedCharCounter := 1
@@ -71,7 +86,7 @@ func transpile(code string) string {
 				case ",":
 					intermediate += ("b.i();")
 				case "[":
-					intermediate += ("while(b.w()){")
+					intermediate += ("while b.w(){")
 				case "]":
 					intermediate += ("};")
 				}
@@ -82,6 +97,6 @@ func transpile(code string) string {
 		}
 		prevChar = char
 	}
-	intermediate = fmt.Sprintf(CXX, intermediate)
+	intermediate = fmt.Sprintf(IR, intermediate)
 	return intermediate
 }

@@ -36,6 +36,9 @@ var PATTERN_BINDINGS = PatternBinder{
 
 func transpile(code string) string {
 	// transpiles brainfuck code to intermediate representation and returns a string
+	if code == "" {
+		return ""
+	}
 	intermediate := "\n\t"
 	code += "/"
 	prevChar := ""
@@ -61,11 +64,11 @@ func transpile(code string) string {
 				case "-":
 					intermediate += ("t[p]-=" + rep + ";")
 				case ".":
-					intermediate += ("printf(\"%c\",t[p]);")
+					intermediate += ("putchar(t[p]);")
 				case ",":
-					intermediate += ("b.i();")
+					intermediate += ("t[p]=getchar();")
 				case "[":
-					intermediate += ("while (t[p] != 0) {")
+					intermediate += ("while (t[p]){")
 				case "]":
 					intermediate += ("};")
 				default:

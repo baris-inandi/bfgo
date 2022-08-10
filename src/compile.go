@@ -12,6 +12,10 @@ import (
 )
 
 func compile(outFile string, intermediate string) {
+	if intermediate == "" {
+		return
+	}
+
 	// generate temp .go file
 	f, _ := os.CreateTemp("", "brainfuck-*.c")
 	err := ioutil.WriteFile(f.Name(), []byte(intermediate), 0644)

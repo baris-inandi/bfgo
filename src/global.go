@@ -8,6 +8,7 @@ package src
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"strings"
 )
 
@@ -58,9 +59,15 @@ func readBrainfuck(f string) string {
 			removes all non-brainfuck characters,
 			returns valid brainfuck code
 	*/
+	if f == "" {
+		fmt.Println("No input files")
+		fmt.Println("Use brainfuck --help for usage")
+		os.Exit(1)
+	}
 	fileBytes, err := ioutil.ReadFile(f)
 	if err != nil {
-		fmt.Print(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 	return toValidBf(string(fileBytes))
 }

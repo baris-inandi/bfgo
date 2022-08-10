@@ -32,6 +32,10 @@ var PATTERN_BINDINGS = PatternBinder{
 		pattern: "[->+<]",
 		ir:      "t[p+1]+=t[p];t[p]=0;",
 	},
+	"c": {
+		pattern: "[-<->]",
+		ir:      "t[p-1]-=t[p];t[p]=0;",
+	},
 }
 
 func transpile(code string) string {
@@ -42,7 +46,7 @@ func transpile(code string) string {
 	intermediate := "\n\t"
 	code += "/"
 	prevChar := ""
-	repeatedCharCounter := 1
+	repeatedCharCounter := uint16(1)
 	initialRepeat := false
 	for k, v := range PATTERN_BINDINGS {
 		code = strings.Replace(code, v.pattern, k, -1)
@@ -53,7 +57,7 @@ func transpile(code string) string {
 			if prevChar == char && (prevChar == "+" || prevChar == "-" || char == "<" || char == ">") {
 				repeatedCharCounter += 1
 			} else {
-				rep := strconv.Itoa(repeatedCharCounter)
+				rep := strconv.Itoa(int(repeatedCharCounter))
 				switch prevChar {
 				case "<":
 					intermediate += ("p-=" + rep + ";")

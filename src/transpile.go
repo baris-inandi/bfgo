@@ -9,7 +9,7 @@ import (
 const IR string = `#include <stdio.h>
 int main()
 {
-    char t[30000] = {0};
+    int t[30000] = {0};
     int p = 0;
     // ir %s
     return 0;
@@ -24,17 +24,21 @@ type PatternBindingPair struct {
 type PatternBinder map[string]PatternBindingPair
 
 var PATTERN_BINDINGS = PatternBinder{
-	"a": {
+	"1": { // reset byte
 		pattern: "[-]",
 		ir:      "t[p]=0;",
 	},
-	"b": {
+	"2": { // add current to right
 		pattern: "[->+<]",
 		ir:      "t[p+1]+=t[p];t[p]=0;",
 	},
-	"c": {
+	"3": { // subtract left from current
 		pattern: "[-<->]",
 		ir:      "t[p-1]-=t[p];t[p]=0;",
+	},
+	"4": { // add current to right
+		pattern: "[>+<-]",
+		ir:      "t[p+1]+=t[p];t[p]=0;",
 	},
 }
 

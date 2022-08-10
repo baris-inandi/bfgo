@@ -21,7 +21,7 @@ import (
 	"log"
 	"os"
 
-	bf "github.com/baris-inandi/brainfuck-go/src"
+	bf "github.com/baris-inandi/brainfuck/src"
 )
 
 func main() {

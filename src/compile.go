@@ -25,12 +25,12 @@ func compile(outFile string, intermediate string) {
 	}
 	tempDir := (path.Dir(f.Name()))
 
-	fmt.Println(f.Name())
+	// fmt.Println(f.Name())
 
 	// compile
 	stdout := &bytes.Buffer{}
 	stderr := &bytes.Buffer{}
-	arg := []string{"-o", outFile, "-Ofast", f.Name()}
+	arg := []string{"-Ofast", "-o", outFile, f.Name()}
 	cmd := exec.Command("clang", arg...)
 	cmd.Stderr = stderr
 	cmd.Stdout = stdout

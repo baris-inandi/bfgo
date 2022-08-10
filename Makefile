@@ -10,4 +10,4 @@ clean:
 	rm -rf ./bin
 
 install:
-	sudo go build -o /usr/bin/brainfuck .
+	sudo go build -o /usr/bin/brainfuck

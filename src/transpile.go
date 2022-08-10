@@ -6,25 +6,24 @@ import (
 	"strings"
 )
 
-const IR string = `
-#include <stdio.h>
-
+const IR string = `#include <stdio.h>
 int main()
 {
-    unsigned int t[30000] = {0}; // tape
-    unsigned int p = 0;         // pointer
-    // brainfuck ir %s
-    printf("\n");
+    char t[30000] = {0};
+    int p = 0;
+    // ir %s
     return 0;
 }
 `
 
-type bindingPair struct {
+type PatternBindingPair struct {
 	pattern string
 	ir      string
 }
 
-var PATTERN_BINDINGS = map[string]bindingPair{
+type PatternBinder map[string]PatternBindingPair
+
+var PATTERN_BINDINGS = PatternBinder{
 	"a": {
 		pattern: "[-]",
 		ir:      "t[p]=0;",
@@ -62,7 +61,7 @@ func transpile(code string) string {
 				case "-":
 					intermediate += ("t[p]-=" + rep + ";")
 				case ".":
-					intermediate += ("printf(\"%c\",(unsigned char)t[p]);")
+					intermediate += ("printf(\"%c\",t[p]);")
 				case ",":
 					intermediate += ("b.i();")
 				case "[":

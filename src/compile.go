@@ -27,11 +27,11 @@ func compile(outFile string, intermediate string) {
 	stdout := &bytes.Buffer{}
 	stderr := &bytes.Buffer{}
 	arg := []string{"-o", outFile, f.Name()}
-	cmd := exec.Command("clang++", arg...)
+	cmd := exec.Command("clang", arg...)
 	cmd.Stderr = stderr
 	cmd.Stdout = stdout
 	cmd.Dir = tempDir
-	// err = cmd.Run()
+	err = cmd.Run()
 	if err != nil {
 		fmt.Println("Brainfuck Compilation Error:")
 		fmt.Println("Error: ", stderr.String())

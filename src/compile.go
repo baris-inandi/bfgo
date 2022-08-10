@@ -25,7 +25,7 @@ func compile(outFile string, intermediate string) {
 	}
 	tempDir := (path.Dir(f.Name()))
 
-	// fmt.Println(f.Name())
+	fmt.Println(f.Name())
 
 	// compile
 	stdout := &bytes.Buffer{}

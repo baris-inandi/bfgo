@@ -10,7 +10,7 @@ const IR string = `#include <stdio.h>
 int main()
 {
     int t[30000] = {0};
-    int p = 0;
+    int *p = t;
     // ir %s
     return 0;
 }
@@ -26,20 +26,16 @@ type PatternBinder map[string]PatternBindingPair
 var PATTERN_BINDINGS = PatternBinder{
 	"1": { // reset byte
 		pattern: "[-]",
-		ir:      "t[p]=0;",
-	},
+		ir:      "*p=0;"},
 	"2": { // add current to right
 		pattern: "[->+<]",
-		ir:      "t[p+1]+=t[p];t[p]=0;",
-	},
+		ir:      "*(p+1)+=*p;*p=0;"},
+	"4": { // add current to right (alt notation)
+		pattern: "[>+<-]",
+		ir:      "*(p+1)+=*p;*p=0;"},
 	"3": { // subtract left from current
 		pattern: "[-<->]",
-		ir:      "t[p-1]-=t[p];t[p]=0;",
-	},
-	"4": { // add current to right
-		pattern: "[>+<-]",
-		ir:      "t[p+1]+=t[p];t[p]=0;",
-	},
+		ir:      "*(p-1)-=*p;*p=0;"},
 }
 
 func transpile(code string) string {
@@ -68,15 +64,15 @@ func transpile(code string) string {
 				case ">":
 					intermediate += ("p+=" + rep + ";")
 				case "+":
-					intermediate += ("t[p]+=" + rep + ";")
+					intermediate += ("*p+=" + rep + ";")
 				case "-":
-					intermediate += ("t[p]-=" + rep + ";")
+					intermediate += ("*p-=" + rep + ";")
 				case ".":
-					intermediate += ("putchar(t[p]);")
+					intermediate += ("putchar(*p);")
 				case ",":
-					intermediate += ("t[p]=getchar();")
+					intermediate += ("*p=getchar();")
 				case "[":
-					intermediate += ("while (t[p]){")
+					intermediate += ("while (*p){")
 				case "]":
 					intermediate += ("};")
 				default:

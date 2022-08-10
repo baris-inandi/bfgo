@@ -28,6 +28,7 @@ func Interpret(filepath string) {
 	allocTape()
 	EvalExpr(readBrainfuck(filepath))
 }
+
 func Repl() {
 	// welcome message
 	fmt.Println("Brainfuck REPL")

@@ -16,7 +16,7 @@ func compile(outFile string, intermediate string) {
 		return
 	}
 
-	// generate temp .go file
+	// generate temp ir file
 	f, _ := os.CreateTemp("", "brainfuck-*.c")
 	err := ioutil.WriteFile(f.Name(), []byte(intermediate), 0644)
 	if err != nil {
@@ -30,7 +30,7 @@ func compile(outFile string, intermediate string) {
 	// compile
 	stdout := &bytes.Buffer{}
 	stderr := &bytes.Buffer{}
-	arg := []string{"-o", outFile, f.Name()}
+	arg := []string{"-o", outFile, "-Ofast", f.Name()}
 	cmd := exec.Command("clang", arg...)
 	cmd.Stderr = stderr
 	cmd.Stdout = stdout

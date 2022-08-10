@@ -13,7 +13,7 @@ import (
 
 func compile(outFile string, intermediate string) {
 	// generate temp .go file
-	f, _ := os.CreateTemp("", "brainfuck-*.rs")
+	f, _ := os.CreateTemp("", "brainfuck-*.c")
 	err := ioutil.WriteFile(f.Name(), []byte(intermediate), 0644)
 	if err != nil {
 		fmt.Print(err)

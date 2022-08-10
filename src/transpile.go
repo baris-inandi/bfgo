@@ -3,68 +3,48 @@ package src
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 const IR string = `
-use std::collections::HashMap;
+#include <stdio.h>
 
-struct Bf {
-    tape: HashMap<u16, u8>,
-    pointer: u16,
-}
-
-#[allow(dead_code)]
-impl Bf {
-    pub fn new() -> Bf {
-        Bf {
-            tape: HashMap::new(),
-            pointer: 0,
-        }
-    }
-    pub fn c(&self) -> u8 {
-        *self.tape.get(&self.pointer).unwrap_or(&0)
-    }
-    pub fn l(&mut self, n: u16) {
-        self.pointer -= n;
-    }
-    pub fn r(&mut self, n: u16) {
-        self.pointer += n;
-    }
-    pub fn p(&mut self, n: u8) {
-        self.tape.insert(
-            self.pointer,
-            self.tape.get(&self.pointer).unwrap_or(&0).wrapping_add(n),
-        );
-    }
-    pub fn m(&mut self, n: u8) {
-        self.tape.insert(
-            self.pointer,
-            self.tape.get(&self.pointer).unwrap_or(&0).wrapping_sub(n),
-        );
-    }
-    pub fn w(&mut self) -> bool {
-        self.c() != 0
-    }
-    pub fn o(&mut self) {
-        print!("{}", self.c() as char);
-    }
-}
-
-#[allow(unused_variables)]
-#[allow(unused_mut)]
-fn main() {
-    let mut b = Bf::new();
+int main()
+{
+    unsigned int t[30000] = {0}; // tape
+    unsigned int p = 0;         // pointer
     // brainfuck ir %s
+    printf("\n");
+    return 0;
 }
 `
 
+type bindingPair struct {
+	pattern string
+	ir      string
+}
+
+var PATTERN_BINDINGS = map[string]bindingPair{
+	"a": {
+		pattern: "[-]",
+		ir:      "t[p]=0;",
+	},
+	"b": {
+		pattern: "[->+<]",
+		ir:      "t[p+1]+=t[p];t[p]=0;",
+	},
+}
+
 func transpile(code string) string {
-	// transpiles brainfuck code to c++ code and returns it as a string
+	// transpiles brainfuck code to intermediate representation and returns a string
 	intermediate := "\n\t"
 	code += "/"
 	prevChar := ""
 	repeatedCharCounter := 1
 	initialRepeat := false
+	for k, v := range PATTERN_BINDINGS {
+		code = strings.Replace(code, v.pattern, k, -1)
+	}
 	for _, char := range code {
 		char := string(char)
 		if initialRepeat {
@@ -74,21 +54,23 @@ func transpile(code string) string {
 				rep := strconv.Itoa(repeatedCharCounter)
 				switch prevChar {
 				case "<":
-					intermediate += ("b.l(" + rep + ");")
+					intermediate += ("p-=" + rep + ";")
 				case ">":
-					intermediate += ("b.r(" + rep + ");")
+					intermediate += ("p+=" + rep + ";")
 				case "+":
-					intermediate += ("b.p(" + rep + ");")
+					intermediate += ("t[p]+=" + rep + ";")
 				case "-":
-					intermediate += ("b.m(" + rep + ");")
+					intermediate += ("t[p]-=" + rep + ";")
 				case ".":
-					intermediate += ("b.o();")
+					intermediate += ("printf(\"%c\",(unsigned char)t[p]);")
 				case ",":
 					intermediate += ("b.i();")
 				case "[":
-					intermediate += ("while b.w(){")
+					intermediate += ("while (t[p] != 0) {")
 				case "]":
 					intermediate += ("};")
+				default:
+					intermediate += PATTERN_BINDINGS[prevChar].ir
 				}
 				repeatedCharCounter = 1
 			}

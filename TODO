@@ -1,0 +1,2 @@
+[-]			zeros the current byte, optimization oppurtunity 
+[->+<]		add current byte to right byte, zero current byte

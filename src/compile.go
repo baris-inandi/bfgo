@@ -25,8 +25,6 @@ func compile(outFile string, intermediate string) {
 	}
 	tempDir := (path.Dir(f.Name()))
 
-	fmt.Println(f.Name())
-
 	// compile
 	stdout := &bytes.Buffer{}
 	stderr := &bytes.Buffer{}
@@ -42,7 +40,7 @@ func compile(outFile string, intermediate string) {
 	}
 
 	// cleanup
-	// os.Remove(f.Name())
+	os.Remove(f.Name())
 }
 
 func generateOutFile(fileIn string, specifiedName string) string {

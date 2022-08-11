@@ -37,7 +37,7 @@ func Intermediate(c lang.Code) string {
 		}
 		if initialRepeat {
 			if inLiteral {
-				if prevChar != "\\" {
+				if prevChar != optimizer.IR_LITERAL_START {
 					intermediate += prevChar
 				}
 			}
@@ -64,11 +64,11 @@ func Intermediate(c lang.Code) string {
 				case "]":
 					depth--
 					intermediate += ("};")
-				case "\\":
+				case optimizer.IR_LITERAL_START:
 					i := idx
 					current := string(code[i])
 					literal := ""
-					for current != "/" {
+					for current != optimizer.IR_LITERAL_END {
 						i++
 						literal += current
 						current = string(code[i])

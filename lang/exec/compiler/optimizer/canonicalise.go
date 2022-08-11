@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-const CANONICALISER_SHIFTING_OPS_RUNS = 20
+const CANONICALISER_SHIFTING_OPS_RUNS = 16
 const IR_LITERAL_START = "\\"
 const IR_LITERAL_END = "/"
 
@@ -23,11 +23,14 @@ func Canonicalise(code string) string {
 	const BF__ADD_RIGHT_ALT = "[>+<-]"
 	const BF__ADD_LEFT = "[-<+>]"
 	const BF__ADD_LEFT_ALT = "[<+>-]"
+	const BF__SUB_RIGHT = "[->-<]"
+	const BF__SUB_RIGHT_ALT = "[>-<-]"
 	const BF__SUB_LEFT = "[-<->]"
 	const BF__SUB_LEFT_ALT = "[<->-]"
 
 	const IR__ADD_RIGHT = "*(p+%d)+=*p;*p=0;"
 	const IR__ADD_LEFT = "*(p-%d)+=*p;*p=0;"
+	const IR__SUB_RIGHT = "*(p+%d)-=*p;*p=0;"
 	const IR__SUB_LEFT = "*(p-%d)-=*p;*p=0;"
 
 	// constant patterns, no shift
@@ -48,6 +51,11 @@ func Canonicalise(code string) string {
 		// patterns that subtract left
 		code = bindPatternToIR(code, changeShiftBf(BF__SUB_LEFT, i), fmt.Sprintf(IR__SUB_LEFT, i))
 		code = bindPatternToIR(code, changeShiftBf(BF__SUB_LEFT_ALT, i), fmt.Sprintf(IR__SUB_LEFT, i))
+
+		// patterns that subtract right
+		code = bindPatternToIR(code, changeShiftBf(BF__SUB_RIGHT, i), fmt.Sprintf(IR__SUB_RIGHT, i))
+		code = bindPatternToIR(code, changeShiftBf(BF__SUB_RIGHT_ALT, i), fmt.Sprintf(IR__SUB_RIGHT, i))
+
 	}
 	return code
 }

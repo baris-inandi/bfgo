@@ -59,7 +59,18 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 		stripcmd.Dir = filepath.Dir(outFile)
 		err = stripcmd.Run()
 		if err != nil {
-			fmt.Println("WARN: Cannot strip binary", err)
+			fmt.Println("WARN: Cannot strip binary\n", err)
+		}
+	}
+
+	if c.Context.Bool("run") {
+		cmd := exec.Command("bash", "-c", outFile)
+		cmd.Stdin = os.Stdin
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		err = cmd.Run()
+		if err != nil {
+			fmt.Println("WARN: Cannot run binary\n", err)
 		}
 	}
 

@@ -1,6 +1,8 @@
-package src
+package interpreter
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func matchLoopIndices(index int, code string) (int, int, string) {
 	/*
@@ -31,10 +33,12 @@ func matchLoopIndices(index int, code string) (int, int, string) {
 }
 
 func EvalExpr(code string) {
-	/*
-		func EvalExpr
-			interprets brainfuck code where code is a string of brainfuck code
-	*/
+	context := NewBfContext()
+	context.EvalExprContextually(code)
+}
+
+func (ctx *BfContext) EvalExprContextually(code string) {
+	// evaluates brainfuck code where code is a string of brainfuck code
 	skipChars := 0
 	for index, char := range code {
 		if skipChars > 0 {
@@ -43,26 +47,26 @@ func EvalExpr(code string) {
 			char := string(char)
 			switch char {
 			case "<":
-				ptr--
+				ctx.ptr--
 			case ">":
-				ptr++
+				ctx.ptr++
 			case "+":
-				tape[ptr]++
+				ctx.tape[ctx.ptr]++
 			case "-":
-				tape[ptr]--
+				ctx.tape[ctx.ptr]--
 			case ".":
-				fmt.Print(string(tape[ptr]))
+				fmt.Print(string(ctx.tape[ctx.ptr]))
 			case ",":
 				var bfIn byte
 				fmt.Printf("> ")
 				fmt.Scanln(&bfIn)
-				tape[ptr] = bfIn
+				ctx.tape[ctx.ptr] = bfIn
 			case "[":
 				startIndex, endIndex, loopExpr := matchLoopIndices(index, code)
 				skipCount := endIndex - startIndex
-				if tape[ptr] != 0 {
-					for tape[ptr] > 0 {
-						EvalExpr(loopExpr)
+				if ctx.tape[ctx.ptr] != 0 {
+					for ctx.tape[ctx.ptr] > 0 {
+						ctx.EvalExprContextually(loopExpr)
 					}
 				}
 				skipChars = skipCount

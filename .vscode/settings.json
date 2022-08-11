@@ -1,9 +1,12 @@
 {
     "python.formatting.provider": "yapf",
     "cSpell.words": [
+        "bfcontext",
+        "bfexec",
         "cout",
         "iostream",
         "Ofast",
+        "ucli",
         "urfave"
     ],
     "license.author": "baris-inandi",

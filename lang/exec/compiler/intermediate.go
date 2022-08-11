@@ -1,4 +1,4 @@
-package src
+package compiler
 
 import (
 	"fmt"
@@ -134,8 +134,8 @@ var PATTERN_BINDINGS = PatternBinder{
 		ir:      "*(p-8)-=*p;*p=0;"},
 }
 
-func transpile(code string) string {
-	// transpiles brainfuck code to intermediate representation and returns a string
+func intermediate(code string) string {
+	// transforms brainfuck code to intermediate representation and returns a string
 	if code == "" {
 		return ""
 	}

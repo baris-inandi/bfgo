@@ -11,9 +11,10 @@ import (
 	"strings"
 
 	"github.com/baris-inandi/brainfuck/lang"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/ir"
 )
 
-func compileIntermediateIntoFile(intermediate string, outFile string) {
+func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile string) {
 	if intermediate == "" {
 		return
 	}
@@ -30,7 +31,16 @@ func compileIntermediateIntoFile(intermediate string, outFile string) {
 	// compile
 	ircstdout := &bytes.Buffer{}
 	ircstderr := &bytes.Buffer{}
-	irccmd := exec.Command("clang", "-Ofast", "-o", outFile, f.Name())
+	optimizeFlag := ""
+	if c.Context.Bool("optimize") {
+		optimizeFlag = "-Ofast"
+	}
+	compiler := "gcc"
+	if c.Context.Bool("clang") {
+		compiler = "clang"
+	}
+	compileCommand := fmt.Sprintf("%s %s -o %s %s", compiler, optimizeFlag, outFile, f.Name())
+	irccmd := exec.Command("bash", "-c", compileCommand)
 	irccmd.Stderr = ircstderr
 	irccmd.Stdout = ircstdout
 	irccmd.Dir = tempDir
@@ -39,23 +49,29 @@ func compileIntermediateIntoFile(intermediate string, outFile string) {
 		fmt.Println("Brainfuck Compilation Error:\nERROR: ", ircstderr.String())
 	}
 
-	/* 	// strip binary (TODO)
-	   	stripstdout := &bytes.Buffer{}
-	   	stripstderr := &bytes.Buffer{}
-	   	stripcmd := exec.Command("strip", "--strip-unneeded", outFile)
-	   	stripcmd.Stderr = stripstderr
-	   	stripcmd.Stdout = stripstdout
-	   	stripcmd.Dir = filepath.Base(outFile)
-	   	err = stripcmd.Run()
-	   	if err != nil {
-	   		fmt.Println("WARN: Cannot strip binary", err)
-	   	} */
+	if !c.Context.Bool("no-strip") {
+		stripstdout := &bytes.Buffer{}
+		stripstderr := &bytes.Buffer{}
+		stripCommand := fmt.Sprintf("strip --strip-unneeded %s", outFile)
+		stripcmd := exec.Command("bash", "-c", stripCommand)
+		stripcmd.Stderr = stripstderr
+		stripcmd.Stdout = stripstdout
+		stripcmd.Dir = filepath.Dir(outFile)
+		err = stripcmd.Run()
+		if err != nil {
+			fmt.Println("WARN: Cannot strip binary", err)
+		}
+	}
 
 	// cleanup
 	os.Remove(f.Name())
 }
 
-func generateOutFile(fileIn string, specifiedName string) string {
+func generateOutFile(c lang.Code) string {
+
+	fileIn := c.Filepath
+	specifiedName := c.Context.String("o")
+
 	path, _ := os.Getwd()
 	outNoWd := ""
 	if specifiedName == "" {
@@ -78,10 +94,8 @@ func CompileCodeIntoFile(c lang.Code) {
 		name of the input file.
 	*/
 	compileIntermediateIntoFile(
-		intermediate(c.Content), // intermediate representation
-		generateOutFile( // output file
-			c.Filepath,            // original filepath
-			c.Context.String("o"), // specified filename
-		),
+		c,
+		ir.Intermediate(c), // intermediate representation
+		generateOutFile(c), // output binary
 	)
 }

@@ -13,20 +13,18 @@ func Flags() []ucli.Flag {
 			Usage: "Interpret file instead of compiling",
 		},
 		&ucli.BoolFlag{
-			Name:  "no-optimize",
-			Usage: "Disable optimizations",
+			Name:    "optimize",
+			Aliases: []string{"O"},
+			Usage:   "Enable optimizations",
 		},
 		&ucli.BoolFlag{
 			Name:  "run",
 			Usage: "Run binary after compilation",
 		},
 		&ucli.BoolFlag{
-			Name:  "dump-ir",
-			Usage: "Dump c intermediate representation",
-		},
-		&ucli.BoolFlag{
-			Name:  "dump-ll",
-			Usage: "Dump llvm intermediate representation",
+			Name:    "dump-ir",
+			Aliases: []string{"d"},
+			Usage:   "Dump intermediate representation",
 		},
 		&ucli.BoolFlag{
 			Name:  "no-strip",
@@ -34,7 +32,11 @@ func Flags() []ucli.Flag {
 		},
 		&ucli.PathFlag{
 			Name:  "o",
-			Usage: "Write output to specified file",
+			Usage: "Specify output binary",
+		},
+		&ucli.BoolFlag{
+			Name:  "clang",
+			Usage: "Use clang instead of default gcc",
 		},
 	}
 }

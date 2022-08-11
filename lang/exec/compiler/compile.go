@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/baris-inandi/brainfuck/lang"
-	"github.com/baris-inandi/brainfuck/lang/exec/compiler/ir"
 )
 
 func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile string) {
@@ -106,7 +105,7 @@ func CompileCodeIntoFile(c lang.Code) {
 	*/
 	compileIntermediateIntoFile(
 		c,
-		ir.Intermediate(c), // intermediate representation
+		Intermediate(c),    // intermediate representation
 		generateOutFile(c), // output binary
 	)
 }

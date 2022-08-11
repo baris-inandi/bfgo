@@ -1,12 +1,12 @@
-package ir
+package compiler
 
 import (
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/baris-inandi/brainfuck/lang"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/optimizer"
 )
 
 func Intermediate(c lang.Code) string {
@@ -24,16 +24,23 @@ func Intermediate(c lang.Code) string {
 	initialRepeat := false
 	depth := 0
 	optimized := ctx.Bool("optimize")
-	patternBindings := []PatternBindingPair{}
+	inLiteral := false
+	skipChars := 0
 	if optimized {
-		patternBindings = GeneratePatternBindings()
-		for idx, binding := range patternBindings {
-			code = strings.ReplaceAll(code, binding.pattern, "("+strconv.Itoa(idx)+")")
-		}
+		code = optimizer.Canonicalise(code)
 	}
 	for idx, char := range code {
 		char := string(char)
+		if skipChars > 0 {
+			skipChars--
+			continue
+		}
 		if initialRepeat {
+			if inLiteral {
+				if prevChar != "\\" {
+					intermediate += prevChar
+				}
+			}
 			if prevChar == char && (prevChar == "+" || prevChar == "-" || char == "<" || char == ">") {
 				repeatedCharCounter += 1
 			} else {
@@ -57,17 +64,17 @@ func Intermediate(c lang.Code) string {
 				case "]":
 					depth--
 					intermediate += ("};")
-				case "(":
+				case "\\":
 					i := idx
 					current := string(code[i])
-					bindingIdentifierStr := ""
-					for current != ")" {
+					literal := ""
+					for current != "/" {
 						i++
-						bindingIdentifierStr += current
+						literal += current
 						current = string(code[i])
 					}
-					bindingIdentifier, _ := strconv.Atoi(bindingIdentifierStr)
-					intermediate += (patternBindings[bindingIdentifier].ir)
+					intermediate += literal
+					skipChars += len(literal)
 				}
 				repeatedCharCounter = 1
 			}

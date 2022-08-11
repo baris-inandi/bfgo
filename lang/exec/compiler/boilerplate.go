@@ -1,4 +1,4 @@
-package ir
+package compiler
 
 const IR string = `#include <stdio.h>
 int main()

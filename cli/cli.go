@@ -5,9 +5,10 @@ import (
 )
 
 var Cli = &cli.App{
-	EnableBashCompletion: true,
-	Authors:              []*cli.Author{{Name: "@baris-inandi"}},
-	Flags:                Flags(),
-	Action:               CmdHandler,
-	Usage:                "A blazingly fast, optimizing brainfuck compiler and interpreter",
+	EnableBashCompletion:   true,
+	Authors:                []*cli.Author{{Name: "@baris-inandi"}},
+	Flags:                  Flags(),
+	Action:                 CmdHandler,
+	UseShortOptionHandling: true,
+	Usage:                  "A blazingly fast, optimizing brainfuck compiler and interpreter",
 }

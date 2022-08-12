@@ -6,8 +6,8 @@ import (
 )
 
 const CANONICALISER_SHIFTING_PATTERN_RUNS = 16
-const IR_LITERAL_START = "\\"
-const IR_LITERAL_END = "/"
+const IR_LITERAL_START = '\\'
+const IR_LITERAL_END = '/'
 
 func canonicalise(code string) string {
 	changeShiftBf := func(loop string, amount int) string {
@@ -17,7 +17,7 @@ func canonicalise(code string) string {
 			"<", strings.Repeat("<", amount))
 	}
 	bindPatternToIR := func(code string, pattern string, ir string) string {
-		return strings.ReplaceAll(code, pattern, IR_LITERAL_START+ir+IR_LITERAL_END)
+		return strings.ReplaceAll(code, pattern, string(IR_LITERAL_START)+ir+string(IR_LITERAL_END))
 	}
 
 	const BF__ADD_RIGHT = "[->+<]"

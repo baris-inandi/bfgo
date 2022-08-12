@@ -19,7 +19,7 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 	}
 
 	// generate temp ir file
-	f, _ := os.CreateTemp("", "baris-inandi__brainfuck_*.c")
+	f, _ := os.CreateTemp("", "baris-inandi__brainfuck_go_*.c")
 	err := ioutil.WriteFile(f.Name(), []byte(intermediate), 0644)
 	if err != nil {
 		fmt.Print(err)
@@ -31,7 +31,7 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 	ircstdout := &bytes.Buffer{}
 	ircstderr := &bytes.Buffer{}
 	optimizeFlag := ""
-	if c.Context.Bool("optimize") {
+	if c.Context.Bool("o-performance") {
 		optimizeFlag = "-Ofast"
 	}
 	compiler := "gcc"
@@ -43,12 +43,14 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 	irccmd.Stderr = ircstderr
 	irccmd.Stdout = ircstdout
 	irccmd.Dir = tempDir
-	err = irccmd.Run()
+	if !c.Context.Bool("compile-only") {
+		err = irccmd.Run()
+	}
 	if err != nil {
 		fmt.Println("Brainfuck Compilation Error:\nERROR: ", ircstderr.String())
 	}
 
-	if c.Context.Bool("optimize") && !c.Context.Bool("no-strip") {
+	if !c.Context.Bool("o-compile") && !c.Context.Bool("compile-only") {
 		stripstdout := &bytes.Buffer{}
 		stripstderr := &bytes.Buffer{}
 		stripCommand := fmt.Sprintf("strip --strip-unneeded %s", outFile)
@@ -80,7 +82,7 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 func generateOutFile(c lang.Code) string {
 
 	fileIn := c.Filepath
-	specifiedName := c.Context.String("o")
+	specifiedName := c.Context.Path("output")
 
 	path, _ := os.Getwd()
 	outNoWd := ""
@@ -103,9 +105,15 @@ func CompileCodeIntoFile(c lang.Code) {
 		will be named automatically according to the
 		name of the input file.
 	*/
+	var ir string
+	if c.Context.Bool("o-compile") {
+		ir = FastGenerateIntermediateRepresentation(c)
+	} else {
+		ir = GenerateIntermediateRepresentation(c)
+	}
 	compileIntermediateIntoFile(
 		c,
-		Intermediate(c),    // intermediate representation
-		generateOutFile(c), // output binary
+		ir,
+		generateOutFile(c), // output binary path
 	)
 }

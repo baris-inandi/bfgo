@@ -9,67 +9,63 @@ import (
 	"github.com/baris-inandi/brainfuck/lang/exec/compiler/optimizer"
 )
 
-func Intermediate(c lang.Code) string {
+func GenerateIntermediateRepresentation(c lang.Code) string {
 	// transforms brainfuck code to intermediate representation and returns a string
 	code := c.Content
-	ctx := c.Context
-
 	if code == "" {
 		return ""
 	}
 	intermediate := "\n\t"
-	prevChar := ""
-	depth := 0
+	prevChar := ' '
+	depth := int32(0)
 	repSymbolCount := uint16(1)
-	optimized := ctx.Bool("optimize")
 	inLiteral := false
 	skipChars := 0
-	if optimized {
+	if c.Context.Bool("o-performance") {
 		code = optimizer.Optimize(code)
 	}
 	code += "\n"
 	for idx, char := range code {
-		char := string(char)
 		if skipChars > 0 {
 			skipChars--
 			continue
 		}
 		if inLiteral {
 			if prevChar != optimizer.IR_LITERAL_START {
-				intermediate += prevChar
+				intermediate += string(prevChar)
 			}
 		}
-		if prevChar == char && (prevChar == "+" ||
-			prevChar == "-" ||
-			char == "<" ||
-			char == ">") {
+		if prevChar == char && (prevChar == '+' ||
+			prevChar == '-' ||
+			char == '<' ||
+			char == '>') {
 			repSymbolCount += 1
 		} else {
 			rep := strconv.Itoa(int(repSymbolCount))
 			switch prevChar {
-			case "<":
+			case '<':
 				intermediate += ("p-=" + rep + ";")
-			case ">":
+			case '>':
 				intermediate += ("p+=" + rep + ";")
-			case "+":
+			case '+':
 				intermediate += ("*p+=" + rep + ";")
-			case "-":
+			case '-':
 				intermediate += ("*p-=" + rep + ";")
-			case ".":
+			case '.':
 				intermediate += ("putc(*p, stdout);")
-			case ",":
+			case ',':
 				intermediate += ("*p=getchar();")
-			case "[":
+			case '[':
 				depth++
 				intermediate += ("while (*p){")
-			case "]":
+			case ']':
 				depth--
 				intermediate += ("};")
 			case optimizer.IR_LITERAL_START:
 				i := idx
 				current := string(code[i])
 				literal := ""
-				for current != optimizer.IR_LITERAL_END {
+				for current != string(optimizer.IR_LITERAL_END) {
 					i++
 					literal += current
 					current = string(code[i])

@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-const CANONICALISER_SHIFTING_OPS_RUNS = 16
+const CANONICALISER_SHIFTING_PATTERN_RUNS = 16
 const IR_LITERAL_START = "\\"
 const IR_LITERAL_END = "/"
 
@@ -19,6 +19,7 @@ func Canonicalise(code string) string {
 	bindPatternToIR := func(code string, pattern string, ir string) string {
 		return strings.ReplaceAll(code, pattern, IR_LITERAL_START+ir+IR_LITERAL_END)
 	}
+
 	const BF__ADD_RIGHT = "[->+<]"
 	const BF__ADD_RIGHT_ALT = "[>+<-]"
 	const BF__ADD_LEFT = "[-<+>]"
@@ -37,7 +38,7 @@ func Canonicalise(code string) string {
 	code = bindPatternToIR(code, "[-]", "*p=0;")
 
 	// a section where `runs` changes the shift of operation
-	runs := CANONICALISER_SHIFTING_OPS_RUNS + 1
+	runs := CANONICALISER_SHIFTING_PATTERN_RUNS + 1
 	for i := 1; i < runs; i++ {
 
 		// patterns that add right

@@ -18,15 +18,15 @@ func Intermediate(c lang.Code) string {
 		return ""
 	}
 	intermediate := "\n\t"
-	code += "/"
+	code += " "
 	prevChar := ""
-	repeatedCharCounter := uint16(1)
-	initialRepeat := false
 	depth := 0
+	repSymbolCount := uint16(1)
 	optimized := ctx.Bool("optimize")
 	inLiteral := false
 	skipChars := 0
 	if optimized {
+		code = optimizer.RemoveUnusedLeading(code)
 		code = optimizer.Canonicalise(code)
 	}
 	for idx, char := range code {
@@ -35,51 +35,50 @@ func Intermediate(c lang.Code) string {
 			skipChars--
 			continue
 		}
-		if initialRepeat {
-			if inLiteral {
-				if prevChar != optimizer.IR_LITERAL_START {
-					intermediate += prevChar
-				}
+		if inLiteral {
+			if prevChar != optimizer.IR_LITERAL_START {
+				intermediate += prevChar
 			}
-			if prevChar == char && (prevChar == "+" || prevChar == "-" || char == "<" || char == ">") {
-				repeatedCharCounter += 1
-			} else {
-				rep := strconv.Itoa(int(repeatedCharCounter))
-				switch prevChar {
-				case "<":
-					intermediate += ("p-=" + rep + ";")
-				case ">":
-					intermediate += ("p+=" + rep + ";")
-				case "+":
-					intermediate += ("*p+=" + rep + ";")
-				case "-":
-					intermediate += ("*p-=" + rep + ";")
-				case ".":
-					intermediate += ("putchar(*p);")
-				case ",":
-					intermediate += ("*p=getchar();")
-				case "[":
-					depth++
-					intermediate += ("while (*p){")
-				case "]":
-					depth--
-					intermediate += ("};")
-				case optimizer.IR_LITERAL_START:
-					i := idx
-					current := string(code[i])
-					literal := ""
-					for current != optimizer.IR_LITERAL_END {
-						i++
-						literal += current
-						current = string(code[i])
-					}
-					intermediate += literal
-					skipChars += len(literal)
-				}
-				repeatedCharCounter = 1
-			}
+		}
+		if prevChar == char && (prevChar == "+" ||
+			prevChar == "-" ||
+			char == "<" ||
+			char == ">") {
+			repSymbolCount += 1
 		} else {
-			initialRepeat = true
+			rep := strconv.Itoa(int(repSymbolCount))
+			switch prevChar {
+			case "<":
+				intermediate += ("p-=" + rep + ";")
+			case ">":
+				intermediate += ("p+=" + rep + ";")
+			case "+":
+				intermediate += ("*p+=" + rep + ";")
+			case "-":
+				intermediate += ("*p-=" + rep + ";")
+			case ".":
+				intermediate += ("putchar(*p);")
+			case ",":
+				intermediate += ("*p=getchar();")
+			case "[":
+				depth++
+				intermediate += ("while (*p){")
+			case "]":
+				depth--
+				intermediate += ("};")
+			case optimizer.IR_LITERAL_START:
+				i := idx
+				current := string(code[i])
+				literal := ""
+				for current != optimizer.IR_LITERAL_END {
+					i++
+					literal += current
+					current = string(code[i])
+				}
+				intermediate += literal
+				skipChars += len(literal)
+			}
+			repSymbolCount = 1
 		}
 		prevChar = char
 	}

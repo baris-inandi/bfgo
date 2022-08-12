@@ -18,7 +18,6 @@ func Intermediate(c lang.Code) string {
 		return ""
 	}
 	intermediate := "\n\t"
-	code += " "
 	prevChar := ""
 	depth := 0
 	repSymbolCount := uint16(1)
@@ -26,9 +25,9 @@ func Intermediate(c lang.Code) string {
 	inLiteral := false
 	skipChars := 0
 	if optimized {
-		code = optimizer.RemoveUnusedLeading(code)
-		code = optimizer.Canonicalise(code)
+		code = optimizer.Optimize(code)
 	}
+	code += "\n"
 	for idx, char := range code {
 		char := string(char)
 		if skipChars > 0 {

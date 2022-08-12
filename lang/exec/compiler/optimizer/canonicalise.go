@@ -9,7 +9,7 @@ const CANONICALISER_SHIFTING_PATTERN_RUNS = 16
 const IR_LITERAL_START = "\\"
 const IR_LITERAL_END = "/"
 
-func Canonicalise(code string) string {
+func canonicalise(code string) string {
 	changeShiftBf := func(loop string, amount int) string {
 		// [->+<] -> [->>>+<<<] ; where amount is 3
 		return strings.ReplaceAll(

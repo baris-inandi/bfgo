@@ -6,6 +6,7 @@
         "cout",
         "iostream",
         "Ofast",
+        "putc",
         "ucli",
         "urfave"
     ],

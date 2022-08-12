@@ -48,7 +48,7 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 		fmt.Println("Brainfuck Compilation Error:\nERROR: ", ircstderr.String())
 	}
 
-	if !c.Context.Bool("no-strip") {
+	if c.Context.Bool("optimize") && !c.Context.Bool("no-strip") {
 		stripstdout := &bytes.Buffer{}
 		stripstderr := &bytes.Buffer{}
 		stripCommand := fmt.Sprintf("strip --strip-unneeded %s", outFile)

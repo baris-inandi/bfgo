@@ -88,7 +88,7 @@ func Intermediate(c lang.Code) string {
 		fmt.Println("Syntax error: Unmatched ]")
 		os.Exit(1)
 	}
-	intermediate = fmt.Sprintf(IR, intermediate)
+	intermediate = SprintfIR(intermediate, c)
 	if c.Context.Bool("dump-ir") {
 		fmt.Println(intermediate)
 	}

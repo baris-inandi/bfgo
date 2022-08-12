@@ -57,7 +57,7 @@ func Intermediate(c lang.Code) string {
 			case "-":
 				intermediate += ("*p-=" + rep + ";")
 			case ".":
-				intermediate += ("putchar(*p);")
+				intermediate += ("putc(*p, stdout);")
 			case ",":
 				intermediate += ("*p=getchar();")
 			case "[":

@@ -14,7 +14,7 @@ func Compile(ctx *cli.Context, filepath string) {
 	if filepath == "" {
 		fmt.Println("No input files")
 		fmt.Println("Use brainfuck --help for usage")
-		os.Exit(1)
+		os.Exit(0)
 	}
 	compiler.CompileCodeIntoFile(lang.NewBfCode(ctx, filepath))
 }

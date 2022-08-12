@@ -11,7 +11,7 @@ int main()
 {
     %s t[%d] = {%d};
     %s *p = t;
-    // ir %s
+    // ir %s%s
     return 0;
 }
 `
@@ -23,6 +23,7 @@ func SprintfIR(intermediate string, c lang.Code) string {
 		c.Context.Int64("c-tape-size"),
 		c.Context.Int("c-tape-init"),
 		c.Context.String("c-cell-type"),
+		"\n\t",
 		intermediate,
 	)
 }

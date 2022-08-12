@@ -10,7 +10,7 @@ import (
 )
 
 func Interpret(code lang.Code) {
-	EvalExpr(code.Content)
+	EvalExpr(code.Inner)
 }
 
 func Repl() {

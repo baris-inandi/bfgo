@@ -9,22 +9,23 @@ import (
 
 func FastGenerateIntermediateRepresentation(c lang.Code) string {
 	// transforms brainfuck code to intermediate representation and returns a string
-	code := c.Content
+	code := c.Inner
 	if code == "" {
 		return ""
 	}
 	depth := int32(0)
 	intermediate := ""
+	// TODO: not working
 	for _, char := range code {
 		switch char {
 		case '<':
-			intermediate += ("p--")
+			intermediate += ("--p;")
 		case '>':
-			intermediate += ("p++")
+			intermediate += ("++p;")
 		case '+':
-			intermediate += ("*p++")
+			intermediate += ("*++p;")
 		case '-':
-			intermediate += ("*p--")
+			intermediate += ("*--p;")
 		case '.':
 			intermediate += ("putc(*p, stdout);")
 		case ',':

@@ -25,13 +25,22 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 		fmt.Print(err)
 		fmt.Println("Brainfuck Error: Could not write temporary file.")
 	}
+
+	if c.Context.Bool("d-print-ir-filepath") {
+		fmt.Println(f.Name())
+	}
+
 	tempDir := (path.Dir(f.Name()))
 
 	// compile
 	ircstdout := &bytes.Buffer{}
 	ircstderr := &bytes.Buffer{}
 	optimizeFlag := ""
-	if c.Context.Bool("o-performance") {
+	if c.OLevel == 1 {
+		optimizeFlag = "-O0"
+	} else if c.OLevel == 2 {
+		optimizeFlag = "-O1"
+	} else if c.OLevel == 3 {
 		optimizeFlag = "-Ofast"
 	}
 	compiler := "gcc"
@@ -39,6 +48,9 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 		compiler = "clang"
 	}
 	compileCommand := fmt.Sprintf("%s %s -o %s %s", compiler, optimizeFlag, outFile, f.Name())
+	if c.Context.Bool("d-print-compile-command") {
+		fmt.Println(compileCommand)
+	}
 	irccmd := exec.Command("bash", "-c", compileCommand)
 	irccmd.Stderr = ircstderr
 	irccmd.Stdout = ircstdout
@@ -50,7 +62,7 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 		fmt.Println("Brainfuck Compilation Error:\nERROR: ", ircstderr.String())
 	}
 
-	if !c.Context.Bool("o-compile") && !c.Context.Bool("compile-only") {
+	if c.OLevel == 3 && !c.Context.Bool("compile-only") {
 		stripstdout := &bytes.Buffer{}
 		stripstderr := &bytes.Buffer{}
 		stripCommand := fmt.Sprintf("strip --strip-unneeded %s", outFile)
@@ -76,7 +88,9 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 	}
 
 	// cleanup
-	os.Remove(f.Name())
+	if !c.Context.Bool("d-keep-temp") {
+		os.Remove(f.Name())
+	}
 }
 
 func generateOutFile(c lang.Code) string {
@@ -106,11 +120,12 @@ func CompileCodeIntoFile(c lang.Code) {
 		name of the input file.
 	*/
 	var ir string
-	if c.Context.Bool("o-compile") {
+	if c.OLevel == 1 {
 		ir = FastGenerateIntermediateRepresentation(c)
 	} else {
 		ir = GenerateIntermediateRepresentation(c)
 	}
+
 	compileIntermediateIntoFile(
 		c,
 		ir,

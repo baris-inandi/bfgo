@@ -11,17 +11,17 @@ import (
 
 func GenerateIntermediateRepresentation(c lang.Code) string {
 	// transforms brainfuck code to intermediate representation and returns a string
-	code := c.Content
+	code := c.Inner
 	if code == "" {
 		return ""
 	}
-	intermediate := "\n\t"
+	intermediate := ""
 	prevChar := ' '
 	depth := int32(0)
 	repSymbolCount := uint16(1)
 	inLiteral := false
 	skipChars := 0
-	if c.Context.Bool("o-performance") {
+	if c.OLevel == 3 {
 		code = optimizer.Optimize(code)
 	}
 	code += "\n"

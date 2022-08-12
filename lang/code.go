@@ -7,14 +7,24 @@ import (
 
 type Code struct {
 	Filepath string
-	Content  string
+	Inner    string
 	Context  *cli.Context
+	OLevel   int
 }
 
 func NewBfCode(c *cli.Context, filepath string) Code {
+	var oLevel int
+	if c.Bool("o-performance") {
+		oLevel = 3
+	} else if c.Bool("o-compile") {
+		oLevel = 1
+	} else {
+		oLevel = 2
+	}
 	return Code{
 		Filepath: filepath,
-		Content:  readcode.ReadBrainfuck(filepath),
+		Inner:    readcode.ReadBrainfuck(filepath),
 		Context:  c,
+		OLevel:   oLevel,
 	}
 }

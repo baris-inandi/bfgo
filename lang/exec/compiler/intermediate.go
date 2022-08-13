@@ -22,7 +22,9 @@ func GenerateIntermediateRepresentation(c lang.Code) string {
 	inLiteral := false
 	skipChars := 0
 	if c.OLevel == 3 {
+		c.VerboseOut("intermediate.go: starting optimizer code")
 		code = optimizer.Optimize(code)
+		c.VerboseOut("intermediate.go: optimization done")
 	}
 	code += "\n"
 	for idx, char := range code {
@@ -85,7 +87,7 @@ func GenerateIntermediateRepresentation(c lang.Code) string {
 		os.Exit(1)
 	}
 	intermediate = SprintfIR(intermediate, c)
-	if c.Context.Bool("dump-ir") {
+	if c.Context.Bool("d-dump-ir") {
 		fmt.Println(intermediate)
 	}
 	return intermediate

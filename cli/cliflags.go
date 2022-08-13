@@ -21,7 +21,7 @@ func Flags() []c.Flag {
 
 		// C IR related options
 		&c.BoolFlag{Name: "clang", Usage: "Use clang instead of default gcc"},
-		&c.StringFlag{Name: "c-compiler-flags", Usage: "Pass arbitrary flags to the C compiler"}, // TODO:
+		&c.StringFlag{Name: "c-compiler-flags", Usage: "Pass arbitrary flags to the C compiler"},
 		&c.Int64Flag{Name: "c-tape-size", Value: 30000, Usage: "64-bit integer to specify length of brainfuck tape"},
 		&c.IntFlag{Name: "c-tape-init", Value: 0, Usage: "Integer value used to initialize all elements in brainfuck tape"},
 		&c.StringFlag{Name: "c-cell-type", Value: "int", Usage: "C type used in brainfuck tape in intermediate representation"},
@@ -31,5 +31,7 @@ func Flags() []c.Flag {
 		&c.BoolFlag{Name: "d-keep-temp", Usage: "Do not remove temporary IR files"},
 		&c.BoolFlag{Name: "d-print-ir-filepath", Usage: "Dump temporary IR filepath, use -d-keep-temp to keep them from being deleted"},
 		&c.BoolFlag{Name: "d-print-compile-command", Usage: "Print C IR compiler command"},
+		&c.BoolFlag{Name: "verbose", Aliases: []string{"v"}, Usage: "Print verbose output"},
+		&c.BoolFlag{Name: "debug", Aliases: []string{"d"}, Usage: "Produce debug output, overrides -o"}, // TODO: create a mandelbrot-123123123 directory and dump IR, OPTIMIZED BF, BINARY inside
 	}
 }

@@ -25,6 +25,7 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 		fmt.Print(err)
 		fmt.Println("Brainfuck Error: Could not write temporary file.")
 	}
+	c.VerboseOut("compile.go: generated temporary IR file at ", f.Name())
 
 	if c.Context.Bool("d-print-ir-filepath") {
 		fmt.Println(f.Name())
@@ -47,7 +48,8 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 	if c.Context.Bool("clang") {
 		compiler = "clang"
 	}
-	compileCommand := fmt.Sprintf("%s %s -o %s %s", compiler, optimizeFlag, outFile, f.Name())
+	compileCommand := fmt.Sprintf("%s %s %s -o %s %s", compiler, c.Context.String("c-compiler-flags"), optimizeFlag, outFile, f.Name())
+	c.VerboseOut("compile.go: generated compile command for IR: ", compileCommand)
 	if c.Context.Bool("d-print-compile-command") {
 		fmt.Println(compileCommand)
 	}
@@ -55,6 +57,7 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 	irccmd.Stderr = ircstderr
 	irccmd.Stdout = ircstdout
 	irccmd.Dir = tempDir
+	c.VerboseOut("compile.go: stdout for compile command is: ", ircstdout.String())
 	if !c.Context.Bool("compile-only") {
 		err = irccmd.Run()
 	}
@@ -74,9 +77,13 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 		if err != nil {
 			fmt.Println("WARN: Cannot strip binary\n", err)
 		}
+		c.VerboseOut("compile.go: stripped binary: ", outFile)
+	} else {
+		c.VerboseOut("compile.go: using -C, skipping output file")
 	}
 
 	if c.Context.Bool("run") {
+		c.VerboseOut("compile.go: running binary at ", outFile)
 		cmd := exec.Command("bash", "-c", outFile)
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
@@ -89,6 +96,7 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 
 	// cleanup
 	if !c.Context.Bool("d-keep-temp") {
+		c.VerboseOut("compile.go: removing temporary IR file at ", f.Name())
 		os.Remove(f.Name())
 	}
 }
@@ -120,15 +128,22 @@ func CompileCodeIntoFile(c lang.Code) {
 		name of the input file.
 	*/
 	var ir string
+	c.VerboseOut("compile.go: optimization level is ", c.OLevel)
 	if c.OLevel == 1 {
+		c.VerboseOut("compile.go: using fast IR generation")
 		ir = FastGenerateIntermediateRepresentation(c)
 	} else {
+		c.VerboseOut("compile.go: using optimizing IR generation")
 		ir = GenerateIntermediateRepresentation(c)
 	}
+
+	o := generateOutFile(c)
+	c.VerboseOut("compile.go: output file is ", o)
 
 	compileIntermediateIntoFile(
 		c,
 		ir,
-		generateOutFile(c), // output binary path
+		o, // output binary path
 	)
+	c.VerboseOut("compile.go: finished compilation")
 }

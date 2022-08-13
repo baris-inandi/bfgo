@@ -11,16 +11,25 @@ import (
 )
 
 func Compile(ctx *cli.Context, filepath string) {
+	c := lang.NewBfCode(ctx, filepath)
 	if filepath == "" {
 		fmt.Println("No input files")
 		fmt.Println("Use brainfuck --help for usage")
 		os.Exit(0)
 	}
-	compiler.CompileCodeIntoFile(lang.NewBfCode(ctx, filepath))
+	c.VerboseOut("exec.go: using run mode compile")
+	compiler.CompileCodeIntoFile(c)
 }
 
 func Interpret(ctx *cli.Context, filepath string) {
-	interpreter.Interpret(lang.NewBfCode(ctx, filepath))
+	c := lang.NewBfCode(ctx, filepath)
+	c.VerboseOut("exec.go: using run mode interpret")
+	interpreter.Interpret(c)
 }
 
-func Repl(ctx *cli.Context) { interpreter.Repl() }
+func Repl(ctx *cli.Context) {
+	if ctx.Bool("verbose") {
+		fmt.Println("exec.go: using run mode REPL")
+	}
+	interpreter.Repl()
+}

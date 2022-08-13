@@ -23,9 +23,9 @@ func FastGenerateIntermediateRepresentation(c lang.Code) string {
 		case '>':
 			intermediate += ("++p;")
 		case '+':
-			intermediate += ("*++p;")
+			intermediate += ("++*p;")
 		case '-':
-			intermediate += ("*--p;")
+			intermediate += ("--*p;")
 		case '.':
 			intermediate += ("putc(*p, stdout);")
 		case ',':
@@ -46,7 +46,7 @@ func FastGenerateIntermediateRepresentation(c lang.Code) string {
 		os.Exit(1)
 	}
 	intermediate = SprintfIR(intermediate, c)
-	if c.Context.Bool("dump-ir") {
+	if c.Context.Bool("d-dump-ir") {
 		fmt.Println(intermediate)
 	}
 	return intermediate

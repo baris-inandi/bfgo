@@ -3,13 +3,18 @@ package optimizer
 import (
 	"fmt"
 	"strings"
+
+	"github.com/baris-inandi/brainfuck/lang"
 )
 
 const CANONICALISER_SHIFTING_PATTERN_RUNS = 16
 const IR_LITERAL_START = '\\'
 const IR_LITERAL_END = '/'
 
-func canonicalise(code string) string {
+func canonicalise(c lang.Code) lang.Code {
+
+	code := c.Inner
+
 	changeShiftBf := func(loop string, amount int) string {
 		// [->+<] -> [->>>+<<<] ; where amount is 3
 		return strings.ReplaceAll(
@@ -39,6 +44,9 @@ func canonicalise(code string) string {
 
 	// a section where `runs` changes the shift of operation
 	runs := CANONICALISER_SHIFTING_PATTERN_RUNS + 1
+
+	c.VerboseOut("canonicalise.go: starting arithmetic canonicalisation with runs parameter ", runs)
+
 	for i := 1; i < runs; i++ {
 
 		// patterns that add right
@@ -58,5 +66,6 @@ func canonicalise(code string) string {
 		code = bindPatternToIR(code, changeShiftBf(BF__SUB_RIGHT_ALT, i), fmt.Sprintf(IR__SUB_RIGHT, i))
 
 	}
-	return code
+	c.Inner = code
+	return c
 }

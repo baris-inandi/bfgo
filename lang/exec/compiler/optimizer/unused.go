@@ -1,8 +1,14 @@
 package optimizer
 
-func removeUnusedLeading(code string) string {
+import (
+	"github.com/baris-inandi/brainfuck/lang"
+)
+
+func removeUnusedLeading(c lang.Code) lang.Code {
+	code := c.Inner
 	// remove until last [ ] . or ,
 	// leading <>+- operators have no effect on output
+	c.VerboseOut("unused.go: removing unneeded leading operators")
 	removeLast := 0
 	for i := len(code) - 1; i >= 0; i-- {
 		char := code[i]
@@ -15,5 +21,6 @@ func removeUnusedLeading(code string) string {
 		removeLast += 1
 	}
 	code = string([]rune(code)[:len(code)-removeLast])
-	return code
+	c.Inner = code
+	return c
 }

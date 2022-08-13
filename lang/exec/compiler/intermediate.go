@@ -11,8 +11,7 @@ import (
 
 func GenerateIntermediateRepresentation(c lang.Code) string {
 	// transforms brainfuck code to intermediate representation and returns a string
-	code := c.Inner
-	if code == "" {
+	if c.Inner == "" {
 		return ""
 	}
 	intermediate := ""
@@ -22,12 +21,10 @@ func GenerateIntermediateRepresentation(c lang.Code) string {
 	inLiteral := false
 	skipChars := 0
 	if c.OLevel == 3 {
-		c.VerboseOut("intermediate.go: starting optimizer code")
-		code = optimizer.Optimize(code)
-		c.VerboseOut("intermediate.go: optimization done")
+		c = optimizer.Optimize(c)
 	}
-	code += "\n"
-	for idx, char := range code {
+	c.Inner += "\n"
+	for idx, char := range c.Inner {
 		if skipChars > 0 {
 			skipChars--
 			continue
@@ -65,12 +62,12 @@ func GenerateIntermediateRepresentation(c lang.Code) string {
 				intermediate += ("};")
 			case optimizer.IR_LITERAL_START:
 				i := idx
-				current := string(code[i])
+				current := string(c.Inner[i])
 				literal := ""
 				for current != string(optimizer.IR_LITERAL_END) {
 					i++
 					literal += current
-					current = string(code[i])
+					current = string(c.Inner[i])
 				}
 				intermediate += literal
 				skipChars += len(literal)

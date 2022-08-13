@@ -78,7 +78,9 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 			fmt.Println("WARN: Cannot strip binary\n", err)
 		}
 		c.VerboseOut("compile.go: stripped binary: ", outFile)
-	} else {
+	}
+
+	if c.Context.Bool("compile-only") {
 		c.VerboseOut("compile.go: using -C, skipping output file")
 	}
 

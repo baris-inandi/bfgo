@@ -9,18 +9,22 @@ import (
 )
 
 type Code struct {
-	Filepath  string
-	Inner     string
-	Context   *cli.Context
-	OLevel    int
-	startTime time.Time
+	Filepath         string
+	Inner            string
+	Context          *cli.Context
+	OLevel           int
+	startTime        time.Time
+	VerboseOutBuffer string
 }
 
 func (c *Code) VerboseOut(s ...interface{}) {
-	elapsedTime := time.Since(c.startTime).Milliseconds()
-	if c.Context.Bool("verbose") {
-		fmt.Print(s...)
-		fmt.Printf(" [%dms]\n", elapsedTime)
+	if c.Context.Bool("debug") || c.Context.Bool("verbose") {
+		elapsedTime := time.Since(c.startTime).Milliseconds()
+		out := fmt.Sprint(s...) + fmt.Sprintf(" [%dms]", elapsedTime)
+		c.VerboseOutBuffer += out
+		if c.Context.Bool("verbose") {
+			fmt.Println(out)
+		}
 	}
 }
 

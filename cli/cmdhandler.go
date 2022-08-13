@@ -10,9 +10,11 @@ func CmdHandler(c *ucli.Context) error {
 	if c.Bool("repl") {
 		bfexec.Repl(c)
 	} else if c.Bool("interpret") {
-		bfexec.Interpret(c, f)
+		c := bfexec.Interpret(c, f)
+		c.VerboseOut("cmdhandler.go: interpret job exited in")
 	} else {
-		bfexec.Compile(c, f)
+		c := bfexec.Compile(c, f)
+		c.VerboseOut("cmdhandler.go: compile job exited in")
 	}
 	return nil
 }

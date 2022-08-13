@@ -10,7 +10,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func Compile(ctx *cli.Context, filepath string) {
+func Compile(ctx *cli.Context, filepath string) lang.Code {
 	c := lang.NewBfCode(ctx, filepath)
 	if filepath == "" {
 		fmt.Println("No input files")
@@ -19,12 +19,14 @@ func Compile(ctx *cli.Context, filepath string) {
 	}
 	c.VerboseOut("exec.go: using run mode compile")
 	compiler.CompileCodeIntoFile(c)
+	return c
 }
 
-func Interpret(ctx *cli.Context, filepath string) {
+func Interpret(ctx *cli.Context, filepath string) lang.Code {
 	c := lang.NewBfCode(ctx, filepath)
 	c.VerboseOut("exec.go: using run mode interpret")
 	interpreter.Interpret(c)
+	return c
 }
 
 func Repl(ctx *cli.Context) {

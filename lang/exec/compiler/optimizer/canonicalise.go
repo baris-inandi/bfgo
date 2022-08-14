@@ -8,11 +8,10 @@ import (
 )
 
 const CANONICALISER_SHIFTING_PATTERN_RUNS = 16
-const IR_LITERAL_START = '\\'
-const IR_LITERAL_END = '/'
+const IR_LITERAL_START = '~'
+const IR_LITERAL_END = '`'
 
 func canonicalise(c lang.Code) lang.Code {
-
 	code := c.Inner
 	bindingDebugString := ""
 
@@ -22,7 +21,7 @@ func canonicalise(c lang.Code) lang.Code {
 			strings.ReplaceAll(loop, ">", strings.Repeat(">", amount)),
 			"<", strings.Repeat("<", amount))
 	}
-	changeShiftConstBf := func(loop string, shift int, constant int) string {
+	changeShiftUpper := func(loop string, shift int, constant int) string {
 		return strings.ReplaceAll(
 			strings.ReplaceAll(
 				fmt.Sprintf(loop, strings.Repeat("+", constant)),
@@ -34,47 +33,23 @@ func canonicalise(c lang.Code) lang.Code {
 		return strings.ReplaceAll(code, pattern, string(IR_LITERAL_START)+ir+string(IR_LITERAL_END))
 	}
 
-	const BF__ADD_RIGHT = "[->+<]"
-	const BF__ADD_RIGHT_ALT = "[>+<-]"
-	const BF__ADD_LEFT = "[-<+>]"
-	const BF__ADD_LEFT_ALT = "[<+>-]"
-	const BF__SUB_RIGHT = "[->-<]"
-	const BF__SUB_RIGHT_ALT = "[>-<-]"
-	const BF__SUB_LEFT = "[-<->]"
-	const BF__SUB_LEFT_ALT = "[<->-]"
-	// %s -> multiplier * "+"
-	const BF__MUL_LEFT = "[-<%s>]"
-	const BF__MUL_LEFT_ALT = "[<%s>-]"
-	const BF__MUL_RIGHT = "[->%s<]"
-	const BF__MUL_RIGHT_ALT = "[>%s<-]"
-
-	// %d -> shift
-	const IR__ADD_RIGHT = "*(p+%d)+=*p;*p=0;"
-	const IR__ADD_LEFT = "*(p-%d)+=*p;*p=0;"
-	const IR__SUB_RIGHT = "*(p+%d)-=*p;*p=0;"
-	const IR__SUB_LEFT = "*(p-%d)-=*p;*p=0;"
-	// %d -> shift
-	// %d -> constant multiplier
-	const IR__MUL_RIGHT = "*(p+%d)+=(*p)*%d;*p=0;"
-	const IR__MUL_LEFT = "*(p-%d)+=(*p)*%d;*p=0;"
-
 	// constant patterns, no shift
 	code = bindPatternToIR(code, "[-]", "*p=0;")
 
 	// a section where `runs` changes the shift of operation
 	runs := CANONICALISER_SHIFTING_PATTERN_RUNS + 1
 
-	c.VerboseOut("canonicalise.go: starting arithmetic canonicalisation with runs parameter ", runs)
+	c.VerboseOut("canonicalise.go: starting arithmetic canonicalisation with runs parameter ", CANONICALISER_SHIFTING_PATTERN_RUNS)
 
 	for i := 1; i < runs; i++ {
 
-		for j := 1; j < runs; j++ {
+		for j := 2; j < runs; j++ {
+			// start with index 2, no need for mul/div by 1 is already implemented using add/sub
 			// i -> shift, j -> constant
-			code = bindPatternToIR(code, changeShiftConstBf(BF__MUL_RIGHT, i, j), fmt.Sprintf(IR__MUL_RIGHT, i, j))
-			code = bindPatternToIR(code, changeShiftConstBf(BF__MUL_RIGHT_ALT, i, j), fmt.Sprintf(IR__MUL_RIGHT, i, j))
-
-			code = bindPatternToIR(code, changeShiftConstBf(BF__MUL_LEFT, i, j), fmt.Sprintf(IR__MUL_LEFT, i, j))
-			code = bindPatternToIR(code, changeShiftConstBf(BF__MUL_LEFT_ALT, i, j), fmt.Sprintf(IR__MUL_LEFT, i, j))
+			code = bindPatternToIR(code, changeShiftUpper(BF__MUL_RIGHT, i, j), fmt.Sprintf(IR__MUL_RIGHT, i, j))
+			code = bindPatternToIR(code, changeShiftUpper(BF__MUL_RIGHT_ALT, i, j), fmt.Sprintf(IR__MUL_RIGHT, i, j))
+			code = bindPatternToIR(code, changeShiftUpper(BF__MUL_LEFT, i, j), fmt.Sprintf(IR__MUL_LEFT, i, j))
+			code = bindPatternToIR(code, changeShiftUpper(BF__MUL_LEFT_ALT, i, j), fmt.Sprintf(IR__MUL_LEFT, i, j))
 		}
 
 		// patterns that add right

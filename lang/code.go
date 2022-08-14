@@ -8,13 +8,12 @@ import (
 )
 
 type Code struct {
-	Filepath         string
-	Inner            string
-	Context          *cli.Context
-	OLevel           int
-	startTime        time.Time
-	verboseOutBuffer string
-	DebugFiles       map[string]string
+	Filepath   string
+	Inner      string
+	Context    *cli.Context
+	OLevel     int
+	startTime  time.Time
+	DebugFiles map[string]string
 }
 
 func NewBfCode(c *cli.Context, filepath string) Code {

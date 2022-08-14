@@ -1,10 +1,27 @@
 {
-    "python.formatting.provider": "yapf",
     "cSpell.words": [
+        "bfcontext",
+        "bfexec",
+        "cout",
+        "iostream",
+        "Ofast",
+        "putc",
+        "ucli",
         "urfave"
     ],
-    "license.author": "baris-inandi",
     "licenser.projectName": "brainfuck",
     "licenser.author": "baris-inandi",
-    "licenser.license": "GPLv2"
+    "licenser.license": "GPLv3",
+    "files.associations": {
+        "LICENSE": "plaintext",
+        "*.i3": "i3",
+        ".SRCINFO": "plaintext",
+        "cstdint": "cpp",
+        "ostream": "cpp",
+        "stdio.h": "c",
+        "math.h": "c",
+        "floatn.h": "c",
+        "math-vector.h": "c",
+        "mathcalls-helper-functions.h": "c"
+    }
 }

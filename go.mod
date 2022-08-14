@@ -1,4 +1,4 @@
-module github.com/baris-inandi/brainfuck-go
+module github.com/baris-inandi/brainfuck
 
 go 1.17
 

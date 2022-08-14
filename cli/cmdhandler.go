@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	bfexec "github.com/baris-inandi/brainfuck/lang/exec"
@@ -17,6 +18,11 @@ func CmdHandler(c *ucli.Context) error {
 		c := bfexec.Interpret(c, f)
 		c.VerboseOut("cmdhandler.go: interpret job exited in")
 	} else {
+		if f == "" {
+			fmt.Println("No input files")
+			fmt.Println("Use brainfuck --help for usage")
+			os.Exit(0)
+		}
 		c := bfexec.Compile(c, f)
 		c.VerboseOut("cmdhandler.go: compile job exited in")
 	}

@@ -2,7 +2,6 @@ package exec
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/baris-inandi/brainfuck/lang"
 	"github.com/baris-inandi/brainfuck/lang/exec/compiler"
@@ -12,11 +11,6 @@ import (
 
 func Compile(ctx *cli.Context, filepath string) lang.Code {
 	c := lang.NewBfCode(ctx, filepath)
-	if filepath == "" {
-		fmt.Println("No input files")
-		fmt.Println("Use brainfuck --help for usage")
-		os.Exit(0)
-	}
 	c.VerboseOut("exec.go: using run mode compile")
 	if ctx.Bool("debug") {
 		c.VerboseOut("exec.go: running compiler in debug mode")

@@ -32,6 +32,7 @@ func Flags() []c.Flag {
 		&c.BoolFlag{Name: "d-print-ir-filepath", Usage: "Dump temporary IR filepath, use -d-keep-temp to keep them from being deleted"},
 		&c.BoolFlag{Name: "d-print-compile-command", Usage: "Print C IR compiler command"},
 		&c.BoolFlag{Name: "verbose", Aliases: []string{"v"}, Usage: "Print verbose output"},
-		&c.BoolFlag{Name: "debug", Aliases: []string{"d"}, Usage: "Produce debug output, overrides -o"}, // TODO: create a mandelbrot-123123123 directory and dump IR, OPTIMIZED BF, BINARY inside
+		&c.BoolFlag{Name: "debug", Aliases: []string{"d"}, Usage: "Produce debug output, overrides -o"},
+		&c.BoolFlag{Name: "time", Aliases: []string{"t"}, Usage: "Prints out execution time before exiting"},
 	}
 }

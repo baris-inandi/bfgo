@@ -10,7 +10,7 @@ import (
 )
 
 func GenerateIntermediateRepresentation(c lang.Code) string {
-	// transforms brainfuck code to intermediate representation and returns a string
+	// transforms brainfuck code to intermediate representation
 	if c.Inner == "" {
 		return ""
 	}
@@ -20,8 +20,10 @@ func GenerateIntermediateRepresentation(c lang.Code) string {
 	repSymbolCount := uint16(1)
 	inLiteral := false
 	skipChars := 0
+	c.AddDebugFile("SOURCE.b", c.Inner)
 	if c.OLevel == 3 {
 		c = optimizer.Optimize(c)
+		c.AddDebugFile("SOURCE-OPTIMIZED.b", c.Inner)
 	}
 	c.Inner += "\n"
 	for idx, char := range c.Inner {
@@ -87,5 +89,6 @@ func GenerateIntermediateRepresentation(c lang.Code) string {
 	if c.Context.Bool("d-dump-ir") {
 		fmt.Println(intermediate)
 	}
+	c.AddDebugFile("IR.c", intermediate)
 	return intermediate
 }

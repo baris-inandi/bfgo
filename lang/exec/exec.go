@@ -18,6 +18,11 @@ func Compile(ctx *cli.Context, filepath string) lang.Code {
 		os.Exit(0)
 	}
 	c.VerboseOut("exec.go: using run mode compile")
+	if ctx.Bool("debug") {
+		c.VerboseOut("exec.go: running compiler in debug mode")
+		compiler.CompileCodeIntoFileDebug(c)
+		return c
+	}
 	compiler.CompileCodeIntoFile(c)
 	return c
 }

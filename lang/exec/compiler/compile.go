@@ -6,16 +6,15 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
-	"path"
 	"path/filepath"
 	"strings"
 
 	"github.com/baris-inandi/brainfuck/lang"
 )
 
-func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile string) {
+func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile string) string {
 	if intermediate == "" {
-		return
+		return ""
 	}
 
 	// generate temp ir file
@@ -30,8 +29,6 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 	if c.Context.Bool("d-print-ir-filepath") {
 		fmt.Println(f.Name())
 	}
-
-	tempDir := (path.Dir(f.Name()))
 
 	// compile
 	ircstdout := &bytes.Buffer{}
@@ -56,7 +53,11 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 	irccmd := exec.Command("bash", "-c", compileCommand)
 	irccmd.Stderr = ircstderr
 	irccmd.Stdout = ircstdout
-	irccmd.Dir = tempDir
+	wd, err := os.Getwd()
+	if err != nil {
+		fmt.Println(err)
+	}
+	irccmd.Dir = wd
 	c.VerboseOut("compile.go: stdout for compile command is: ", ircstdout.String())
 	if !c.Context.Bool("compile-only") {
 		err = irccmd.Run()
@@ -68,11 +69,12 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 	if c.OLevel == 3 && !c.Context.Bool("compile-only") {
 		stripstdout := &bytes.Buffer{}
 		stripstderr := &bytes.Buffer{}
+		c.VerboseOut("compile.go: stripping binary at ", outFile)
 		stripCommand := fmt.Sprintf("strip --strip-unneeded %s", outFile)
 		stripcmd := exec.Command("bash", "-c", stripCommand)
 		stripcmd.Stderr = stripstderr
 		stripcmd.Stdout = stripstdout
-		stripcmd.Dir = filepath.Dir(outFile)
+		stripcmd.Dir = wd
 		err = stripcmd.Run()
 		if err != nil {
 			fmt.Println("WARN: Cannot strip binary\n", err)
@@ -86,7 +88,11 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 
 	if c.Context.Bool("run") {
 		c.VerboseOut("compile.go: running binary at ", outFile)
-		cmd := exec.Command("bash", "-c", outFile)
+		abs, err := filepath.Abs(outFile)
+		if err != nil {
+			fmt.Println(err)
+		}
+		cmd := exec.Command("bash", "-c", abs)
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
@@ -101,6 +107,8 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 		c.VerboseOut("compile.go: removing temporary IR file at ", f.Name())
 		os.Remove(f.Name())
 	}
+
+	return outFile
 }
 
 func generateOutFile(c lang.Code) string {
@@ -108,20 +116,19 @@ func generateOutFile(c lang.Code) string {
 	fileIn := c.Filepath
 	specifiedName := c.Context.Path("output")
 
-	path, _ := os.Getwd()
-	outNoWd := ""
+	out := ""
 	if specifiedName == "" {
 		fileInNameSplit := strings.Split(fileIn, "/")
 		fileInName := fileInNameSplit[len(fileInNameSplit)-1]
 		fileInNameDotSplit := strings.Split(fileInName, ".")
-		outNoWd = fileInNameDotSplit[0]
+		out = fileInNameDotSplit[0]
 	} else {
-		outNoWd = specifiedName
+		out = specifiedName
 	}
-	return filepath.Join(path, outNoWd)
+	return filepath.Join(out)
 }
 
-func CompileCodeIntoFile(c lang.Code) {
+func CompileCodeIntoFile(c lang.Code) string {
 	/*
 		compiles code, a brainfuck string to a binary
 		where fileOut is the name of the output file.
@@ -148,4 +155,5 @@ func CompileCodeIntoFile(c lang.Code) {
 		o, // output binary path
 	)
 	c.VerboseOut("compile.go: finished compilation")
+	return o
 }

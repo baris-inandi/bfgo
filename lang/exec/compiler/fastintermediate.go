@@ -49,5 +49,6 @@ func FastGenerateIntermediateRepresentation(c lang.Code) string {
 	if c.Context.Bool("d-dump-ir") {
 		fmt.Println(intermediate)
 	}
+	c.AddDebugFile("IR.c", intermediate)
 	return intermediate
 }

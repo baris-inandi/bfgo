@@ -1,7 +1,6 @@
 package lang
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/baris-inandi/brainfuck/lang/readcode"
@@ -14,18 +13,8 @@ type Code struct {
 	Context          *cli.Context
 	OLevel           int
 	startTime        time.Time
-	VerboseOutBuffer string
-}
-
-func (c *Code) VerboseOut(s ...interface{}) {
-	if c.Context.Bool("debug") || c.Context.Bool("verbose") {
-		elapsedTime := time.Since(c.startTime).Milliseconds()
-		out := fmt.Sprint(s...) + fmt.Sprintf(" [%dms]", elapsedTime)
-		c.VerboseOutBuffer += out
-		if c.Context.Bool("verbose") {
-			fmt.Println(out)
-		}
-	}
+	verboseOutBuffer string
+	DebugFiles       map[string]string
 }
 
 func NewBfCode(c *cli.Context, filepath string) Code {
@@ -38,10 +27,11 @@ func NewBfCode(c *cli.Context, filepath string) Code {
 		oLevel = 2
 	}
 	return Code{
-		Filepath:  filepath,
-		Inner:     readcode.ReadBrainfuck(filepath),
-		Context:   c,
-		OLevel:    oLevel,
-		startTime: time.Now(),
+		Filepath:   filepath,
+		Inner:      readcode.ReadBrainfuck(filepath),
+		Context:    c,
+		OLevel:     oLevel,
+		startTime:  time.Now(),
+		DebugFiles: map[string]string{},
 	}
 }

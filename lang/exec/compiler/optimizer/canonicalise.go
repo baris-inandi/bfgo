@@ -42,7 +42,7 @@ func canonicalise(c lang.Code) lang.Code {
 	const BF__SUB_RIGHT_ALT = "[>-<-]"
 	const BF__SUB_LEFT = "[-<->]"
 	const BF__SUB_LEFT_ALT = "[<->-]"
-	// %s -> mult
+	// %s -> multiplier * "+"
 	const BF__MUL_LEFT = "[-<%s>]"
 	const BF__MUL_LEFT_ALT = "[<%s>-]"
 	const BF__MUL_RIGHT = "[->%s<]"

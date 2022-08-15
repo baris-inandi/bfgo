@@ -41,41 +41,41 @@ func GenerateIntermediateRepresentation(c lang.Code) string {
 			char == '<' ||
 			char == '>') {
 			repSymbolCount += 1
-		} else {
-			rep := strconv.Itoa(int(repSymbolCount))
-			switch prevChar {
-			case '<':
-				intermediate += ("p-=" + rep + ";")
-			case '>':
-				intermediate += ("p+=" + rep + ";")
-			case '+':
-				intermediate += ("*p+=" + rep + ";")
-			case '-':
-				intermediate += ("*p-=" + rep + ";")
-			case '.':
-				intermediate += ("putc(*p, stdout);")
-			case ',':
-				intermediate += ("*p=getchar();")
-			case '[':
-				depth++
-				intermediate += ("while (*p){")
-			case ']':
-				depth--
-				intermediate += ("};")
-			case optimizer.IR_LITERAL_START:
-				i := idx
-				current := string(c.Inner[i])
-				literal := ""
-				for current != string(optimizer.IR_LITERAL_END) {
-					i++
-					literal += current
-					current = string(c.Inner[i])
-				}
-				intermediate += literal
-				skipChars += len(literal)
-			}
-			repSymbolCount = 1
+			continue
 		}
+		rep := strconv.Itoa(int(repSymbolCount))
+		switch prevChar {
+		case '<':
+			intermediate += ("p-=" + rep + ";")
+		case '>':
+			intermediate += ("p+=" + rep + ";")
+		case '+':
+			intermediate += ("*p+=" + rep + ";")
+		case '-':
+			intermediate += ("*p-=" + rep + ";")
+		case '.':
+			intermediate += ("putc(*p, stdout);")
+		case ',':
+			intermediate += ("*p=getchar();")
+		case '[':
+			depth++
+			intermediate += ("while (*p){")
+		case ']':
+			depth--
+			intermediate += ("};")
+		case optimizer.IR_LITERAL_START:
+			i := idx
+			current := string(c.Inner[i])
+			literal := ""
+			for current != string(optimizer.IR_LITERAL_END) {
+				i++
+				literal += current
+				current = string(c.Inner[i])
+			}
+			intermediate += literal
+			skipChars += len(literal)
+		}
+		repSymbolCount = 1
 		prevChar = char
 	}
 	if depth > 0 {

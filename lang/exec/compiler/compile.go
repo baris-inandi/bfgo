@@ -58,7 +58,6 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 		fmt.Println(err)
 	}
 	irccmd.Dir = wd
-	c.VerboseOut("compile.go: stdout for compile command is: ", ircstdout.String())
 	if !c.Context.Bool("compile-only") {
 		err = irccmd.Run()
 	}

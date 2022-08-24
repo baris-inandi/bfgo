@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func matchLoopIndices(index int, code string) (int, int, string) {
+func MatchLoopIndices(index int, code string) (int, int, string) {
 	/*
 		func matchLoopIndices
 			returns the start and end indices of a loop expression
@@ -62,7 +62,7 @@ func (ctx *BfContext) EvalExprContextually(code string) {
 				fmt.Scanln(&bfIn)
 				ctx.tape[ctx.ptr] = bfIn
 			case "[":
-				startIndex, endIndex, loopExpr := matchLoopIndices(index, code)
+				startIndex, endIndex, loopExpr := MatchLoopIndices(index, code)
 				skipCount := endIndex - startIndex
 				if ctx.tape[ctx.ptr] != 0 {
 					for ctx.tape[ctx.ptr] > 0 {

@@ -34,5 +34,9 @@ func Flags() []c.Flag {
 		&c.BoolFlag{Name: "verbose", Aliases: []string{"v"}, Usage: "Print verbose output"},
 		&c.BoolFlag{Name: "debug", Aliases: []string{"d"}, Usage: "Produce debug output, overrides -o"},
 		&c.BoolFlag{Name: "time", Aliases: []string{"t"}, Usage: "Prints out execution time before exiting"},
+
+		// utils
+		&c.BoolFlag{Name: "fmt", Usage: "Format code (omits comments)"},
+		&c.BoolFlag{Name: "minify", Usage: "Minify code"},
 	}
 }

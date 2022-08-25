@@ -1,4 +1,4 @@
-package optimizer
+package canonicalizer
 
 // addition
 const BF__ADD_LEFT = "[-<+>]"

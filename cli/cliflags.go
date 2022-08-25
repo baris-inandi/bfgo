@@ -9,6 +9,7 @@ func Flags() []c.Flag {
 		&c.BoolFlag{Name: "run", Aliases: []string{"r"}, Usage: "Immediately run binary after compilation"},
 		&c.PathFlag{Name: "output", Aliases: []string{"o"}, Usage: "Specify output binary"},
 		&c.BoolFlag{Name: "compile-only", Aliases: []string{"C"}, Usage: "Only compile, do not output a binary"},
+		&c.BoolFlag{Name: "jvm", Usage: "Compile to JVM bytecode"},
 
 		// optimizations
 		&c.BoolFlag{Name: "o-compile", Aliases: []string{"F"}, Usage: "Disable optimizations and use fast compiler: fast compile time, slow execution"},

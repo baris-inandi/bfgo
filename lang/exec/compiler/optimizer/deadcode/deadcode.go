@@ -1,10 +1,10 @@
-package optimizer
+package deadcode
 
 import (
 	"github.com/baris-inandi/brainfuck/lang"
 )
 
-func removeUnusedLeading(c lang.Code) lang.Code {
+func RemoveLeadingDeadcode(c lang.Code) lang.Code {
 	code := c.Inner
 	// remove until last [ ] . or ,
 	// leading <>+- operators have no effect on output

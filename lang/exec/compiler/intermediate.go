@@ -7,6 +7,7 @@ import (
 
 	"github.com/baris-inandi/brainfuck/lang"
 	"github.com/baris-inandi/brainfuck/lang/exec/compiler/optimizer"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/optimizer/irliteral"
 )
 
 func GenerateIntermediateRepresentation(c lang.Code) string {
@@ -32,7 +33,7 @@ func GenerateIntermediateRepresentation(c lang.Code) string {
 			continue
 		}
 		if inLiteral {
-			if prevChar != optimizer.IR_LITERAL_START {
+			if prevChar != irliteral.IR_LITERAL_START {
 				intermediate += string(prevChar)
 			}
 		}
@@ -63,11 +64,11 @@ func GenerateIntermediateRepresentation(c lang.Code) string {
 		case ']':
 			depth--
 			intermediate += ("};")
-		case optimizer.IR_LITERAL_START:
+		case irliteral.IR_LITERAL_START:
 			i := idx
 			current := string(c.Inner[i])
 			literal := ""
-			for current != string(optimizer.IR_LITERAL_END) {
+			for current != string(irliteral.IR_LITERAL_END) {
 				i++
 				literal += current
 				current = string(c.Inner[i])

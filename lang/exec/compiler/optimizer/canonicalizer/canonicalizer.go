@@ -1,17 +1,16 @@
-package optimizer
+package canonicalizer
 
 import (
 	"fmt"
 	"strings"
 
 	"github.com/baris-inandi/brainfuck/lang"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/optimizer/irliteral"
 )
 
-const CANONICALISER_SHIFTING_PATTERN_RUNS = 16
-const IR_LITERAL_START = '~'
-const IR_LITERAL_END = '`'
+const CANONICALIZER_SHIFTING_PATTERN_RUNS = 16
 
-func canonicalise(c lang.Code) lang.Code {
+func Canonicalize(c lang.Code) lang.Code {
 	code := c.Inner
 	bindingDebugString := ""
 
@@ -36,16 +35,16 @@ func canonicalise(c lang.Code) lang.Code {
 		if c.IsDebugging {
 			bindingDebugString += pattern + "  " + ir + "\n"
 		}
-		return strings.ReplaceAll(code, pattern, string(IR_LITERAL_START)+ir+string(IR_LITERAL_END))
+		return strings.ReplaceAll(code, pattern, string(irliteral.IR_LITERAL_START)+ir+string(irliteral.IR_LITERAL_END))
 	}
 
 	// constant patterns, no shift
 	code = bindPatternToIR(code, "[-]", "*p=0;")
 
 	// a section where `runs` changes the shift of operation
-	runs := CANONICALISER_SHIFTING_PATTERN_RUNS + 1
+	runs := CANONICALIZER_SHIFTING_PATTERN_RUNS + 1
 
-	c.VerboseOut("canonicalise.go: starting arithmetic canonicalisation with runs parameter ", CANONICALISER_SHIFTING_PATTERN_RUNS)
+	c.VerboseOut("canonicalize.go: starting arithmetic canonicalisation with runs parameter ", CANONICALIZER_SHIFTING_PATTERN_RUNS)
 
 	for i := 1; i < runs; i++ {
 

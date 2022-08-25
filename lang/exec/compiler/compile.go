@@ -9,16 +9,18 @@ import (
 	"strings"
 
 	"github.com/baris-inandi/brainfuck/lang"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/compiler_utils/compile_command"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/compiler_utils/strip"
 	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/intermediate"
 )
 
-func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile string) string {
+func compileIntermediateIntoFile(c *lang.Code, intermediate string, outFile string) string {
 	if intermediate == "" {
 		return ""
 	}
 
 	// generate temp ir file
-	f, _ := os.CreateTemp("", "baris-inandi__brainfuck_go_*.c")
+	f, _ := os.CreateTemp("", "baris-inandi__brainfuck_go_*."+c.CompileTarget)
 	err := os.WriteFile(f.Name(), []byte(intermediate), 0644)
 	if err != nil {
 		fmt.Print(err)
@@ -33,29 +35,14 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 	// compile
 	ircstdout := &bytes.Buffer{}
 	ircstderr := &bytes.Buffer{}
-	optimizeFlag := ""
-	if c.OLevel == 1 {
-		optimizeFlag = "-O0"
-	} else if c.OLevel == 2 {
-		optimizeFlag = "-O1"
-	} else if c.OLevel == 3 {
-		optimizeFlag = "-Ofast"
-	}
-	compiler := "gcc"
-	if c.Context.Bool("clang") {
-		compiler = "clang"
-	}
-	compileCommand := fmt.Sprintf("%s %s %s -o %s %s", compiler, c.Context.String("c-compiler-flags"), optimizeFlag, outFile, f.Name())
-	c.VerboseOut("compile.go: generated compile command for IR: ", compileCommand)
-	if c.Context.Bool("d-print-compile-command") {
-		fmt.Println(compileCommand)
-	}
+	compileCommand := compile_command.GenerateCompileCommand(c, outFile, f)
 	irccmd := exec.Command("bash", "-c", compileCommand)
 	irccmd.Stderr = ircstderr
 	irccmd.Stdout = ircstdout
 	wd, err := os.Getwd()
 	if err != nil {
 		fmt.Println(err)
+		os.Exit(1)
 	}
 	irccmd.Dir = wd
 	if !c.Context.Bool("compile-only") {
@@ -65,19 +52,9 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 		fmt.Println("Brainfuck Compilation Error:\nERROR: ", ircstderr.String())
 	}
 
-	if c.OLevel == 3 && !c.Context.Bool("compile-only") {
-		stripstdout := &bytes.Buffer{}
-		stripstderr := &bytes.Buffer{}
+	if c.OLevel == 3 && !c.Context.Bool("compile-only") && !c.Context.Bool("jvm") {
 		c.VerboseOut("compile.go: stripping binary at ", outFile)
-		stripCommand := fmt.Sprintf("strip --strip-unneeded %s", outFile)
-		stripcmd := exec.Command("bash", "-c", stripCommand)
-		stripcmd.Stderr = stripstderr
-		stripcmd.Stdout = stripstdout
-		stripcmd.Dir = wd
-		err = stripcmd.Run()
-		if err != nil {
-			fmt.Println("WARN: Cannot strip binary\n", err)
-		}
+		strip.Strip(outFile, wd)
 		c.VerboseOut("compile.go: stripped binary: ", outFile)
 	}
 
@@ -87,9 +64,14 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 
 	if c.Context.Bool("run") {
 		c.VerboseOut("compile.go: running binary at ", outFile)
-		abs, err := filepath.Abs(outFile)
-		if err != nil {
-			fmt.Println(err)
+		var abs string
+		if c.UsingJVM() {
+			abs = "java " + c.GetClassName()
+		} else {
+			abs, err = filepath.Abs(outFile)
+			if err != nil {
+				fmt.Println(err)
+			}
 		}
 		cmd := exec.Command("bash", "-c", abs)
 		cmd.Stdin = os.Stdin
@@ -111,7 +93,6 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 }
 
 func generateOutFile(c lang.Code) string {
-
 	fileIn := c.Filepath
 	specifiedName := c.Context.Path("output")
 
@@ -145,11 +126,16 @@ func CompileCodeIntoFile(c lang.Code) string {
 		ir = intermediate.GenerateIntermediateRepresentation(c)
 	}
 
-	o := generateOutFile(c)
+	var o string
+	if c.UsingJVM() {
+		o = c.GetClassName() + ".class"
+	} else {
+		o = generateOutFile(c)
+	}
 	c.VerboseOut("compile.go: output file is ", o)
 
 	compileIntermediateIntoFile(
-		c,
+		&c,
 		ir,
 		o, // output binary path
 	)

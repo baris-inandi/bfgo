@@ -14,7 +14,9 @@ func toValidClassName(in string) string {
 	split1 := strings.Split(in, "/")
 	split1out := split1[len(split1)-1]
 	split2 := strings.Split(split1out, "\\")
-	s := split2[len(split2)-1]
+	filename := split2[len(split2)-1]
+	split3 := strings.Split(filename, ".")
+	s := split3[0]
 	reg, _ := regexp.Compile("[^a-zA-Z0-9]+")
 	valid := reg.ReplaceAllString(s, "")
 	if valid == "" {

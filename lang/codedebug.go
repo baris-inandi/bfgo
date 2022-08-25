@@ -2,7 +2,7 @@ package lang
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"time"
 )
@@ -21,7 +21,7 @@ func (c *Code) VerboseOut(s ...interface{}) {
 }
 
 func (c *Code) AddDebugFile(filename string, content string) {
-	if c.Context.Bool("debug") {
+	if c.IsDebugging {
 		c.DebugFiles[filename] = content
 	}
 }
@@ -29,7 +29,7 @@ func (c *Code) AddDebugFile(filename string, content string) {
 func (c *Code) WriteDebugFiles(basepath string) {
 	c.AddDebugFile("VERBOSE-OUT", verboseOutBuffer)
 	for k, v := range c.DebugFiles {
-		err := ioutil.WriteFile(
+		err := os.WriteFile(
 			filepath.Join(basepath, k),
 			[]byte(v), 0644)
 		if err != nil {

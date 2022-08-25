@@ -2,7 +2,6 @@ package readcode
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -29,7 +28,7 @@ func ReadBrainfuck(f string) string {
 			removes all non-brainfuck characters,
 			returns valid brainfuck code
 	*/
-	fileBytes, err := ioutil.ReadFile(f)
+	fileBytes, err := os.ReadFile(f)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

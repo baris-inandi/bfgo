@@ -25,6 +25,7 @@ func canonicalise(c lang.Code) lang.Code {
 			"<", strings.Repeat("<", amount))
 	}
 	changeShiftUpper := func(loop string, shift int, constant int) string {
+		// changeShiftBf for multiplication by constants
 		return strings.ReplaceAll(
 			strings.ReplaceAll(
 				fmt.Sprintf(loop, strings.Repeat("+", constant)),
@@ -32,7 +33,9 @@ func canonicalise(c lang.Code) lang.Code {
 			"<", strings.Repeat("<", shift))
 	}
 	bindPatternToIR := func(code string, pattern string, ir string) string {
-		bindingDebugString += pattern + "  " + ir + "\n"
+		if c.IsDebugging {
+			bindingDebugString += pattern + "  " + ir + "\n"
+		}
 		return strings.ReplaceAll(code, pattern, string(IR_LITERAL_START)+ir+string(IR_LITERAL_END))
 	}
 

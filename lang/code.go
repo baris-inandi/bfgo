@@ -8,12 +8,13 @@ import (
 )
 
 type Code struct {
-	Filepath   string
-	Inner      string
-	Context    *cli.Context
-	OLevel     int
-	startTime  time.Time
-	DebugFiles map[string]string
+	Filepath    string
+	Inner       string
+	Context     *cli.Context
+	OLevel      int
+	startTime   time.Time
+	DebugFiles  map[string]string
+	IsDebugging bool
 }
 
 func NewBfCode(c *cli.Context, filepath string) Code {
@@ -26,11 +27,12 @@ func NewBfCode(c *cli.Context, filepath string) Code {
 		oLevel = 2
 	}
 	return Code{
-		Filepath:   filepath,
-		Inner:      readcode.ReadBrainfuck(filepath),
-		Context:    c,
-		OLevel:     oLevel,
-		startTime:  time.Now(),
-		DebugFiles: map[string]string{},
+		Filepath:    filepath,
+		Inner:       readcode.ReadBrainfuck(filepath),
+		Context:     c,
+		OLevel:      oLevel,
+		startTime:   time.Now(),
+		DebugFiles:  map[string]string{},
+		IsDebugging: c.Bool("debug"),
 	}
 }

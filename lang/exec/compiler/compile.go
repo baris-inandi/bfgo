@@ -3,7 +3,6 @@ package compiler
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -19,7 +18,7 @@ func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile strin
 
 	// generate temp ir file
 	f, _ := os.CreateTemp("", "baris-inandi__brainfuck_go_*.c")
-	err := ioutil.WriteFile(f.Name(), []byte(intermediate), 0644)
+	err := os.WriteFile(f.Name(), []byte(intermediate), 0644)
 	if err != nil {
 		fmt.Print(err)
 		fmt.Println("Brainfuck Error: Could not write temporary file.")

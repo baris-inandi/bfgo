@@ -23,8 +23,10 @@ func CmdHandler(c *ucli.Context) error {
 	}
 	if c.Bool("minify") {
 		bffmt.MinifyFile(c.Args().Slice()...)
+		os.Exit(0)
 	} else if c.Bool("fmt") {
 		bffmt.FormatFile(c.Args().Slice()...)
+		os.Exit(0)
 	}
 	for _, f := range c.Args().Slice() {
 		if c.Bool("interpret") {

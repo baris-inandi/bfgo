@@ -15,6 +15,9 @@ func canonicalise(c lang.Code) lang.Code {
 	code := c.Inner
 	bindingDebugString := ""
 
+	code = strings.ReplaceAll(code, "+-", "")
+	code = strings.ReplaceAll(code, "-+", "")
+
 	changeShiftBf := func(loop string, amount int) string {
 		// [->+<] -> [->>>+<<<] ; where amount is 3
 		return strings.ReplaceAll(

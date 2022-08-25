@@ -1,9 +1,9 @@
 package lang
 
 func (c *Code) UseJVM() {
-	c.compileTarget = "jvm"
+	c.CompileTarget = "java"
 }
 
 func (c *Code) UsingJVM() bool {
-	return c.compileTarget == "jvm"
+	return c.CompileTarget == "java"
 }

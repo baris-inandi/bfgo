@@ -9,6 +9,7 @@ func Flags() []c.Flag {
 		&c.BoolFlag{Name: "run", Aliases: []string{"r"}, Usage: "Immediately run binary after compilation"},
 		&c.PathFlag{Name: "output", Aliases: []string{"o"}, Usage: "Specify output binary"},
 		&c.BoolFlag{Name: "compile-only", Aliases: []string{"C"}, Usage: "Only compile, do not output a binary"},
+		&c.BoolFlag{Name: "clang", Usage: "Use clang instead of default gcc"},
 		&c.BoolFlag{Name: "jvm", Usage: "Compile to JVM bytecode"},
 
 		// optimizations
@@ -20,12 +21,11 @@ func Flags() []c.Flag {
 		&c.BoolFlag{Name: "interpret", Usage: "Interpret file instead of compiling"},
 		&c.BoolFlag{Name: "repl", Usage: "Start a read-eval-print loop"},
 
-		// C IR related options
-		&c.BoolFlag{Name: "clang", Usage: "Use clang instead of default gcc"},
-		&c.StringFlag{Name: "c-compiler-flags", Usage: "Pass arbitrary flags to the C compiler"},
-		&c.Int64Flag{Name: "c-tape-size", Value: 30000, Usage: "64-bit integer to specify length of brainfuck tape"},
+		// IR related options
+		&c.StringFlag{Name: "c-compiler-flags", Usage: "Pass arbitrary flags to the compiler (gcc, clang or javac)"},
+		&c.Int64Flag{Name: "c-tape-size", Value: 30000, Usage: "Integer to specify length of brainfuck tape"},
 		&c.IntFlag{Name: "c-tape-init", Value: 0, Usage: "Integer value used to initialize all elements in brainfuck tape"},
-		&c.StringFlag{Name: "c-cell-type", Value: "int", Usage: "C type used in brainfuck tape in intermediate representation"},
+		&c.StringFlag{Name: "c-cell-type", Value: "int", Usage: "Type used for brainfuck tape in intermediate representation"},
 
 		// debug options
 		&c.BoolFlag{Name: "d-dump-ir", Usage: "Dump intermediate representation"},

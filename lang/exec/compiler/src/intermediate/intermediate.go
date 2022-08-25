@@ -1,13 +1,14 @@
-package compiler
+package intermediate
 
 import (
 	"fmt"
 	"os"
-	"strconv"
 
 	"github.com/baris-inandi/brainfuck/lang"
-	"github.com/baris-inandi/brainfuck/lang/exec/compiler/optimizer"
-	"github.com/baris-inandi/brainfuck/lang/exec/compiler/optimizer/irliteral"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/boilerplate"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/boilerplate/ir_constants"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/optimizer"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/optimizer/irliteral"
 )
 
 func GenerateIntermediateRepresentation(c lang.Code) string {
@@ -44,26 +45,25 @@ func GenerateIntermediateRepresentation(c lang.Code) string {
 			repSymbolCount += 1
 			continue
 		}
-		rep := strconv.Itoa(int(repSymbolCount))
 		switch prevChar {
 		case '<':
-			intermediate += ("p-=" + rep + ";")
+			intermediate += fmt.Sprintf(ir_constants.ResolveCompileTargetIR(&c, "LEFT_ANGLE_REP"), repSymbolCount)
 		case '>':
-			intermediate += ("p+=" + rep + ";")
+			intermediate += fmt.Sprintf(ir_constants.ResolveCompileTargetIR(&c, "RIGHT_ANGLE_REP"), repSymbolCount)
 		case '+':
-			intermediate += ("*p+=" + rep + ";")
+			intermediate += fmt.Sprintf(ir_constants.ResolveCompileTargetIR(&c, "PLUS_REP"), repSymbolCount)
 		case '-':
-			intermediate += ("*p-=" + rep + ";")
+			intermediate += fmt.Sprintf(ir_constants.ResolveCompileTargetIR(&c, "MINUS_REP"), repSymbolCount)
 		case '.':
-			intermediate += ("putc(*p, stdout);")
+			intermediate += ir_constants.ResolveCompileTargetIR(&c, ".")
 		case ',':
-			intermediate += ("*p=getchar();")
+			intermediate += ir_constants.ResolveCompileTargetIR(&c, ",")
 		case '[':
 			depth++
-			intermediate += ("while (*p){")
+			intermediate += ir_constants.ResolveCompileTargetIR(&c, "[")
 		case ']':
 			depth--
-			intermediate += ("};")
+			intermediate += ir_constants.ResolveCompileTargetIR(&c, "]")
 		case irliteral.IR_LITERAL_START:
 			i := idx
 			current := string(c.Inner[i])
@@ -86,10 +86,10 @@ func GenerateIntermediateRepresentation(c lang.Code) string {
 		fmt.Println("Syntax error: Unmatched ]")
 		os.Exit(1)
 	}
-	intermediate = SprintfIR(intermediate, c)
+	intermediate = boilerplate.GenerateIRBoilerplate(intermediate, c)
 	if c.Context.Bool("d-dump-ir") {
 		fmt.Println(intermediate)
 	}
-	c.AddDebugFile("IR.c", intermediate)
+	c.AddDebugFile("IR."+c.CompileTarget, intermediate)
 	return intermediate
 }

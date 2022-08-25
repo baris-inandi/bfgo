@@ -15,10 +15,10 @@ type Code struct {
 	startTime     time.Time
 	DebugFiles    map[string]string
 	IsDebugging   bool
-	compileTarget string
+	CompileTarget string
 	// compileTarget
-	// "c-bin" -> binary using gcc/clang
-	// "jvm" -> class file using java
+	// "c" 		-> binary using gcc/clang
+	// "java" 	-> class file using javac
 }
 
 func NewBfCode(c *cli.Context, filepath string) Code {
@@ -38,6 +38,6 @@ func NewBfCode(c *cli.Context, filepath string) Code {
 		startTime:     time.Now(),
 		DebugFiles:    map[string]string{},
 		IsDebugging:   c.Bool("debug"),
-		compileTarget: "c-bin",
+		CompileTarget: "c",
 	}
 }

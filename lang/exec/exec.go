@@ -11,6 +11,10 @@ import (
 
 func Compile(ctx *cli.Context, filepath string) lang.Code {
 	c := lang.NewBfCode(ctx, filepath)
+	if c.Context.Bool("jvm") {
+		c.VerboseOut("exec.go: running compiler with JVM compile target")
+		c.UseJVM()
+	}
 	c.VerboseOut("exec.go: using run mode compile")
 	if ctx.Bool("debug") {
 		c.VerboseOut("exec.go: running compiler in debug mode")

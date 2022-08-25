@@ -2,8 +2,8 @@ package optimizer
 
 import (
 	"github.com/baris-inandi/brainfuck/lang"
-	"github.com/baris-inandi/brainfuck/lang/exec/compiler/optimizer/canonicalizer"
-	"github.com/baris-inandi/brainfuck/lang/exec/compiler/optimizer/deadcode"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/optimizer/canonicalizer"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/optimizer/deadcode"
 )
 
 func Optimize(c lang.Code) lang.Code {

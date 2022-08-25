@@ -1,6 +1,13 @@
 {
     "configurations": [
         {
+            "type": "java",
+            "name": "Launch Brainfuck",
+            "request": "launch",
+            "mainClass": "Brainfuck",
+            "projectName": "brainfuck-go_8a820c43"
+        },
+        {
             "name": "C/C++: clang build and debug active file",
             "type": "cppdbg",
             "request": "launch",

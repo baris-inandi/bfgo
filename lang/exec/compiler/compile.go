@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/baris-inandi/brainfuck/lang"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/intermediate"
 )
 
 func compileIntermediateIntoFile(c lang.Code, intermediate string, outFile string) string {
@@ -138,10 +139,10 @@ func CompileCodeIntoFile(c lang.Code) string {
 	c.VerboseOut("compile.go: optimization level is ", c.OLevel)
 	if c.OLevel == 1 {
 		c.VerboseOut("compile.go: using fast IR generation")
-		ir = FastGenerateIntermediateRepresentation(c)
+		ir = intermediate.FastGenerateIntermediateRepresentation(c)
 	} else {
 		c.VerboseOut("compile.go: using optimizing IR generation")
-		ir = GenerateIntermediateRepresentation(c)
+		ir = intermediate.GenerateIntermediateRepresentation(c)
 	}
 
 	o := generateOutFile(c)

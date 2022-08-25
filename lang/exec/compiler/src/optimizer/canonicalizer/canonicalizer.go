@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/baris-inandi/brainfuck/lang"
-	"github.com/baris-inandi/brainfuck/lang/exec/compiler/optimizer/canonicalizer/canon_constants"
-	"github.com/baris-inandi/brainfuck/lang/exec/compiler/optimizer/irliteral"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/optimizer/canonicalizer/canon_constants"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/optimizer/irliteral"
 )
 
 const CANONICALIZER_SHIFTING_PATTERN_RUNS = 16
@@ -39,11 +39,11 @@ func Canonicalize(c lang.Code) lang.Code {
 		return strings.ReplaceAll(code, pattern, string(irliteral.IR_LITERAL_START)+ir+string(irliteral.IR_LITERAL_END))
 	}
 	resolveAndFormatIRFromKey := func(key string, format ...interface{}) string {
-		return fmt.Sprintf(canon_constants.ResolveCompileTargetIR(&c, key), format...)
+		return fmt.Sprintf(canon_constants.ResolveCompileTargetIRBinding(&c, key), format...)
 	}
 
 	// constant patterns, no shift
-	code = bindPatternToIR(code, "[-]", canon_constants.ResolveCompileTargetIR(&c, "IR__RESET_BYTE"))
+	code = bindPatternToIR(code, "[-]", canon_constants.ResolveCompileTargetIRBinding(&c, "IR__RESET_BYTE"))
 
 	// a section where `runs` changes the shift of operation
 	runs := CANONICALIZER_SHIFTING_PATTERN_RUNS + 1

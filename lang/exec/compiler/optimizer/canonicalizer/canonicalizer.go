@@ -44,7 +44,7 @@ func Canonicalize(c lang.Code) lang.Code {
 	// a section where `runs` changes the shift of operation
 	runs := CANONICALIZER_SHIFTING_PATTERN_RUNS + 1
 
-	c.VerboseOut("canonicalize.go: starting arithmetic canonicalisation with runs parameter ", CANONICALIZER_SHIFTING_PATTERN_RUNS)
+	c.VerboseOut("canonicalizer.go: starting arithmetic canonicalisation with runs parameter ", CANONICALIZER_SHIFTING_PATTERN_RUNS)
 
 	for i := 1; i < runs; i++ {
 

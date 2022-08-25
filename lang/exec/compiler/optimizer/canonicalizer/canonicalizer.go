@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/baris-inandi/brainfuck/lang"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/optimizer/canonicalizer/canon_constants"
 	"github.com/baris-inandi/brainfuck/lang/exec/compiler/optimizer/irliteral"
 )
 
@@ -37,9 +38,12 @@ func Canonicalize(c lang.Code) lang.Code {
 		}
 		return strings.ReplaceAll(code, pattern, string(irliteral.IR_LITERAL_START)+ir+string(irliteral.IR_LITERAL_END))
 	}
+	resolveAndFormatIRFromKey := func(key string, format ...interface{}) string {
+		return fmt.Sprintf(canon_constants.ResolveCompileTargetIR(&c, key), format...)
+	}
 
 	// constant patterns, no shift
-	code = bindPatternToIR(code, "[-]", "*p=0;")
+	code = bindPatternToIR(code, "[-]", canon_constants.ResolveCompileTargetIR(&c, "IR__RESET_BYTE"))
 
 	// a section where `runs` changes the shift of operation
 	runs := CANONICALIZER_SHIFTING_PATTERN_RUNS + 1
@@ -51,27 +55,27 @@ func Canonicalize(c lang.Code) lang.Code {
 		for j := 2; j < runs; j++ {
 			// start with index 2, no need for mul/div by 1 is already implemented using add/sub
 			// i -> shift, j -> constant
-			code = bindPatternToIR(code, changeShiftUpper(BF__MUL_RIGHT, i, j), fmt.Sprintf(IR__MUL_RIGHT, i, j))
-			code = bindPatternToIR(code, changeShiftUpper(BF__MUL_RIGHT_ALT, i, j), fmt.Sprintf(IR__MUL_RIGHT, i, j))
-			code = bindPatternToIR(code, changeShiftUpper(BF__MUL_LEFT, i, j), fmt.Sprintf(IR__MUL_LEFT, i, j))
-			code = bindPatternToIR(code, changeShiftUpper(BF__MUL_LEFT_ALT, i, j), fmt.Sprintf(IR__MUL_LEFT, i, j))
+			code = bindPatternToIR(code, changeShiftUpper(canon_constants.BF__MUL_RIGHT, i, j), resolveAndFormatIRFromKey("IR__MUL_RIGHT", i, j))
+			code = bindPatternToIR(code, changeShiftUpper(canon_constants.BF__MUL_RIGHT_ALT, i, j), resolveAndFormatIRFromKey("IR__MUL_RIGHT", i, j))
+			code = bindPatternToIR(code, changeShiftUpper(canon_constants.BF__MUL_LEFT, i, j), resolveAndFormatIRFromKey("IR__MUL_LEFT", i, j))
+			code = bindPatternToIR(code, changeShiftUpper(canon_constants.BF__MUL_LEFT_ALT, i, j), resolveAndFormatIRFromKey("IR__MUL_LEFT", i, j))
 		}
 
 		// patterns that add right
-		code = bindPatternToIR(code, changeShiftBf(BF__ADD_RIGHT, i), fmt.Sprintf(IR__ADD_RIGHT, i))
-		code = bindPatternToIR(code, changeShiftBf(BF__ADD_RIGHT_ALT, i), fmt.Sprintf(IR__ADD_RIGHT, i))
+		code = bindPatternToIR(code, changeShiftBf(canon_constants.BF__ADD_RIGHT, i), resolveAndFormatIRFromKey("IR__ADD_RIGHT", i))
+		code = bindPatternToIR(code, changeShiftBf(canon_constants.BF__ADD_RIGHT_ALT, i), resolveAndFormatIRFromKey("IR__ADD_RIGHT", i))
 
 		// patterns that add left
-		code = bindPatternToIR(code, changeShiftBf(BF__ADD_LEFT, i), fmt.Sprintf(IR__ADD_LEFT, i))
-		code = bindPatternToIR(code, changeShiftBf(BF__ADD_LEFT_ALT, i), fmt.Sprintf(IR__ADD_LEFT, i))
+		code = bindPatternToIR(code, changeShiftBf(canon_constants.BF__ADD_LEFT, i), resolveAndFormatIRFromKey("IR__ADD_LEFT", i))
+		code = bindPatternToIR(code, changeShiftBf(canon_constants.BF__ADD_LEFT_ALT, i), resolveAndFormatIRFromKey("IR__ADD_LEFT", i))
 
 		// patterns that subtract left
-		code = bindPatternToIR(code, changeShiftBf(BF__SUB_LEFT, i), fmt.Sprintf(IR__SUB_LEFT, i))
-		code = bindPatternToIR(code, changeShiftBf(BF__SUB_LEFT_ALT, i), fmt.Sprintf(IR__SUB_LEFT, i))
+		code = bindPatternToIR(code, changeShiftBf(canon_constants.BF__SUB_LEFT, i), resolveAndFormatIRFromKey("IR__SUB_LEFT", i))
+		code = bindPatternToIR(code, changeShiftBf(canon_constants.BF__SUB_LEFT_ALT, i), resolveAndFormatIRFromKey("IR__SUB_LEFT", i))
 
 		// patterns that subtract right
-		code = bindPatternToIR(code, changeShiftBf(BF__SUB_RIGHT, i), fmt.Sprintf(IR__SUB_RIGHT, i))
-		code = bindPatternToIR(code, changeShiftBf(BF__SUB_RIGHT_ALT, i), fmt.Sprintf(IR__SUB_RIGHT, i))
+		code = bindPatternToIR(code, changeShiftBf(canon_constants.BF__SUB_RIGHT, i), resolveAndFormatIRFromKey("IR__SUB_RIGHT", i))
+		code = bindPatternToIR(code, changeShiftBf(canon_constants.BF__SUB_RIGHT_ALT, i), resolveAndFormatIRFromKey("IR__SUB_RIGHT", i))
 
 	}
 	c.Inner = code

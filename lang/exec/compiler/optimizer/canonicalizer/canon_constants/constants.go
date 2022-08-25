@@ -1,4 +1,4 @@
-package canonicalizer
+package canon_constants
 
 // addition
 const BF__ADD_LEFT = "[-<+>]"
@@ -18,14 +18,3 @@ const BF__MUL_LEFT = "[-<%s>]"
 const BF__MUL_LEFT_ALT = "[<%s>-]"
 const BF__MUL_RIGHT = "[->%s<]"
 const BF__MUL_RIGHT_ALT = "[>%s<-]"
-
-// %d -> shift
-const IR__ADD_RIGHT = "*(p+%d)+=*p;*p=0;"
-const IR__ADD_LEFT = "*(p-%d)+=*p;*p=0;"
-const IR__SUB_RIGHT = "*(p+%d)-=*p;*p=0;"
-const IR__SUB_LEFT = "*(p-%d)-=*p;*p=0;"
-
-// %d -> shift
-// %d -> constant multiplier
-const IR__MUL_RIGHT = "*(p+%d)+=(*p)*%d;*p=0;"
-const IR__MUL_LEFT = "*(p-%d)+=(*p)*%d;*p=0;"

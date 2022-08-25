@@ -62,7 +62,7 @@ func compileIntermediateIntoFile(c *lang.Code, intermediate string, outFile stri
 		c.VerboseOut("compile.go: using -C, skipping output file")
 	}
 
-	if c.Context.Bool("run") {
+	if c.Context.Bool("run") && !c.UsingJS() {
 		c.VerboseOut("compile.go: running binary at ", outFile)
 		var abs string
 		if c.UsingJVM() {
@@ -102,6 +102,9 @@ func generateOutFile(c lang.Code) string {
 		fileInName := fileInNameSplit[len(fileInNameSplit)-1]
 		fileInNameDotSplit := strings.Split(fileInName, ".")
 		out = fileInNameDotSplit[0]
+		if c.UsingJS() {
+			out += ".js"
+		}
 	} else {
 		out = specifiedName
 	}
@@ -134,11 +137,18 @@ func CompileCodeIntoFile(c lang.Code) string {
 	}
 	c.VerboseOut("compile.go: output file is ", o)
 
-	compileIntermediateIntoFile(
-		&c,
-		ir,
-		o, // output binary path
-	)
+	if c.UsingJS() {
+		err := os.WriteFile(o, []byte(ir), 0644)
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else {
+		compileIntermediateIntoFile(
+			&c,
+			ir,
+			o, // output binary path
+		)
+	}
 	c.VerboseOut("compile.go: finished compilation")
 	return o
 }

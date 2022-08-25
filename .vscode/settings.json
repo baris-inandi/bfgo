@@ -10,6 +10,8 @@
         "iostream",
         "irliteral",
         "javac",
+        "JSIR",
+        "NODEIR",
         "Ofast",
         "putc",
         "ucli",

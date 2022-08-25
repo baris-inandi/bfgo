@@ -14,8 +14,10 @@ func Compile(ctx *cli.Context, filepath string) lang.Code {
 	if c.Context.Bool("jvm") {
 		c.VerboseOut("exec.go: running compiler with JVM compile target")
 		c.UseJVM()
+	} else if c.Context.Bool("js") {
+		c.VerboseOut("exec.go: running compiler with JS compile target")
+		c.UseJS()
 	}
-	c.VerboseOut("exec.go: using run mode compile")
 	if ctx.Bool("debug") {
 		c.VerboseOut("exec.go: running compiler in debug mode")
 		compiler.CompileCodeIntoFileDebug(c)

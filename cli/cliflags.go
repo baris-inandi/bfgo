@@ -11,6 +11,7 @@ func Flags() []c.Flag {
 		&c.BoolFlag{Name: "compile-only", Aliases: []string{"C"}, Usage: "Only compile, do not output a binary"},
 		&c.BoolFlag{Name: "clang", Usage: "Use clang instead of default gcc"},
 		&c.BoolFlag{Name: "jvm", Usage: "Compile to JVM bytecode"},
+		&c.BoolFlag{Name: "js", Usage: "Compile to JavaScript"},
 
 		// optimizations
 		&c.BoolFlag{Name: "o-compile", Aliases: []string{"F"}, Usage: "Disable optimizations and use fast compiler: fast compile time, slow execution"},

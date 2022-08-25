@@ -19,6 +19,13 @@ func GenerateIRBoilerplate(intermediate string, c lang.Code) string {
 			intermediate,
 		)
 	}
+	if c.UsingJS() {
+		return fmt.Sprintf(
+			JS_IR_BOILERPLATE,
+			c.Context.Int64("c-tape-size"),
+			intermediate,
+		)
+	}
 	return fmt.Sprintf(
 		C_IR_BOILERPLATE,
 		c.Context.String("c-cell-type"),

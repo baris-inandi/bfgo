@@ -6,7 +6,7 @@ brainfuck-go is an overengineered brainfuck toolkit written in Go.
 
 The toolkit includes the following features:
 
-- Compiler (binary)
+- Native Compiler
 - JVM Compiler
 - JavaScript Compiler
 - Interpreter
@@ -22,7 +22,7 @@ The compiler can compile for three different targets:
 - JVM bytecode
 - JavaScript for running in the browser
 
-#### Machine Code
+#### Native
 
 **Example:** `$ brainfuck examples/hello.bf`  
 Creates a binary `hello`. Run with `./hello`.
@@ -95,3 +95,45 @@ Example formatted snippet from `examples/fibonacci.bf`:
 #### Minifier
 
 bffmt can also minify brainfuck code, leaving only valid characters, minimizing file size.
+
+## Cli Flags
+
+```plaintext
+--run, -r                  Immediately run binary after compilation (default: false)
+--output value, -o value   Specify output binary
+--compile-only, -C         Only compile, do not output a binary (default: false)
+--clang                    Use clang instead of default gcc (default: false)
+--jvm                      Compile to JVM bytecode (default: false)
+--js                       Compile to JavaScript (default: false)
+--o-compile, -F            Disable optimizations and use fast compiler: fast compile time, slow execution (default: false)
+--o-balanced, -B           Minimal optimizations for balanced compile time and performance, default behavior (default: false)
+--o-performance, -O        Enable optimizations: fast execution, slow compile time (default: false)
+--interpret                Interpret file instead of compiling (default: false)
+--repl                     Start a read-eval-print loop (default: false)
+--c-compiler-flags value   Pass arbitrary flags to the compiler (gcc, clang or javac)
+--c-tape-size value        Integer to specify length of brainfuck tape (default: 30000)
+--c-tape-init value        Integer value used to initialize all elements in brainfuck tape (default: 0)
+--c-cell-type value        Type used for brainfuck tape in intermediate representation (default: "int")
+--d-dump-ir                Dump intermediate representation (default: false)
+--d-keep-temp              Do not remove temporary IR files (default: false)
+--d-print-ir-filepath      Dump temporary IR filepath, use -d-keep-temp to keep them from being deleted (default: false)
+--d-print-compile-command  Print C IR compiler command (default: false)
+--verbose, -v              Print verbose output (default: false)
+--debug, -d                Produce debug output, overrides -o (default: false)
+--time, -t                 Prints out execution time before exiting (default: false)
+--fmt                      Format code (omits comments) (default: false)
+--minify                   Minify code (default: false)
+--help, -h                 show help (default: false)
+```
+
+## Benchmark
+
+The following is a benchmark of `examples/mandelbrot.bf`
+
+| Optimization Level | -F      | -B         | -O         |
+| ------------------ | ------- | ---------- | ---------- |
+| Native             | 16 secs | 710 millis | 440 millis |
+| JVM                | 22 secs | 13 secs    | 13 secs    |
+| JavaScript*        | 35 secs | 19 secs    | 5 secs     |
+
+> *Using Google Chrome 106.0.5245.0 dev

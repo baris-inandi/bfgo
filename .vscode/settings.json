@@ -12,6 +12,7 @@
         "irliteral",
         "javac",
         "JSIR",
+        "Minifier",
         "NODEIR",
         "Ofast",
         "putc",

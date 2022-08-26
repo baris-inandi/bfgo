@@ -6,11 +6,12 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 
 	"github.com/baris-inandi/brainfuck/lang"
 	"github.com/baris-inandi/brainfuck/lang/exec/compiler/compiler_utils/compile_command"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/compiler_utils/generate_out_file"
 	"github.com/baris-inandi/brainfuck/lang/exec/compiler/compiler_utils/strip"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/boilerplate/bfhtml"
 	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/intermediate"
 )
 
@@ -92,25 +93,6 @@ func compileIntermediateIntoFile(c *lang.Code, intermediate string, outFile stri
 	return outFile
 }
 
-func generateOutFile(c lang.Code) string {
-	fileIn := c.Filepath
-	specifiedName := c.Context.Path("output")
-
-	out := ""
-	if specifiedName == "" {
-		fileInNameSplit := strings.Split(fileIn, "/")
-		fileInName := fileInNameSplit[len(fileInNameSplit)-1]
-		fileInNameDotSplit := strings.Split(fileInName, ".")
-		out = fileInNameDotSplit[0]
-		if c.UsingJS() {
-			out += ".js"
-		}
-	} else {
-		out = specifiedName
-	}
-	return filepath.Join(out)
-}
-
 func CompileCodeIntoFile(c lang.Code) string {
 	/*
 		compiles code, a brainfuck string to a binary
@@ -133,7 +115,7 @@ func CompileCodeIntoFile(c lang.Code) string {
 	if c.UsingJVM() {
 		o = c.GetClassName() + ".class"
 	} else {
-		o = generateOutFile(c)
+		o = generate_out_file.GenerateOutFile(c)
 	}
 	c.VerboseOut("compile.go: output file is ", o)
 
@@ -142,13 +124,15 @@ func CompileCodeIntoFile(c lang.Code) string {
 		if err != nil {
 			fmt.Println(err)
 		}
-	} else {
-		compileIntermediateIntoFile(
-			&c,
-			ir,
-			o, // output binary path
-		)
+		c.VerboseOut("compile.go: finished js compilation")
+		bfhtml.GenerateHTMLForJSFile(o)
+		return o
 	}
+	compileIntermediateIntoFile(
+		&c,
+		ir,
+		o, // output binary path
+	)
 	c.VerboseOut("compile.go: finished compilation")
 	return o
 }

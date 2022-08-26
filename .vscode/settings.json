@@ -4,6 +4,7 @@
         "bfcontext",
         "bfexec",
         "bffmt",
+        "bfhtml",
         "canonicalizer",
         "caser",
         "cout",

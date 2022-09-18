@@ -61,7 +61,7 @@ All compile targets can be compiled with **the optimizer**. The optimizer option
     - Also performs binary stripping
   - Causes Slow compile times
   - Results in very fast execution
-  - > use `-o-performance`
+  - > use `-o-performance` or `-O`
 
 Executes given brainfuck file.
 There is still room for improvement when it comes to performance. Feel free to submit a PR.
@@ -79,6 +79,7 @@ It can be used to execute brainfuck interactively.
 
 Brainfuck formatter bundled with `brainfuck-go`.  
 > Warning: bffmt currently omits all comments. Feel free to submit a PR for support for comments.  
+
 > use `-fmt`
 
 Example formatted snippet from `examples/fibonacci.bf`:

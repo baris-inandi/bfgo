@@ -138,6 +138,6 @@ The following is a benchmark of `examples/mandelbrot.bf`
 | JVM                | 22 secs | 13 secs    | 13 secs    |
 | JavaScript         | 35 secs | 19 secs    | 5 secs     |
 
-> Native arm64 using entry level M2 MacBook Air
-> Native x64 using Ryzen 5 3600
-> JavaScript using Google Chrome 106.0.5245.0 dev
+> Native arm64 using entry level M2 MacBook Air  
+> Native x64 using Ryzen 5 3600  
+> JavaScript using Google Chrome 106.0.5245.0 dev  

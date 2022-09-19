@@ -141,3 +141,4 @@ The following is a benchmark of `examples/mandelbrot.bf`
 > Native arm64 using entry level M2 MacBook Air  
 > Native x64 using Ryzen 5 3600  
 > JavaScript using Google Chrome 106.0.5245.0 dev  
+> JVM using latest OpenJDK 18 release

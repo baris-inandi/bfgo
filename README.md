@@ -133,7 +133,8 @@ The following is a benchmark of `examples/mandelbrot.bf`
 
 | Optimization Level | -F      | -B         | -O         |
 | ------------------ | ------- | ---------- | ---------- |
-| Native             | 16 secs | 710 millis | 440 millis |
+| Native (arm64)     | 8 secs  | 580 millis | 370 millis |
+| Native (x64)       | 16 secs | 710 millis | 440 millis |
 | JVM                | 22 secs | 13 secs    | 13 secs    |
 | JavaScript*        | 35 secs | 19 secs    | 5 secs     |
 

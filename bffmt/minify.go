@@ -7,12 +7,12 @@ import (
 )
 
 func MinifyFile(files ...string) {
-	func minify(s string) {
+	minify := func(s string) {
 		return s
 	}
 
 	for _, f := range files {
-		minified := readcode.ReadBrainfuck(f)
+		minified := minify(readcode.ReadBrainfuck(f))
 		err := os.WriteFile(f, []byte(minified), 0644)
 		if err != nil {
 			panic(err)

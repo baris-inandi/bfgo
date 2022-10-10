@@ -7,7 +7,7 @@ import (
 )
 
 func MinifyFile(files ...string) {
-	minify := func(s string) {
+	minify := func(s string) string {
 		return s
 	}
 

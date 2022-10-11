@@ -23,10 +23,7 @@ func MinifyFile(files ...string) {
 		if !isValidSyntax(s) {
 			return s, errors.New("SyntaxError: Mismatched brackets")
 		}
-		// if it never outputs, it's useless (except for memory-dump debugging)
-		if !strings.Contains(s, ".") {
-			return "", nil
-		}
+
 		// exploit mod 256 wrap-around
 		s = strings.ReplaceAll(s, strings.Repeat("+", 0x100), "")
 		s = strings.ReplaceAll(s, strings.Repeat("-", 0x100), "")

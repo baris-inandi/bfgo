@@ -35,7 +35,6 @@ func MinifyFile(files ...string) {
 	}
 
 	for _, f := range files {
-		// ignore `err`, because... IDK?
 		minified, _ := minify(readcode.ReadBrainfuck(f))
 		err := os.WriteFile(f, []byte(minified), 0644)
 		if err != nil {

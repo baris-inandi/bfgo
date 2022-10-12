@@ -44,6 +44,8 @@ func Canonicalize(c lang.Code) lang.Code {
 
 	// constant patterns, no shift
 	code = bindPatternToIR(code, "[-]", canon_constants.ResolveCompileTargetIRBinding(&c, "IR__RESET_BYTE"))
+	// same with wraparound
+	code = bindPatternToIR(code, "[+]", canon_constants.ResolveCompileTargetIRBinding(&c, "IR__RESET_BYTE"))
 
 	// a section where `runs` changes the shift of operation
 	runs := CANONICALIZER_SHIFTING_PATTERN_RUNS + 1

@@ -41,6 +41,7 @@ func MinifyFile(files ...string) {
 		// relative pointer
 		ptr := 0
 
+	label:
 		for i := indexOfNoBrace(s, 0); i < len(s); i += 1 {
 			switch s[i] {
 			case "+"[0]:
@@ -63,6 +64,10 @@ func MinifyFile(files ...string) {
 					ptr -= 1
 					continue
 				}
+			case ","[0]:
+				break label
+			case "."[0]:
+				break label
 			default:
 				i = indexOfNoBrace(s, i)
 			}

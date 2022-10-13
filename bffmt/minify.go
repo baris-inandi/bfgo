@@ -28,8 +28,9 @@ func MinifyFile(files ...string) {
 		s = strings.ReplaceAll(s, strings.Repeat("+", 0x100), "")
 		s = strings.ReplaceAll(s, strings.Repeat("-", 0x100), "")
 
+		// to-do: init a Map, to use negative indices
 		for i := indexOfNoBrace(s, 0); i < len(s); i += 1 {
-			//todo
+			// to-do: do static simulation to reduce `+-><`
 		}
 
 		return s

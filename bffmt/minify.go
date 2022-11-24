@@ -11,10 +11,11 @@ func MinifyFile(files ...string) {
 
 	/*
 		Finds the address of the 1st `rune` that isn't in the set {"[", "]"}.
+
 		`start` ignores all runes before that index.
 		If `start` is negative, the index becomes relative to the end.
 	*/
-	var indexOfNoBrace = func(s string, start int) int {
+	var indexNoBrace = func(s string, start int) int {
 		size := len(s)
 		if start < 0 {
 			start += size
@@ -22,6 +23,7 @@ func MinifyFile(files ...string) {
 		if start < 0 {
 			panic("Index out of bounds")
 		}
+
 		for start < size {
 			if s[start] != "["[0] && s[start] != "]"[0] {
 				return start
@@ -42,7 +44,7 @@ func MinifyFile(files ...string) {
 		var ptr = 0
 
 	label:
-		for i := indexOfNoBrace(s, 0); i < len(s); i += 1 {
+		for i := indexNoBrace(s, 0); i < len(s); i += 1 {
 			switch s[i] {
 			case "+"[0]:
 				{
@@ -69,7 +71,7 @@ func MinifyFile(files ...string) {
 			case "."[0]:
 				break label
 			default:
-				i = indexOfNoBrace(s, i)
+				i = indexNoBrace(s, i)
 			}
 		}
 

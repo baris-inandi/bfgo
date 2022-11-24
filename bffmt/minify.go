@@ -14,7 +14,7 @@ func MinifyFile(files ...string) {
 		`start` ignores all runes before that index.
 		If `start` is negative, the index becomes relative to the end.
 	*/
-	indexOfNoBrace := func(s string, start int) int {
+	var indexOfNoBrace = func(s string, start int) int {
 		size := len(s)
 		if start < 0 {
 			start += size
@@ -37,9 +37,9 @@ func MinifyFile(files ...string) {
 		s = strings.ReplaceAll(s, strings.Repeat("-", 0x100), "")
 
 		// simulated BF memory/tape
-		mem := map[int]uint8{}
+		var mem = map[int]uint8{}
 		// relative pointer
-		ptr := 0
+		var ptr = 0
 
 	label:
 		for i := indexOfNoBrace(s, 0); i < len(s); i += 1 {

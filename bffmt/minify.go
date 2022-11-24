@@ -34,10 +34,22 @@ func MinifyFile(files ...string) {
 		return -1
 	}
 
-	minify := func(s string) string {
+	/*
+		Optimizes the source, as explained in https://github.com/baris-inandi/brainfuck-go/issues/2
+	*/
+	var minify = func(s string) string {
 		// exploit mod 256 wrap-around
 		s = strings.ReplaceAll(s, strings.Repeat("+", 0x100), "")
 		s = strings.ReplaceAll(s, strings.Repeat("-", 0x100), "")
+
+		size := len(s)
+		for do := true; do; do = (size != len(s)) {
+			size = len(s)
+			s = strings.ReplaceAll(s, "+-", "")
+			s = strings.ReplaceAll(s, "-+", "")
+			s = strings.ReplaceAll(s, "><", "")
+			s = strings.ReplaceAll(s, "<>", "")
+		}
 
 		/* // simulated BF memory/tape
 			var mem = map[int]uint8{}

@@ -39,42 +39,42 @@ func MinifyFile(files ...string) {
 		s = strings.ReplaceAll(s, strings.Repeat("+", 0x100), "")
 		s = strings.ReplaceAll(s, strings.Repeat("-", 0x100), "")
 
-		// simulated BF memory/tape
-		var mem = map[int]uint8{}
-		// relative memory pointer
-		var ptr int = 0
+		/* // simulated BF memory/tape
+			var mem = map[int]uint8{}
+			// relative memory pointer
+			var ptr int = 0
 
-	label:
-		for i := indexNoBrace(s, 0); i < len(s); i += 1 {
-			switch s[i] {
-			case "+"[0]:
-				{
-					mem[ptr] += 1
-					continue
+		label:
+			for i := indexNoBrace(s, 0); i < len(s); i += 1 {
+				switch s[i] {
+				case "+"[0]:
+					{
+						mem[ptr] += 1
+						continue
+					}
+				case "-"[0]:
+					{
+						mem[ptr] -= 1
+						continue
+					}
+				case ">"[0]:
+					{
+						ptr += 1
+						continue
+					}
+				case "<"[0]:
+					{
+						ptr -= 1
+						continue
+					}
+				case ","[0]:
+					break label
+				case "."[0]:
+					break label
+				default:
+					i = indexNoBrace(s, i)
 				}
-			case "-"[0]:
-				{
-					mem[ptr] -= 1
-					continue
-				}
-			case ">"[0]:
-				{
-					ptr += 1
-					continue
-				}
-			case "<"[0]:
-				{
-					ptr -= 1
-					continue
-				}
-			case ","[0]:
-				break label
-			case "."[0]:
-				break label
-			default:
-				i = indexNoBrace(s, i)
-			}
-		}
+			} */
 
 		return s
 	}

@@ -15,7 +15,7 @@ func MinifyFile(files ...string) {
 		`start` ignores all runes before that index.
 		If `start` is negative, the index becomes relative to the end.
 	*/
-	var indexNoBrace = func(s string, start int) int {
+	/* var indexNoBrace = func(s string, start int) int {
 		size := len(s)
 		if start < 0 {
 			start += size
@@ -32,7 +32,7 @@ func MinifyFile(files ...string) {
 			start += 1
 		}
 		return -1
-	}
+	} */
 
 	/*
 		Optimizes the source, as explained in https://github.com/baris-inandi/brainfuck-go/issues/2

@@ -21,6 +21,7 @@ func MinifyFile(files ...string) {
 			start += size
 		}
 		if start < 0 {
+			// should it return an err instead of panicking?
 			panic("Index out of bounds")
 		}
 

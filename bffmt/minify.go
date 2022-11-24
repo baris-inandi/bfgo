@@ -2,6 +2,7 @@ package bffmt
 
 import (
 	"os"
+	"strings"
 
 	"github.com/baris-inandi/brainfuck/lang/readcode"
 )
@@ -34,6 +35,10 @@ func MinifyFile(files ...string) {
 	}
 
 	minify := func(s string) string {
+		// exploit mod 256 wrap-around
+		s = strings.ReplaceAll(s, strings.Repeat("+", 0x100), "")
+		s = strings.ReplaceAll(s, strings.Repeat("-", 0x100), "")
+
 		// simulated BF memory/tape
 		var mem = map[int]uint8{}
 		// relative memory pointer

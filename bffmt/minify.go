@@ -42,7 +42,7 @@ func MinifyFile(files ...string) {
 		s = strings.ReplaceAll(s, strings.Repeat("+", 0x100), "")
 		s = strings.ReplaceAll(s, strings.Repeat("-", 0x100), "")
 
-		size := len(s)
+		var size int
 		for do := true; do; do = (size != len(s)) {
 			size = len(s)
 			s = strings.ReplaceAll(s, "+-", "")

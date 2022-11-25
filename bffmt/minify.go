@@ -3,11 +3,30 @@ package bffmt
 import (
 	"os"
 	"regexp"
+	"strings"
 
 	"github.com/baris-inandi/brainfuck/lang/readcode"
 )
 
 func MinifyFile(files ...string) {
+
+	// returns a pair containing the char frequency of "+" and "-", respectively
+	var count_plus_minus = func(s string) (uint, uint) {
+		var plus_c uint = 0
+		var minus_c uint = 0
+
+		for i := 0; i < len(s); i++ {
+			c := s[i]
+			if c == "+"[0] {
+				plus_c += 1
+			}
+			if c == "-"[0] {
+				minus_c += 1
+			}
+		}
+
+		return plus_c, minus_c
+	}
 
 	/*
 		Finds the address of the 1st `rune` that isn't in the set {"[", "]"}.
@@ -97,6 +116,12 @@ func MinifyFile(files ...string) {
 					i = indexNoBrace(s, i)
 				}
 			} */
+
+		plus_c, minus_c := count_plus_minus(s)
+		if plus_c >= minus_c {
+			s = strings.ReplaceAll(s, "[-]", "[+]")
+			s = strings.ReplaceAll(s, "[--]", "[++]")
+		}
 
 		return s
 	}

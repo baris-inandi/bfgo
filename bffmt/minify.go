@@ -73,11 +73,11 @@ func MinifyFile(files ...string) {
 		}
 
 		// matches + or - between square braces an even number of times (max 128)
-		var plus_minus_even = regexp.MustCompile(`\[(?:(?:\+\+){2,128}|(?:--){2,128})\]`)
+		var plus_minus_even = regexp.MustCompile(`\[(?:(?:\+\+){1,128}|(?:--){2,128})\]`)
 		s = plus_minus_even.ReplaceAllLiteralString(s, "[--]")
 
 		// matches + or - between square braces an odd number of times (max 128)
-		var plus_minus_odd = regexp.MustCompile(`\[(?:(?:\+\+){1,128}\+|(?:--){1,128}-)\]`)
+		var plus_minus_odd = regexp.MustCompile(`\[(?:(?:\+\+){0,128}\+|(?:--){1,128}-)\]`)
 		s = plus_minus_odd.ReplaceAllLiteralString(s, "[-]")
 
 		/* // simulated BF memory/tape

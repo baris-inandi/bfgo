@@ -53,21 +53,13 @@ func MinifyFile(files ...string) {
 			s = mutual_cancel.ReplaceAllLiteralString(s, "")
 		}
 
-		// matches a plus-sign between square braces an even number of times
-		var plus_even = regexp.MustCompile(`\[(?:\+\+){2,128}\]`)
-		s = plus_even.ReplaceAllLiteralString(s, "[++]")
+		// matches + or - between square braces an even number of times (max 128)
+		var plus_minus_even = regexp.MustCompile(`\[(?:(?:\+\+){2,128}|(?:--){2,128})\]`)
+		s = plus_minus_even.ReplaceAllLiteralString(s, "[--]")
 
-		// matches a minus-sign between square braces an even number of times
-		var minus_even = regexp.MustCompile(`\[(?:--){2,128}\]`)
-		s = minus_even.ReplaceAllLiteralString(s, "[--]")
-
-		// matches a plus-sign between square braces an odd number of times
-		var plus_odd = regexp.MustCompile(`\[(?:\+\+){1,128}\+\]`)
-		s = plus_odd.ReplaceAllLiteralString(s, "[+]")
-
-		// matches a minus-sign between square braces an odd number of times
-		var minus_odd = regexp.MustCompile(`\[(?:--){1,128}-\]`)
-		s = minus_odd.ReplaceAllLiteralString(s, "[-]")
+		// matches + or - between square braces an odd number of times (max 128)
+		var plus_minus_odd = regexp.MustCompile(`\[(?:(?:\+\+){1,128}\+|(?:--){1,128}-)\]`)
+		s = plus_minus_odd.ReplaceAllLiteralString(s, "[-]")
 
 		/* // simulated BF memory/tape
 			var mem = map[int]uint8{}

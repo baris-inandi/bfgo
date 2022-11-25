@@ -2,7 +2,7 @@ package bffmt
 
 import (
 	"os"
-	"strings"
+	"regexp"
 
 	"github.com/baris-inandi/brainfuck/lang/readcode"
 )
@@ -35,20 +35,22 @@ func MinifyFile(files ...string) {
 	} */
 
 	/*
-		Optimizes the source, as explained in https://github.com/baris-inandi/brainfuck-go/issues/2
+		Optimizes the source, as explained in https://github.com/baris-inandi/brainfuck-go/issues/2 .
+		It assumes `s` only has valid opcodes.
 	*/
 	var minify = func(s string) string {
-		// exploit mod 256 wrap-around
-		s = strings.ReplaceAll(s, strings.Repeat("+", 0x100), "")
-		s = strings.ReplaceAll(s, strings.Repeat("-", 0x100), "")
+		// matches 256 consecutive + or - (exclusive, so mixes don't match)
+		var plus_minus_256 = regexp.MustCompile(`[+]{256}|-{256}`)
+		s = plus_minus_256.ReplaceAllLiteralString(s, "")
+
+		// matches pairs of BF opcodes that cancel each other (any order)
+		var mutual_cancel = regexp.MustCompile(`[+]-|-[+]|><|<>`)
 
 		var size int
+		// TODO: optimize later
 		for do := true; do; do = (size != len(s)) {
 			size = len(s)
-			s = strings.ReplaceAll(s, "+-", "")
-			s = strings.ReplaceAll(s, "-+", "")
-			s = strings.ReplaceAll(s, "><", "")
-			s = strings.ReplaceAll(s, "<>", "")
+			s = mutual_cancel.ReplaceAllLiteralString(s, "")
 		}
 
 		/* // simulated BF memory/tape

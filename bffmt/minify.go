@@ -40,11 +40,11 @@ func MinifyFile(files ...string) {
 	*/
 	var minify = func(s string) string {
 		// matches 256 consecutive + or - (exclusive, so mixes don't match)
-		var plus_minus_256 = regexp.MustCompile(`[+]{256}|-{256}`)
+		var plus_minus_256 = regexp.MustCompile(`\+{256}|-{256}`)
 		s = plus_minus_256.ReplaceAllLiteralString(s, "")
 
 		// matches pairs of BF opcodes that cancel each other (any order)
-		var mutual_cancel = regexp.MustCompile(`[+]-|-[+]|><|<>`)
+		var mutual_cancel = regexp.MustCompile(`\+-|-\+|><|<>`)
 
 		var size int
 		// TODO: optimize later
@@ -52,6 +52,20 @@ func MinifyFile(files ...string) {
 			size = len(s)
 			s = mutual_cancel.ReplaceAllLiteralString(s, "")
 		}
+
+		// matches a plus-sign between square braces an even number of times
+		var plus_even = regexp.MustCompile(`\[(?:\+\+){2,128}\]`)
+		s = plus_even.ReplaceAllLiteralString(s, "[++]")
+
+		// matches a minus-sign between square braces an even number of times
+		var minus_even = regexp.MustCompile(`\[(?:--){2,128}\]`)
+		s = minus_even.ReplaceAllLiteralString(s, "[--]")
+
+		var plus = regexp.MustCompile(`\[(?:\+){2,256}\]`)
+		s = plus.ReplaceAllLiteralString(s, "[+]")
+
+		var minus = regexp.MustCompile(`\[(?:-){2,256}\]`)
+		s = minus.ReplaceAllLiteralString(s, "[-]")
 
 		/* // simulated BF memory/tape
 			var mem = map[int]uint8{}

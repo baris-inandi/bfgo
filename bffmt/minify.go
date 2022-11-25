@@ -61,11 +61,13 @@ func MinifyFile(files ...string) {
 		var minus_even = regexp.MustCompile(`\[(?:--){2,128}\]`)
 		s = minus_even.ReplaceAllLiteralString(s, "[--]")
 
-		var plus = regexp.MustCompile(`\[(?:\+){2,256}\]`)
-		s = plus.ReplaceAllLiteralString(s, "[+]")
+		// matches a plus-sign between square braces an odd number of times
+		var plus_odd = regexp.MustCompile(`\[(?:\+\+){1,128}\+\]`)
+		s = plus_odd.ReplaceAllLiteralString(s, "[+]")
 
-		var minus = regexp.MustCompile(`\[(?:-){2,256}\]`)
-		s = minus.ReplaceAllLiteralString(s, "[-]")
+		// matches a minus-sign between square braces an odd number of times
+		var minus_odd = regexp.MustCompile(`\[(?:--){1,128}-\]`)
+		s = minus_odd.ReplaceAllLiteralString(s, "[-]")
 
 		/* // simulated BF memory/tape
 			var mem = map[int]uint8{}

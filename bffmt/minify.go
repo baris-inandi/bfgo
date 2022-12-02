@@ -117,7 +117,7 @@ func MinifyFile(files ...string) {
 
 		// this is not the optimal way to do it,
 		// because the counter still counts the cell-reseters themselves,
-		// which adds an unwanted bias towards `-`
+		// which adds a bias towards `-`
 		plusCount, minusCount := counterPlusMinus(s)
 		if plusCount >= minusCount {
 			s = strings.ReplaceAll(s, "[-]", "[+]")

@@ -53,6 +53,25 @@ func MinifyFile(files ...string) {
 		return -1
 	} */
 
+	// # Compression Ratio Optimizer
+	//
+	// Uses [frequency analysis] to find the best chars to replace.
+	//
+	// Current implementation only replaces cell-reseters.
+	//
+	// [frequency analysis]: https://en.wikipedia.org/wiki/Frequency_analysis
+	var optimizeCompress = func(s string) string {
+		plusCount, minusCount := counterPlusMinus(s)
+		// this isn't the best way to do it,
+		// because the counter still counts the cell-reseters themselves,
+		// which adds a bias towards "-"
+		if plusCount >= minusCount {
+			s = strings.ReplaceAll(s, "[-]", "[+]")
+			s = strings.ReplaceAll(s, "[--]", "[++]")
+		}
+		return s
+	}
+
 	// Optimizes the source, as explained in https://github.com/baris-inandi/brainfuck-go/issues/2 .
 	// It assumes `s` only has valid ops.
 	var minify = func(s string) string {
@@ -101,16 +120,7 @@ func MinifyFile(files ...string) {
 				}
 			} */
 
-		// this is not the optimal way to do it,
-		// because the counter still counts the cell-reseters themselves,
-		// which adds a bias towards `-`
-		plusCount, minusCount := counterPlusMinus(s)
-		if plusCount >= minusCount {
-			s = strings.ReplaceAll(s, "[-]", "[+]")
-			s = strings.ReplaceAll(s, "[--]", "[++]")
-		}
-
-		return s
+		return optimizeCompress(s)
 	}
 
 	for _, f := range files {

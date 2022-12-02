@@ -28,13 +28,11 @@ func MinifyFile(files ...string) {
 		return plus, minus
 	}
 
-	/*
-		Finds the address of the 1st `rune` that isn't in the set {"[", "]"}.
-
-		`start` ignores all runes before that index.
-		If `start` is negative, the index becomes relative to the end.
-	*/
-	/* var indexNoBrace = func(s string, start int) int {
+	// finds index of 1st `rune` that isn't "["/"]", or `-1` if not found.
+	//
+	// `start` ignores all runes before that index.
+	// If `start` is negative, it becomes relative to the end.
+	var indexNoBrace = func(s string, start int) int {
 		size := len(s)
 		if start < 0 {
 			start += size
@@ -51,7 +49,7 @@ func MinifyFile(files ...string) {
 			start += 1
 		}
 		return -1
-	} */
+	}
 
 	// # Compression Ratio Optimizer
 	//
@@ -83,42 +81,46 @@ func MinifyFile(files ...string) {
 		var oddPlusMinus = regexp.MustCompile(`\[(?:(?:\+\+){0,128}\+|(?:--){1,128}-)\]`)
 		s = oddPlusMinus.ReplaceAllLiteralString(s, "[-]")
 
-		/* // simulated BF memory/tape
-			var mem = map[int]uint8{}
-			// relative memory pointer
-			var ptr int = 0
+		// simulated BF memory/tape
+		var mem = map[int]uint8{}
+		// relative memory pointer
+		var ptr int = 0
 
-		label:
-			for i := indexNoBrace(s, 0); i < len(s); i += 1 {
-				switch s[i] {
-				case "+"[0]:
-					{
-						mem[ptr] += 1
-						continue
-					}
-				case "-"[0]:
-					{
-						mem[ptr] -= 1
-						continue
-					}
-				case ">"[0]:
-					{
-						ptr += 1
-						continue
-					}
-				case "<"[0]:
-					{
-						ptr -= 1
-						continue
-					}
-				case ","[0]:
-					break label
-				case "."[0]:
-					break label
-				default:
-					i = indexNoBrace(s, i)
+	label:
+		for i := indexNoBrace(s, 0); i < len(s); i += 1 {
+			if i == -1 {
+				break
+			}
+
+			switch s[i] {
+			case "+"[0]:
+				{
+					mem[ptr] += 1
+					continue
 				}
-			} */
+			case "-"[0]:
+				{
+					mem[ptr] -= 1
+					continue
+				}
+			case ">"[0]:
+				{
+					ptr += 1
+					continue
+				}
+			case "<"[0]:
+				{
+					ptr -= 1
+					continue
+				}
+			case ","[0]:
+				break label
+			case "."[0]:
+				break label
+			default:
+				i = indexNoBrace(s, i)
+			}
+		}
 
 		return optimizeCompress(s)
 	}

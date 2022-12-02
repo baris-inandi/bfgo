@@ -54,27 +54,13 @@ func MinifyFile(files ...string) {
 	} */
 
 	// Optimizes the source, as explained in https://github.com/baris-inandi/brainfuck-go/issues/2 .
-	// It assumes `s` only has valid opcodes.
+	// It assumes `s` only has valid ops.
 	var minify = func(s string) string {
-		// matches 256 consecutive + or - (exclusive, so mixes don't match)
-		var x256PlusMinus = regexp.MustCompile(`\+{256}|-{256}`)
-		s = x256PlusMinus.ReplaceAllLiteralString(s, "")
-
-		// matches pairs of BF opcodes that cancel each other (any order)
-		var mutualCancel = regexp.MustCompile(`\+-|-\+|><|<>`)
-
-		var size int
-		// TODO: optimize later
-		for do := true; do; do = (size != len(s)) {
-			size = len(s)
-			s = mutualCancel.ReplaceAllLiteralString(s, "")
-		}
-
-		// matches + or - between square braces an even number of times (max 128)
+		// matches even-count cell-reseters
 		var evenPlusMinus = regexp.MustCompile(`\[(?:(?:\+\+){1,128}|(?:--){2,128})\]`)
 		s = evenPlusMinus.ReplaceAllLiteralString(s, "[--]")
 
-		// matches + or - between square braces an odd number of times (max 128)
+		// matches odd-count cell-reseters
 		var oddPlusMinus = regexp.MustCompile(`\[(?:(?:\+\+){0,128}\+|(?:--){1,128}-)\]`)
 		s = oddPlusMinus.ReplaceAllLiteralString(s, "[-]")
 

@@ -28,10 +28,10 @@ func MinifyFile(files ...string) {
 		return plus, minus
 	}
 
-	// finds index of 1st `rune` that isn't "["/"]", or `-1` if not found.
+	// finds index of 1st rune that isn't "["/"]", or -1 if not found.
 	//
 	// `start` ignores all runes before that index.
-	// If `start` is negative, it becomes relative to the end.
+	// If start is negative, it becomes relative to the end.
 	var indexNoBrace = func(s string, start int) int {
 		size := len(s)
 		if start < 0 {
@@ -71,7 +71,7 @@ func MinifyFile(files ...string) {
 	}
 
 	// Optimizes the source, as explained in https://github.com/baris-inandi/brainfuck-go/issues/2 .
-	// It assumes `s` only has valid ops.
+	// It assumes s only has valid ops.
 	var minify = func(s string) string {
 		// matches even-count cell-reseters
 		var evenPlusMinus = regexp.MustCompile(`\[(?:(?:\+\+){1,128}|(?:--){2,128})\]`)

@@ -52,35 +52,7 @@ func MinifyFile(files ...string) {
 		return -1
 	}
 
-	// # Compression Ratio Optimizer
-	//
-	// Uses [frequency analysis] to find the best chars to replace.
-	//
-	// Current implementation only replaces cell-reseters.
-	//
-	// [frequency analysis]: https://en.wikipedia.org/wiki/Frequency_analysis
-	var optimizeCompress = func(s string) string {
-		plusCount, minusCount := counterPlusMinus(s)
-		// this isn't the best way to do it,
-		// because the counter still counts the cell-reseters themselves,
-		// which adds a bias towards "-"
-		if plusCount >= minusCount {
-			s = strings.ReplaceAll(s, "[-]", "[+]")
-			s = strings.ReplaceAll(s, "[--]", "[++]")
-		}
-		return s
-	}
-
-	// Optimizes the source, as explained in https://github.com/baris-inandi/brainfuck-go/issues/2 .
-	// It assumes s only has valid ops.
-	var minify = func(s string) string {
-		// matches even-count cell-reseters
-		var evenPlusMinus = regexp.MustCompile(`\[(?:(?:\+\+){1,128}|(?:--){2,128})\]`)
-		s = evenPlusMinus.ReplaceAllLiteralString(s, "[--]")
-
-		// matches odd-count cell-reseters
-		var oddPlusMinus = regexp.MustCompile(`\[(?:(?:\+\+){0,128}\+|(?:--){1,128}-)\]`)
-		s = oddPlusMinus.ReplaceAllLiteralString(s, "[-]")
+	var simulator = func(s string) string {
 
 		// simulated BF memory/tape
 		var mem = map[int]uint8{}
@@ -122,6 +94,41 @@ func MinifyFile(files ...string) {
 				i = indexNoBrace(s, i)
 			}
 		}
+		return s
+	}
+
+	// # Compression Ratio Optimizer
+	//
+	// Uses [frequency analysis] to find the best chars to replace.
+	//
+	// Current implementation only replaces cell-reseters.
+	//
+	// [frequency analysis]: https://en.wikipedia.org/wiki/Frequency_analysis
+	var optimizeCompress = func(s string) string {
+		plusCount, minusCount := counterPlusMinus(s)
+		// this isn't the best way to do it,
+		// because the counter still counts the cell-reseters themselves,
+		// which adds a bias towards "-"
+		if plusCount >= minusCount {
+			s = strings.ReplaceAll(s, "[-]", "[+]")
+			s = strings.ReplaceAll(s, "[--]", "[++]")
+		}
+		return s
+	}
+
+	// Optimizes the source, as explained in https://github.com/baris-inandi/brainfuck-go/issues/2 .
+	// It assumes s only has valid ops.
+	var minify = func(s string) string {
+		// matches even-count cell-reseters
+		var evenPlusMinus = regexp.MustCompile(`\[(?:(?:\+\+){1,128}|(?:--){2,128})\]`)
+		s = evenPlusMinus.ReplaceAllLiteralString(s, "[--]")
+
+		// matches odd-count cell-reseters
+		var oddPlusMinus = regexp.MustCompile(`\[(?:(?:\+\+){0,128}\+|(?:--){1,128}-)\]`)
+		s = oddPlusMinus.ReplaceAllLiteralString(s, "[-]")
+
+		// no-op (for now)
+		s = simulator(s)
 
 		// this **must** be the last thing we do, for optimal results
 		return optimizeCompress(s)

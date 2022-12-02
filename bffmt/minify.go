@@ -123,6 +123,7 @@ func MinifyFile(files ...string) {
 			}
 		}
 
+		// this **must** be the last thing we do, for optimal results
 		return optimizeCompress(s)
 	}
 

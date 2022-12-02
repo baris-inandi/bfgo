@@ -42,6 +42,7 @@ func MinifyFile(files ...string) {
 			panic("Index out of bounds")
 		}
 
+		// "I couldn't find a way to write it as funtional-paradigm" @Rudxain
 		for start < size {
 			if s[start] != "["[0] && s[start] != "]"[0] {
 				return start

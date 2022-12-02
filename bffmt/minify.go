@@ -49,7 +49,8 @@ func MinifyFile(files ...string) {
 
 		// "I couldn't find a way to write it as funtional-paradigm" @Rudxain
 		for start < size {
-			if s[start] != "["[0] && s[start] != "]"[0] {
+			c := s[start]
+			if c != "["[0] && c != "]"[0] {
 				return start
 			}
 			start += 1

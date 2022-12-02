@@ -52,8 +52,13 @@ func MinifyFile(files ...string) {
 		return -1
 	}
 
-	var simulator = func(s string) string {
-
+	// # Memory Simulator
+	//
+	// Statically analyses non-loop code, to remove some no-ops.
+	//
+	// current implementation is no-op itself,
+	// so this func is equivalent to the identity fn
+	var memSimulator = func(s string) string {
 		// simulated BF memory/tape
 		var mem = map[int]uint8{}
 		// relative memory pointer
@@ -127,8 +132,7 @@ func MinifyFile(files ...string) {
 		var oddPlusMinus = regexp.MustCompile(`\[(?:(?:\+\+){0,128}\+|(?:--){1,128}-)\]`)
 		s = oddPlusMinus.ReplaceAllLiteralString(s, "[-]")
 
-		// no-op (for now)
-		s = simulator(s)
+		s = memSimulator(s)
 
 		// this **must** be the last thing we do, for optimal results
 		return optimizeCompress(s)

@@ -36,6 +36,52 @@ func MinifyFile(files ...string) {
 		return plus, minus
 	}
 
+	// returns a pair indices of matching braces, searched from start.
+	//
+	// `start` ignores all runes before that index.
+	// If start is negative, it becomes relative to the end.
+	var getMatchingBraces = func(s string, start int) (int, int) {
+		size := len(s)
+		if start < 0 {
+			start += size
+		}
+		if start < 0 {
+			panic("Index out of bounds")
+		}
+
+		var open int = -1
+		for start < size {
+			c := s[start]
+			if c == "["[0] {
+				open = start
+				break
+			}
+			start += 1
+		}
+
+		// avoid double-counting "["
+		start++
+		var depth int = 0
+
+		var close int = -1
+		for start < size {
+			c := s[start]
+			if c == "["[0] {
+				depth++
+			}
+			if c == "]"[0] {
+				if depth == 0 {
+					close = start
+					break
+				}
+				depth--
+			}
+			start += 1
+		}
+
+		return open, close
+	}
+
 	// finds index of 1st rune that isn't in the charset "[],.", or -1 if not found.
 	//
 	// `start` ignores all runes before that index.

@@ -9,11 +9,14 @@ import (
 )
 
 func MinifyFile(files ...string) {
-	// matches even cell-reseters
+	// matches even (conditional halt) cell-reseters
 	var isEvenReset = regexp.MustCompile(`\[(?:(?:\+\+){1,128}|(?:--){2,128})\]`)
 
-	// matches odd cell-reseters
+	// matches odd (unconditional) cell-reseters
 	var isOddReset = regexp.MustCompile(`\[(?:(?:\+\+){0,128}\+|(?:--){1,128}-)\]`)
+
+	// matches a minified unconditional reseter, preceded by 1 or more "+" or "-" (mixed)
+	var isPrefixReset = regexp.MustCompile(`[+-]++\[[+-]\]`)
 
 	// returns a pair containing the char frequency of "+" and "-", respectively
 	var counterPlusMinus = func(s string) (uint, uint) {
@@ -134,6 +137,7 @@ func MinifyFile(files ...string) {
 		s = memSimulator(s)
 		s = isEvenReset.ReplaceAllLiteralString(s, "[--]")
 		s = isOddReset.ReplaceAllLiteralString(s, "[-]")
+		s = isPrefixReset.ReplaceAllLiteralString(s, "[-]")
 		return optimizeCompress(s)
 	}
 

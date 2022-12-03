@@ -102,7 +102,7 @@ func MinifyFile(files ...string) {
 
 	// # Compression Ratio Optimizer
 	//
-	// Uses [frequency analysis] to find the best chars to replace.
+	// Uses [frequency analysis] to increase compression-ratio by 3rd-party algorithms.
 	//
 	// Current implementation only replaces reseters.
 	//
@@ -119,8 +119,11 @@ func MinifyFile(files ...string) {
 		return s
 	}
 
-	// Optimizes the source, as explained in https://github.com/baris-inandi/brainfuck-go/issues/2 .
-	// It assumes s only has valid ops.
+	// # Advanced BF minifier
+	//
+	// Explained in [#2]. It assumes s only has valid ops.
+	//
+	//[#2]: https://github.com/baris-inandi/brainfuck-go/issues/2
 	var minify = func(s string) string {
 		// order matters, A LOT
 		s = memSimulator(s)

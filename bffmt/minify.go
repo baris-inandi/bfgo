@@ -36,11 +36,11 @@ func MinifyFile(files ...string) {
 		return plus, minus
 	}
 
-	// finds index of 1st rune that isn't "[" or "]", or -1 if not found.
+	// finds index of 1st rune that isn't in the charset "[],.", or -1 if not found.
 	//
 	// `start` ignores all runes before that index.
 	// If start is negative, it becomes relative to the end.
-	var indexNoBrace = func(s string, start int) int {
+	var indexNoIOBrace = func(s string, start int) int {
 		size := len(s)
 		if start < 0 {
 			start += size
@@ -50,10 +50,10 @@ func MinifyFile(files ...string) {
 			panic("Index out of bounds")
 		}
 
-		// "I couldn't find a way to write it as funtional-paradigm" @Rudxain
+		// "I couldn't find a way to write it in functional-paradigm" @Rudxain
 		for start < size {
 			c := s[start]
-			if c != "["[0] && c != "]"[0] {
+			if c != "["[0] && c != "]"[0] && c != ","[0] && c != "."[0] {
 				return start
 			}
 			start += 1
@@ -73,12 +73,7 @@ func MinifyFile(files ...string) {
 		// relative memory pointer
 		var ptr int = 0
 
-	label:
-		for i := indexNoBrace(s, 0); i < len(s); i += 1 {
-			if i == -1 {
-				break
-			}
-
+		for i := indexNoIOBrace(s, 0); i < len(s) && i != -1; i = indexNoIOBrace(s, i+1) {
 			switch s[i] {
 			case "+"[0]:
 				{
@@ -100,12 +95,6 @@ func MinifyFile(files ...string) {
 					ptr -= 1
 					continue
 				}
-			case ","[0]:
-				break label
-			case "."[0]:
-				break label
-			default:
-				i = indexNoBrace(s, i)
 			}
 		}
 		return s

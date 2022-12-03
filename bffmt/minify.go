@@ -15,8 +15,8 @@ func MinifyFile(files ...string) {
 	// matches odd (unconditional) reseters
 	var isOddReset = regexp.MustCompile(`\[(?:(?:\+\+){0,128}\+|(?:--){1,128}-)\]`)
 
-	// matches a minified unconditional reseter, preceded by 1 or more "+" or "-" (mixed)
-	var isPrefixReset = regexp.MustCompile(`[+-]+\[[+-]\]`)
+	// matches a "[-]", preceded by 1 or more "+" or "-" (mixed)
+	var isPrefixReset = regexp.MustCompile(`[+-]+\[-\]`)
 
 	// returns a pair containing the char frequency of "+" and "-", respectively
 	var counterPlusMinus = func(s string) (uint, uint) {

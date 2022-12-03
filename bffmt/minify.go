@@ -36,7 +36,7 @@ func MinifyFile(files ...string) {
 		return plus, minus
 	}
 
-	// returns a pair indices of matching braces, searched from start.
+	/* // returns a pair indices of matching braces, searched from start.
 	//
 	// `start` ignores all runes before that index.
 	// If start is negative, it becomes relative to the end.
@@ -80,7 +80,7 @@ func MinifyFile(files ...string) {
 		}
 
 		return open, close
-	}
+	} */
 
 	// finds index of 1st rune that isn't in the charset "[],.", or -1 if not found.
 	//
@@ -105,6 +105,20 @@ func MinifyFile(files ...string) {
 			start += 1
 		}
 		return -1
+	}
+
+	var suffixDot = func(s string) string {
+		for i := len(s) - 1; i >= 0; i-- {
+			c := s[i]
+			if c == "["[0] || c == "]"[0] {
+				break
+			}
+			if c == "."[0] {
+				s = s[0 : i+1]
+				break
+			}
+		}
+		return s
 	}
 
 	// # Memory Simulator
@@ -171,7 +185,9 @@ func MinifyFile(files ...string) {
 	//
 	//[#2]: https://github.com/baris-inandi/brainfuck-go/issues/2
 	var minify = func(s string) string {
-		// order matters, A LOT
+		// calling this now may speed up the others
+		s = suffixDot(s)
+		// order matters, (from this point onwards)
 		s = memSimulator(s)
 		s = isEvenReset.ReplaceAllLiteralString(s, "[--]")
 		s = isOddReset.ReplaceAllLiteralString(s, "[-]")

@@ -107,7 +107,12 @@ func MinifyFile(files ...string) {
 		return -1
 	}
 
-	var suffixDot = func(s string) string {
+	// removes all runes after last `.`,
+	// [iff] there are no braces in the part to be removed
+	// (this ensures infinite loops are still executed)
+	//
+	//[iff]: https://en.wikipedia.org/wiki/If_and_only_if
+	var noOutputRemover = func(s string) string {
 		for i := len(s) - 1; i >= 0; i-- {
 			c := s[i]
 			if c == "["[0] || c == "]"[0] {
@@ -186,7 +191,7 @@ func MinifyFile(files ...string) {
 	//[#2]: https://github.com/baris-inandi/brainfuck-go/issues/2
 	var minify = func(s string) string {
 		// calling this now may speed up the others
-		s = suffixDot(s)
+		s = noOutputRemover(s)
 		// order matters, (from this point onwards)
 		s = memSimulator(s)
 		s = isEvenReset.ReplaceAllLiteralString(s, "[--]")

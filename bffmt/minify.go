@@ -104,7 +104,7 @@ func MinifyFile(files ...string) {
 	//
 	// Uses [frequency analysis] to increase compression-ratio by 3rd-party algorithms.
 	//
-	// Current implementation only replaces reseters.
+	// Current implementation only replaces minified "-" reseters.
 	//
 	// [frequency analysis]: https://en.wikipedia.org/wiki/Frequency_analysis
 	var optimizeCompress = func(s string) string {

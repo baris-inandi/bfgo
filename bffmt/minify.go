@@ -9,10 +9,10 @@ import (
 )
 
 func MinifyFile(files ...string) {
-	// matches even (conditional halt) cell-reseters
+	// matches even (conditional halt) reseters
 	var isEvenReset = regexp.MustCompile(`\[(?:(?:\+\+){1,128}|(?:--){2,128})\]`)
 
-	// matches odd (unconditional) cell-reseters
+	// matches odd (unconditional) reseters
 	var isOddReset = regexp.MustCompile(`\[(?:(?:\+\+){0,128}\+|(?:--){1,128}-)\]`)
 
 	// matches a minified unconditional reseter, preceded by 1 or more "+" or "-" (mixed)
@@ -104,13 +104,13 @@ func MinifyFile(files ...string) {
 	//
 	// Uses [frequency analysis] to find the best chars to replace.
 	//
-	// Current implementation only replaces cell-reseters.
+	// Current implementation only replaces reseters.
 	//
 	// [frequency analysis]: https://en.wikipedia.org/wiki/Frequency_analysis
 	var optimizeCompress = func(s string) string {
 		plusCount, minusCount := counterPlusMinus(s)
 		// this isn't the best way to do it,
-		// because the counter still counts the cell-reseters themselves,
+		// because the counter still counts the reseters themselves,
 		// which adds a bias towards "-"
 		if plusCount >= minusCount {
 			s = strings.ReplaceAll(s, "[-]", "[+]")

@@ -19,21 +19,19 @@ func MinifyFile(files ...string) {
 	var isPrefixReset = regexp.MustCompile(`[+-]+\[-\]`)
 
 	// returns a pair containing the char frequency of "+" and "-", respectively
-	var counterPlusMinus = func(s string) (uint, uint) {
-		var plus uint = 0
-		var minus uint = 0
-
+	var isMorePlusThanMinus = func(s string) bool {
+		val := 0
 		for i := 0; i < len(s); i++ {
-			c := s[i]
-			if c == "+"[0] {
-				plus += 1
+			char := s[i]
+			if char == "+"[0] {
+				val += 1
 			}
-			if c == "-"[0] {
-				minus += 1
+			if char == "-"[0] {
+				val -= 1
 			}
 		}
 
-		return plus, minus
+		return val > 0
 	}
 
 	/* // returns a pair indices of matching braces, searched from start.
@@ -173,11 +171,10 @@ func MinifyFile(files ...string) {
 	//
 	// [frequency analysis]: https://en.wikipedia.org/wiki/Frequency_analysis
 	var optimizeCompress = func(s string) string {
-		plusCount, minusCount := counterPlusMinus(s)
 		// this isn't the best way to do it,
 		// because the counter still counts the reseters themselves,
 		// which adds a bias towards "-"
-		if plusCount >= minusCount {
+		if isMorePlusThanMinus(s) {
 			s = strings.ReplaceAll(s, "[-]", "[+]")
 			s = strings.ReplaceAll(s, "[--]", "[++]")
 		}

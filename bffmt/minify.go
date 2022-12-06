@@ -18,13 +18,6 @@ func MinifyFile(files ...string) {
 	// matches a "[-]", preceded by 1 or more "+" or "-" (mixed)
 	var isPrefixReset = regexp.MustCompile(`[+-]+\[-\]`)
 
-	// returns true if "+" count is greater than "-" count (ignoring "[-]" and "[--]")
-	var correctedIsMorePlusThanMinus = func(s string) bool {
-		plus, minus := strings.Count(s, "+"), strings.Count(s, "-")
-		odd, even := strings.Count(s, "[-]"), strings.Count(s, "[--]")
-		return plus-minus+odd+2*even > 0
-	}
-
 	/* // returns a pair indices of matching braces, searched from start.
 	//
 	// `start` ignores all runes before that index.
@@ -159,12 +152,22 @@ func MinifyFile(files ...string) {
 	// Uses [frequency analysis] to increase compression-ratio by 3rd-party algorithms.
 	//
 	// Current implementation only replaces minified "-" reseters.
+	// It assumes there's no "+" reseters.
 	//
 	// [frequency analysis]: https://en.wikipedia.org/wiki/Frequency_analysis
 	var optimizeCompress = func(s string) string {
-		if correctedIsMorePlusThanMinus(s) {
-			s = strings.ReplaceAll(s, "[-]", "[+]")
-			s = strings.ReplaceAll(s, "[--]", "[++]")
+		plus, minus := strings.Count(s, "+"), strings.Count(s, "-")
+		odd, even := strings.Count(s, "[-]"), strings.Count(s, "[--]")
+		// this ensures the choice is unbiased
+		isMorePlusThanMinus := plus-minus+odd+2*even > 0
+
+		if isMorePlusThanMinus {
+			if odd > 0 {
+				s = strings.ReplaceAll(s, "[-]", "[+]")
+			}
+			if even > 0 {
+				s = strings.ReplaceAll(s, "[--]", "[++]")
+			}
 		}
 		return s
 	}

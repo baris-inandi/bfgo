@@ -9,16 +9,21 @@ import (
 )
 
 func MinifyFile(files ...string) {
-	// matches even (conditional halt) reseters
+	// minified `-` uncondtional cell reseter
+	const ODD_RESET = "[-]"
+	// minified `-` condtional (halt-if-even) cell reseter
+	const EVEN_RESET = "[--]"
+
+	// matches any even (conditional halt) reseters
 	var isEvenReset = regexp.MustCompile(`\[(?:(?:\+\+){1,128}|(?:--){2,128})\]`)
 
-	// matches odd (unconditional) reseters
+	// matches any odd (unconditional) reseters
 	var isOddReset = regexp.MustCompile(`\[(?:(?:\+\+){0,128}\+|(?:--){1,128}-)\]`)
 
-	// matches a "[-]", preceded by 1 or more "+" or "-" (mixed)
+	// matches ODD_RESET, preceded by 1 or more "+" or "-" (mixed)
 	var isPrefixReset = regexp.MustCompile(`[+-]+\[-\]`)
 
-	/* // returns a pair indices of matching braces, searched from start.
+	/* // returns a pair of indices of matching braces, searched from start.
 	//
 	// `start` ignores all runes before that index.
 	// If start is negative, it becomes relative to the end.
@@ -157,16 +162,16 @@ func MinifyFile(files ...string) {
 	// [frequency analysis]: https://en.wikipedia.org/wiki/Frequency_analysis
 	var optimizeCompress = func(s string) string {
 		plus, minus := strings.Count(s, "+"), strings.Count(s, "-")
-		odd, even := strings.Count(s, "[-]"), strings.Count(s, "[--]")
+		odd, even := strings.Count(s, ODD_RESET), strings.Count(s, EVEN_RESET)
 		// this ensures the choice is unbiased
 		isMorePlusThanMinus := plus-minus+odd+2*even > 0
 
 		if isMorePlusThanMinus {
 			if odd > 0 {
-				s = strings.ReplaceAll(s, "[-]", "[+]")
+				s = strings.ReplaceAll(s, ODD_RESET, "[+]")
 			}
 			if even > 0 {
-				s = strings.ReplaceAll(s, "[--]", "[++]")
+				s = strings.ReplaceAll(s, EVEN_RESET, "[++]")
 			}
 		}
 		return s
@@ -182,9 +187,9 @@ func MinifyFile(files ...string) {
 		s = noOutputRemover(s)
 		// order matters, (from this point onwards)
 		s = memSimulator(s)
-		s = isEvenReset.ReplaceAllLiteralString(s, "[--]")
-		s = isOddReset.ReplaceAllLiteralString(s, "[-]")
-		s = isPrefixReset.ReplaceAllLiteralString(s, "[-]")
+		s = isEvenReset.ReplaceAllLiteralString(s, EVEN_RESET)
+		s = isOddReset.ReplaceAllLiteralString(s, ODD_RESET)
+		s = isPrefixReset.ReplaceAllLiteralString(s, ODD_RESET)
 		return optimizeCompress(s)
 	}
 

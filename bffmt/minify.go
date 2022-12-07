@@ -133,8 +133,7 @@ func MinifyFile(files ...string) {
 	//
 	// Statically analyses non-loop code, to remove some no-ops.
 	//
-	// current implementation is no-op itself,
-	// so this func is equivalent to the identity fn
+	// current implementation is identity fn
 	var memSimulator = func(s string) string {
 		// simulated BF memory/tape
 		var mem = map[int]uint8{}
@@ -197,7 +196,7 @@ func MinifyFile(files ...string) {
 	//
 	// Explained in [#2]. It assumes s only has valid ops.
 	//
-	//[#2]: https://github.com/baris-inandi/brainfuck-go/issues/2
+	// [#2]: https://github.com/baris-inandi/brainfuck-go/issues/2
 	var minify = func(s string) string {
 		// calling this now may speed up the others
 		s = noOutputRemover(s)

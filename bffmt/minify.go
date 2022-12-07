@@ -23,7 +23,7 @@ func MinifyFile(files ...string) {
 	// matches ODD_RESET, preceded by 1 or more "+" or "-" (mixed)
 	var isPrefixedReset = regexp.MustCompile(`[+-]+\[-\]`)
 
-	/* // returns a pair of indices of matching braces, searched from start.
+	// returns a pair of indices of matching braces, searched from start.
 	//
 	// `start` ignores all runes before that index.
 	// If start is negative, it becomes relative to the end.
@@ -36,7 +36,7 @@ func MinifyFile(files ...string) {
 			panic("Index out of bounds")
 		}
 
-		var open int = -1
+		open := -1
 		for start < size {
 			c := s[start]
 			if c == "["[0] {
@@ -48,9 +48,9 @@ func MinifyFile(files ...string) {
 
 		// avoid double-counting "["
 		start++
-		var depth int = 0
+		depth := 0
 
-		var close int = -1
+		close := -1
 		for start < size {
 			c := s[start]
 			if c == "["[0] {
@@ -67,7 +67,7 @@ func MinifyFile(files ...string) {
 		}
 
 		return open, close
-	} */
+	}
 
 	// finds index of 1st rune that isn't in the charset "[],.", or -1 if not found.
 	//
@@ -140,7 +140,7 @@ func MinifyFile(files ...string) {
 		// relative memory pointer
 		var ptr int = 0
 
-		for i := indexNoIOBrace(s, 0); i < len(s) && i != -1; i = indexNoIOBrace(s, i+1) {
+		for i := indexNoIOBrace(s, 0); i < len(s) && i > -1; i = indexNoIOBrace(s, i+1) {
 			switch s[i] {
 			case "+"[0]:
 				{
@@ -176,11 +176,23 @@ func MinifyFile(files ...string) {
 	//
 	// [frequency analysis]: https://en.wikipedia.org/wiki/Frequency_analysis
 	var optimizeCompress = func(s string) string {
+		// "I hope the compiler optimizes this from 4n iterations to n iters"
+		// @Rudxain
 		plus, minus := strings.Count(s, "+"), strings.Count(s, "-")
 		odd, even := strings.Count(s, ODD_RESET), strings.Count(s, EVEN_RESET)
 		// this ensures the choice is unbiased
 		isMorePlusThanMinus := plus-minus+odd+2*even > 0
 
+		// A space-time tradeoff isn't worth it,
+		// because time is O(n) and space is O(1) (ignoring s).
+		// If (while counting) we were to allocate a list of indices to all ocurrences
+		// of ODD_RESET and EVEN_RESET, space would become O(n),
+		// but time would still be O(n) (despite being practically faster).
+		// So we should iterate over the whole s, instead of iter over a list of pointers to s.
+		//
+		// CPU cache already helps a bit.
+		// allocating more memory just reduces the available cache space,
+		// therefore reducing iteration speed
 		if isMorePlusThanMinus {
 			if odd > 0 {
 				s = strings.ReplaceAll(s, ODD_RESET, "[+]")

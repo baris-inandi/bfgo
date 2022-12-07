@@ -94,11 +94,27 @@ func MinifyFile(files ...string) {
 		return -1
 	}
 
-	// removes all runes after last `.`,
+	// removes consecutive loops, keeping the 1st.
+	//
+	// current impl is identity fn
+	var consecutiveLoopRemover = func(s string) string {
+		return s
+	}
+
+	// removes all loops before any memory write is done.
+	//
+	// this is safe, because memory is all-zeros, and loops are guaranteed to never run.
+	//
+	// current impl is identity fn
+	var zeroLoopRemover = func(s string) string {
+		return s
+	}
+
+	// removes all runes after last ".",
 	// [iff] there are no braces in the part to be removed
 	// (this ensures infinite loops are still executed)
 	//
-	//[iff]: https://en.wikipedia.org/wiki/If_and_only_if
+	// [iff]: https://en.wikipedia.org/wiki/If_and_only_if
 	var noOutputRemover = func(s string) string {
 		for i := len(s) - 1; i >= 0; i-- {
 			c := s[i]
@@ -187,6 +203,8 @@ func MinifyFile(files ...string) {
 		s = noOutputRemover(s)
 		// order matters, (from this point onwards)
 		s = memSimulator(s)
+		s = consecutiveLoopRemover(s)
+		s = zeroLoopRemover(s)
 		s = isEvenReset.ReplaceAllLiteralString(s, EVEN_RESET)
 		s = isOddReset.ReplaceAllLiteralString(s, ODD_RESET)
 		s = isPrefixedReset.ReplaceAllLiteralString(s, ODD_RESET)

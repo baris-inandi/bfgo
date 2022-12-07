@@ -14,14 +14,14 @@ func MinifyFile(files ...string) {
 	// minified `-` condtional (halt-if-even) cell reseter
 	const EVEN_RESET = "[--]"
 
-	// matches any even (conditional halt) reseters
-	var isEvenReset = regexp.MustCompile(`\[(?:(?:\+\+){1,128}|(?:--){2,128})\]`)
+	// matches any odd (unconditional) reseters, except ODD_RESET
+	var isOddReset = regexp.MustCompile(`\[(?:(?:\+\+)*\+|(?:--)+-)\]`)
 
-	// matches any odd (unconditional) reseters
-	var isOddReset = regexp.MustCompile(`\[(?:(?:\+\+){0,128}\+|(?:--){1,128}-)\]`)
+	// matches any even (conditional halt) reseters, except EVEN_RESET
+	var isEvenReset = regexp.MustCompile(`\[(?:(?:\+\+)+|(?:--){2,})\]`)
 
 	// matches ODD_RESET, preceded by 1 or more "+" or "-" (mixed)
-	var isPrefixReset = regexp.MustCompile(`[+-]+\[-\]`)
+	var isPrefixedReset = regexp.MustCompile(`[+-]+\[-\]`)
 
 	/* // returns a pair of indices of matching braces, searched from start.
 	//
@@ -189,7 +189,7 @@ func MinifyFile(files ...string) {
 		s = memSimulator(s)
 		s = isEvenReset.ReplaceAllLiteralString(s, EVEN_RESET)
 		s = isOddReset.ReplaceAllLiteralString(s, ODD_RESET)
-		s = isPrefixReset.ReplaceAllLiteralString(s, ODD_RESET)
+		s = isPrefixedReset.ReplaceAllLiteralString(s, ODD_RESET)
 		return optimizeCompress(s)
 	}
 

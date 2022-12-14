@@ -8,6 +8,7 @@ import (
 	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/boilerplate"
 	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/boilerplate/ir_constants"
 	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/optimizer"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/optimizer/canonicalizer"
 	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/optimizer/irliteral"
 )
 
@@ -91,5 +92,10 @@ func GenerateIntermediateRepresentation(c lang.Code) string {
 		fmt.Println(intermediate)
 	}
 	c.AddDebugFile("IR."+c.CompileTarget, intermediate)
+
+	// an experimental optimization applied post ir generation
+	if c.OLevel == 3 && c.CompileTarget == "c" {
+		intermediate = canonicalizer.ExperimentalCResetIncDecCanon(intermediate)
+	}
 	return intermediate
 }

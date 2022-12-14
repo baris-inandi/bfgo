@@ -9,7 +9,7 @@ import (
 func Strip(f string, wd string) {
 	stripstdout := &bytes.Buffer{}
 	stripstderr := &bytes.Buffer{}
-	stripCommand := fmt.Sprintf("strip --strip-unneeded %s", f)
+	stripCommand := fmt.Sprintf("strip %s", f)
 	stripcmd := exec.Command("bash", "-c", stripCommand)
 	stripcmd.Stderr = stripstderr
 	stripcmd.Stdout = stripstdout

@@ -87,15 +87,16 @@ func GenerateIntermediateRepresentation(c lang.Code) string {
 		fmt.Println("Syntax error: Unmatched ]")
 		os.Exit(1)
 	}
-	intermediate = boilerplate.GenerateIRBoilerplate(intermediate, c)
-	if c.Context.Bool("d-dump-ir") {
-		fmt.Println(intermediate)
-	}
-	c.AddDebugFile("IR."+c.CompileTarget, intermediate)
 
 	// an experimental optimization applied post ir generation
 	if c.OLevel == 3 && c.CompileTarget == "c" {
 		intermediate = canonicalizer.ExperimentalCResetIncDecCanon(intermediate)
 	}
+
+	intermediate = boilerplate.GenerateIRBoilerplate(intermediate, c)
+	if c.Context.Bool("d-dump-ir") {
+		fmt.Println(intermediate)
+	}
+	c.AddDebugFile("IR."+c.CompileTarget, intermediate)
 	return intermediate
 }

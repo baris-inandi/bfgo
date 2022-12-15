@@ -18,13 +18,13 @@ func Canonicalize(c lang.Code) lang.Code {
 	code = strings.ReplaceAll(code, "+-", "")
 	code = strings.ReplaceAll(code, "-+", "")
 
-	changeShiftBf := func(loop string, amount int) string {
+	amplifyShiftDeg1 := func(loop string, amount int) string {
 		// [->+<] -> [->>>+<<<] ; where amount is 3
 		return strings.ReplaceAll(
 			strings.ReplaceAll(loop, ">", strings.Repeat(">", amount)),
 			"<", strings.Repeat("<", amount))
 	}
-	changeShiftUpper := func(loop string, shift int, constant int) string {
+	amplifyShiftDeg2 := func(loop string, shift int, constant int) string {
 		// changeShiftBf for multiplication by constants
 		return strings.ReplaceAll(
 			strings.ReplaceAll(
@@ -57,27 +57,27 @@ func Canonicalize(c lang.Code) lang.Code {
 		for j := 2; j < runs; j++ {
 			// start with index 2, no need for mul/div by 1 is already implemented using add/sub
 			// i -> shift, j -> constant
-			code = bindPatternToIR(code, changeShiftUpper(canon_constants.BF__MUL_RIGHT, i, j), resolveAndFormatIRFromKey("IR__MUL_RIGHT", i, j))
-			code = bindPatternToIR(code, changeShiftUpper(canon_constants.BF__MUL_RIGHT_ALT, i, j), resolveAndFormatIRFromKey("IR__MUL_RIGHT", i, j))
-			code = bindPatternToIR(code, changeShiftUpper(canon_constants.BF__MUL_LEFT, i, j), resolveAndFormatIRFromKey("IR__MUL_LEFT", i, j))
-			code = bindPatternToIR(code, changeShiftUpper(canon_constants.BF__MUL_LEFT_ALT, i, j), resolveAndFormatIRFromKey("IR__MUL_LEFT", i, j))
+			code = bindPatternToIR(code, amplifyShiftDeg2(canon_constants.BF__MUL_RIGHT, i, j), resolveAndFormatIRFromKey("IR__MUL_RIGHT", i, j))
+			code = bindPatternToIR(code, amplifyShiftDeg2(canon_constants.BF__MUL_RIGHT_ALT, i, j), resolveAndFormatIRFromKey("IR__MUL_RIGHT", i, j))
+			code = bindPatternToIR(code, amplifyShiftDeg2(canon_constants.BF__MUL_LEFT, i, j), resolveAndFormatIRFromKey("IR__MUL_LEFT", i, j))
+			code = bindPatternToIR(code, amplifyShiftDeg2(canon_constants.BF__MUL_LEFT_ALT, i, j), resolveAndFormatIRFromKey("IR__MUL_LEFT", i, j))
 		}
 
 		// patterns that add right
-		code = bindPatternToIR(code, changeShiftBf(canon_constants.BF__ADD_RIGHT, i), resolveAndFormatIRFromKey("IR__ADD_RIGHT", i))
-		code = bindPatternToIR(code, changeShiftBf(canon_constants.BF__ADD_RIGHT_ALT, i), resolveAndFormatIRFromKey("IR__ADD_RIGHT", i))
+		code = bindPatternToIR(code, amplifyShiftDeg1(canon_constants.BF__ADD_RIGHT, i), resolveAndFormatIRFromKey("IR__ADD_RIGHT", i))
+		code = bindPatternToIR(code, amplifyShiftDeg1(canon_constants.BF__ADD_RIGHT_ALT, i), resolveAndFormatIRFromKey("IR__ADD_RIGHT", i))
 
 		// patterns that add left
-		code = bindPatternToIR(code, changeShiftBf(canon_constants.BF__ADD_LEFT, i), resolveAndFormatIRFromKey("IR__ADD_LEFT", i))
-		code = bindPatternToIR(code, changeShiftBf(canon_constants.BF__ADD_LEFT_ALT, i), resolveAndFormatIRFromKey("IR__ADD_LEFT", i))
+		code = bindPatternToIR(code, amplifyShiftDeg1(canon_constants.BF__ADD_LEFT, i), resolveAndFormatIRFromKey("IR__ADD_LEFT", i))
+		code = bindPatternToIR(code, amplifyShiftDeg1(canon_constants.BF__ADD_LEFT_ALT, i), resolveAndFormatIRFromKey("IR__ADD_LEFT", i))
 
 		// patterns that subtract left
-		code = bindPatternToIR(code, changeShiftBf(canon_constants.BF__SUB_LEFT, i), resolveAndFormatIRFromKey("IR__SUB_LEFT", i))
-		code = bindPatternToIR(code, changeShiftBf(canon_constants.BF__SUB_LEFT_ALT, i), resolveAndFormatIRFromKey("IR__SUB_LEFT", i))
+		code = bindPatternToIR(code, amplifyShiftDeg1(canon_constants.BF__SUB_LEFT, i), resolveAndFormatIRFromKey("IR__SUB_LEFT", i))
+		code = bindPatternToIR(code, amplifyShiftDeg1(canon_constants.BF__SUB_LEFT_ALT, i), resolveAndFormatIRFromKey("IR__SUB_LEFT", i))
 
 		// patterns that subtract right
-		code = bindPatternToIR(code, changeShiftBf(canon_constants.BF__SUB_RIGHT, i), resolveAndFormatIRFromKey("IR__SUB_RIGHT", i))
-		code = bindPatternToIR(code, changeShiftBf(canon_constants.BF__SUB_RIGHT_ALT, i), resolveAndFormatIRFromKey("IR__SUB_RIGHT", i))
+		code = bindPatternToIR(code, amplifyShiftDeg1(canon_constants.BF__SUB_RIGHT, i), resolveAndFormatIRFromKey("IR__SUB_RIGHT", i))
+		code = bindPatternToIR(code, amplifyShiftDeg1(canon_constants.BF__SUB_RIGHT_ALT, i), resolveAndFormatIRFromKey("IR__SUB_RIGHT", i))
 
 	}
 	c.Inner = code

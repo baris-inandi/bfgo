@@ -8,6 +8,7 @@ import (
 	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/boilerplate"
 	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/boilerplate/ir_constants"
 	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/optimizer"
+	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/optimizer/canonicalizer"
 	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/optimizer/irliteral"
 )
 
@@ -86,6 +87,12 @@ func GenerateIntermediateRepresentation(c lang.Code) string {
 		fmt.Println("Syntax error: Unmatched ]")
 		os.Exit(1)
 	}
+
+	// an experimental optimization applied post ir generation
+	if c.OLevel == 3 && c.CompileTarget == "c" {
+		intermediate = canonicalizer.ExperimentalCResetIncDecCanon(intermediate)
+	}
+
 	intermediate = boilerplate.GenerateIRBoilerplate(intermediate, c)
 	if c.Context.Bool("d-dump-ir") {
 		fmt.Println(intermediate)

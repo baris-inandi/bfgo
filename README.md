@@ -63,6 +63,8 @@ All compile targets can be compiled with **the optimizer**. The optimizer option
   - Results in very fast execution
   - > use `-o-performance` or `-O`
 
+### Interpreter
+
 Executes given brainfuck file.
 There is still room for improvement when it comes to performance. Feel free to submit a PR.
 

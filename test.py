@@ -13,4 +13,4 @@ for i in range(RUNS):
     mean += (end - start) * 1000
 mean /= RUNS
 
-print(f"{RUNS} runs of \"{cmd}\": ", str(round(mean, 2)) + "ms")
+print(f'{RUNS} runs of "{cmd}": ', str(round(mean, 2)) + "ms")

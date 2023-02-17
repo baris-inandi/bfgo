@@ -112,14 +112,21 @@ func MinifyFile(files ...string) {
 	}
 
 	// removes all runes after last ".",
-	// [iff] there are no braces in the part to be removed
-	// (this ensures infinite loops are still executed)
+	// [iff] there's no `,` or `]` in the part to be removed,
+	// this ensures `stdin` side effects still happen,
+	// and infinite loops are still executed.
+	//
+	// a mismatched `[` doesn't matter, because it either:
+	//
+	// 1. continues execution
+	//
+	// 2. halts/crashes the program
 	//
 	// [iff]: https://en.wikipedia.org/wiki/If_and_only_if
 	var noOutputRemover = func(s string) string {
 		for i := len(s) - 1; i >= 0; i-- {
 			c := s[i]
-			if c == "["[0] || c == "]"[0] {
+			if c == ","[0] || c == "]"[0] {
 				break
 			}
 			if c == "."[0] {

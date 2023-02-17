@@ -1,6 +1,6 @@
+// other utility functions
 package utils
 
-// other utility functions
 func RuneInSlice(a rune, list []rune) bool {
 	/*
 		func runeInSlice

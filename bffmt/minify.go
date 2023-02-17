@@ -24,6 +24,7 @@ func MinifyFile(files ...string) {
 	var isPrefixedReset = regexp.MustCompile(`[+-]+\[-\]`)
 
 	// returns a pair of indices of matching braces, searched from start.
+	// -1 if not found
 	//
 	// `start` ignores all runes before that index.
 	// If start is negative, it becomes relative to the end.

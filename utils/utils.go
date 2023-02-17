@@ -14,3 +14,14 @@ func RuneInSlice(a rune, list []rune) bool {
 	}
 	return false
 }
+
+func RelativeIndex(i, size int) int {
+	if i < 0 {
+		i += size
+	}
+	if i < 0 {
+		// should it return an err instead of panicking?
+		panic("Index out of bounds")
+	}
+	return i
+}

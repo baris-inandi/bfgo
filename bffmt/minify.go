@@ -40,7 +40,7 @@ func MinifyFile(files ...string) {
 		open := -1
 		for start < size {
 			c := s[start]
-			if c == "["[0] {
+			if c == '[' {
 				open = start
 				break
 			}
@@ -54,10 +54,10 @@ func MinifyFile(files ...string) {
 		close := -1
 		for start < size {
 			c := s[start]
-			if c == "["[0] {
+			if c == '[' {
 				depth++
 			}
-			if c == "]"[0] {
+			if c == ']' {
 				if depth == 0 {
 					close = start
 					break
@@ -87,7 +87,7 @@ func MinifyFile(files ...string) {
 		// "I couldn't find a way to write it in functional-paradigm" @Rudxain
 		for start < size {
 			c := s[start]
-			if c != "["[0] && c != "]"[0] && c != ","[0] && c != "."[0] {
+			if c != '[' && c != ']' && c != ',' && c != '.' {
 				return start
 			}
 			start += 1
@@ -126,10 +126,10 @@ func MinifyFile(files ...string) {
 	var noOutputRemover = func(s string) string {
 		for i := len(s) - 1; i >= 0; i-- {
 			c := s[i]
-			if c == ","[0] || c == "]"[0] {
+			if c == ',' || c == ']' {
 				break
 			}
-			if c == "."[0] {
+			if c == '.' {
 				s = s[0 : i+1]
 				break
 			}
@@ -150,22 +150,22 @@ func MinifyFile(files ...string) {
 
 		for i := indexNoIOBrace(s, 0); i < len(s) && i > -1; i = indexNoIOBrace(s, i+1) {
 			switch s[i] {
-			case "+"[0]:
+			case '+':
 				{
 					mem[ptr] += 1
 					continue
 				}
-			case "-"[0]:
+			case '-':
 				{
 					mem[ptr] -= 1
 					continue
 				}
-			case ">"[0]:
+			case '>':
 				{
 					ptr += 1
 					continue
 				}
-			case "<"[0]:
+			case '<':
 				{
 					ptr -= 1
 					continue

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/baris-inandi/brainfuck/lang/readcode"
+	"github.com/baris-inandi/brainfuck/utils"
 )
 
 func MinifyFile(files ...string) {
@@ -30,12 +31,7 @@ func MinifyFile(files ...string) {
 	// If start is negative, it becomes relative to the end.
 	var getMatchingBraces = func(s string, start int) (int, int) {
 		size := len(s)
-		if start < 0 {
-			start += size
-		}
-		if start < 0 {
-			panic("Index out of bounds")
-		}
+		start = utils.RelativeIndex(start, size)
 
 		open := -1
 		for start < size {
@@ -76,13 +72,7 @@ func MinifyFile(files ...string) {
 	// If start is negative, it becomes relative to the end.
 	var indexNoIOBrace = func(s string, start int) int {
 		size := len(s)
-		if start < 0 {
-			start += size
-		}
-		if start < 0 {
-			// should it return an err instead of panicking?
-			panic("Index out of bounds")
-		}
+		start = utils.RelativeIndex(start, size)
 
 		// "I couldn't find a way to write it in functional-paradigm" @Rudxain
 		for start < size {

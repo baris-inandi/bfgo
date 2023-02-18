@@ -88,7 +88,7 @@ func MinifyFile(files ...string) {
 	// removes consecutive loops, keeping the 1st.
 	//
 	// current impl is identity fn
-	var consecutiveLoopRemover = func(s string) string {
+	var removeConsecutiveLoop = func(s string) string {
 		return s
 	}
 
@@ -113,7 +113,7 @@ func MinifyFile(files ...string) {
 	// 2. halts/crashes the program
 	//
 	// [iff]: https://en.wikipedia.org/wiki/If_and_only_if
-	var noOutputRemover = func(s string) string {
+	var removeAfterLastDot = func(s string) string {
 		for i := len(s) - 1; i >= 0; i-- {
 			c := s[i]
 			if c == ',' || c == ']' {
@@ -211,10 +211,10 @@ func MinifyFile(files ...string) {
 		s = utils.Apply(
 			s,
 			// calling this 1st may speed up the others
-			noOutputRemover,
+			removeAfterLastDot,
 			// order matters, (from this point onwards)
 			memSimulator,
-			consecutiveLoopRemover,
+			removeConsecutiveLoop,
 			zeroLoopRemover,
 		)
 		s = isEvenReset.ReplaceAllLiteralString(s, EVEN_RESET)

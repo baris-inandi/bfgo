@@ -208,12 +208,15 @@ func MinifyFile(files ...string) {
 	//
 	// [#2]: https://github.com/baris-inandi/brainfuck-go/issues/2
 	var minify = func(s string) string {
-		// calling this now may speed up the others
-		s = noOutputRemover(s)
-		// order matters, (from this point onwards)
-		s = memSimulator(s)
-		s = consecutiveLoopRemover(s)
-		s = zeroLoopRemover(s)
+		s = utils.Apply(
+			s,
+			// calling this 1st may speed up the others
+			noOutputRemover,
+			// order matters, (from this point onwards)
+			memSimulator,
+			consecutiveLoopRemover,
+			zeroLoopRemover,
+		)
 		s = isEvenReset.ReplaceAllLiteralString(s, EVEN_RESET)
 		s = isOddReset.ReplaceAllLiteralString(s, ODD_RESET)
 		s = isPrefixedReset.ReplaceAllLiteralString(s, ODD_RESET)

@@ -25,3 +25,11 @@ func RelativeIndex(i, size int) int {
 	}
 	return i
 }
+
+// emulation of "pipeline operator"
+func Apply[T any](s T, fs ...func(T) T) T {
+	for _, f := range fs {
+		s = f(s)
+	}
+	return s
+}

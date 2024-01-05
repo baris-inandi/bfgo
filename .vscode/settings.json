@@ -35,5 +35,6 @@
         "floatn.h": "c",
         "math-vector.h": "c",
         "mathcalls-helper-functions.h": "c"
-    }
+    },
+    "python.analysis.typeCheckingMode": "basic"
 }

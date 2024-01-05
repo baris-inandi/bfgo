@@ -21,7 +21,7 @@
         "ucli",
         "urfave"
     ],
-    "licenser.projectName": "brainfuck",
+    "licenser.projectName": "bfgo",
     "licenser.author": "baris-inandi",
     "licenser.license": "GPLv3",
     "files.associations": {

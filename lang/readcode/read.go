@@ -5,10 +5,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/baris-inandi/brainfuck/utils"
+	"github.com/baris-inandi/bfgo/utils"
 )
 
-func ToValidBrainfuck(s string) string {
+func ToValidBF(s string) string {
 	return strings.Map(
 		func(r rune) rune {
 			if utils.RuneInSlice(r, []rune{'<', '>', '+', '-', '.', '[', ']', ','}) {
@@ -19,19 +19,19 @@ func ToValidBrainfuck(s string) string {
 	)
 }
 
-func ReadBrainfuck(f string) string {
+func ReadBFCode(f string) string {
 	/*
-		func readBrainfuck
+		func ReadBFCode
 			Gets param f where f is
-			a filepath to a brainfuck file,
-			reads the brainfuck file,
-			removes all non-brainfuck characters,
-			returns valid brainfuck code
+			a filepath to a BF file,
+			reads the BF file,
+			removes all non-BF characters,
+			returns valid BF code
 	*/
 	fileBytes, err := os.ReadFile(f)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	return ToValidBrainfuck(string(fileBytes))
+	return ToValidBF(string(fileBytes))
 }

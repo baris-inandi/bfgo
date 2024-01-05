@@ -1,5 +1,4 @@
-                            Linus Akesson presents:
-                   The Game Of Life implemented in Brainfuck
+Linus Akesson presents: The Game Of Life implemented in BF
 
        +>>++++[<++++>-]<[<++++++>-]+[<[>>>>+<<<<-]>>>>[<<<<+>>>>>>+<<-]<+
    +++[>++++++++<-]>.[-]<+++[>+++<-]>+[>>.+<<-]>>[-]<<<++[<+++++>-]<.<<[>>>>+

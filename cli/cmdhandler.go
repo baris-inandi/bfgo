@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/baris-inandi/brainfuck/bffmt"
-	bfexec "github.com/baris-inandi/brainfuck/lang/exec"
+	"github.com/baris-inandi/bfgo/bffmt"
+	bfexec "github.com/baris-inandi/bfgo/lang/exec"
 	ucli "github.com/urfave/cli/v2"
 )
 
@@ -18,7 +18,7 @@ func CmdHandler(c *ucli.Context) error {
 	}
 	if len(c.Args().Slice()) == 0 {
 		fmt.Println("No input files")
-		fmt.Println("Use brainfuck --help for usage")
+		fmt.Println("Use bfgo --help for usage")
 		os.Exit(0)
 	}
 	if c.Bool("minify") {

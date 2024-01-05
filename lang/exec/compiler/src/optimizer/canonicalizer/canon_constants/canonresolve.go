@@ -1,8 +1,8 @@
 package canon_constants
 
 import (
-	"github.com/baris-inandi/brainfuck/lang"
-	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/optimizer/canonicalizer/canon_constants/ir_bindings"
+	"github.com/baris-inandi/bfgo/lang"
+	"github.com/baris-inandi/bfgo/lang/exec/compiler/src/optimizer/canonicalizer/canon_constants/ir_bindings"
 )
 
 func ResolveCompileTargetIRBinding(c *lang.Code, key string) string {

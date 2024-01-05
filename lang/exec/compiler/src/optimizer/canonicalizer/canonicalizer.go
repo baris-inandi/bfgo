@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/baris-inandi/brainfuck/lang"
-	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/optimizer/canonicalizer/canon_constants"
-	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/optimizer/irliteral"
+	"github.com/baris-inandi/bfgo/lang"
+	"github.com/baris-inandi/bfgo/lang/exec/compiler/src/optimizer/canonicalizer/canon_constants"
+	"github.com/baris-inandi/bfgo/lang/exec/compiler/src/optimizer/irliteral"
 )
 
 const CANONICALIZER_SHIFTING_PATTERN_RUNS = 16

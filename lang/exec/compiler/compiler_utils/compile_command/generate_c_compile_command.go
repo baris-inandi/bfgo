@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/baris-inandi/brainfuck/lang"
+	"github.com/baris-inandi/bfgo/lang"
 )
 
 func generateCCompileCommand(c *lang.Code, outFile string, tempFile *os.File) string {

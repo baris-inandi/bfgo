@@ -3,7 +3,7 @@ package lang
 import (
 	"time"
 
-	"github.com/baris-inandi/brainfuck/lang/readcode"
+	"github.com/baris-inandi/bfgo/lang/readcode"
 	"github.com/urfave/cli/v2"
 )
 
@@ -32,7 +32,7 @@ func NewBfCode(c *cli.Context, filepath string) Code {
 	}
 	return Code{
 		Filepath:      filepath,
-		Inner:         readcode.ReadBrainfuck(filepath),
+		Inner:         readcode.ReadBFCode(filepath),
 		Context:       c,
 		OLevel:        oLevel,
 		startTime:     time.Now(),

@@ -1,6 +1,6 @@
-# Brainfuck
+# bfgo
 
-brainfuck-go is an overengineered brainfuck toolkit written in Go.
+bfgo is an overengineered BF toolkit written in Go.
 
 ## Features
 
@@ -24,17 +24,17 @@ The compiler can compile for three different targets:
 
 #### Native
 
-**Example:** `$ brainfuck examples/hello.bf`  
+**Example:** `$ bfgo examples/hello.bf`  
 Creates a binary `hello`. Run with `./hello`.
 
 #### JVM Compiler
 
-**Example:** `$ brainfuck -jvm examples/hello.bf`  
+**Example:** `$ bfgo -jvm examples/hello.bf`  
 Generates a JVM classfile `Hello.class`. Run with `java Hello`.
 
 #### JavaScript Compiler
 
-**Example:** `$ brainfuck -js examples/hello.bf`  
+**Example:** `$ bfgo -js examples/hello.bf`  
 Generates a JavaScript file `hello.js` and an HTML file `hello.html`.  
 Run your favorite HTTP server and load `hello.html` in the browser.
 The output will replace the document `<body>`.
@@ -65,7 +65,7 @@ All compile targets can be compiled with **the optimizer**. The optimizer option
 
 ### Interpreter
 
-Executes given brainfuck file.
+Executes given BF file.
 There is still room for improvement when it comes to performance. Feel free to submit a PR.
 
 > use `-interpret`
@@ -73,20 +73,20 @@ There is still room for improvement when it comes to performance. Feel free to s
 #### REPL
 
 The REPL is a command line interface for the interpreter.
-It can be used to execute brainfuck interactively.
+It can be used to execute BF interactively.
 
 > use `-repl`
 
 ### bffmt
 
-Brainfuck formatter bundled with `brainfuck-go`.  
-> Warning: bffmt currently omits all comments. Feel free to submit a PR for support for comments.  
+BF formatter bundled with `bfgo`.  
 
+> Warning: bffmt currently omits all comments. Feel free to submit a PR for support for comments.  
 > use `-fmt`
 
 Example formatted snippet from `examples/fibonacci.bf`:
 
-```brainfuck
+```plaintext
   [
     +++++
     [>++++++++<-]> .
@@ -97,7 +97,7 @@ Example formatted snippet from `examples/fibonacci.bf`:
 
 #### Minifier
 
-bffmt can also minify brainfuck code, leaving only valid characters, minimizing file size.
+bffmt can also minify BF code, leaving only valid characters, minimizing file size.
 
 ## Cli Flags
 
@@ -114,9 +114,9 @@ bffmt can also minify brainfuck code, leaving only valid characters, minimizing 
 --interpret                Interpret file instead of compiling (default: false)
 --repl                     Start a read-eval-print loop (default: false)
 --c-compiler-flags value   Pass arbitrary flags to the compiler (gcc, clang or javac)
---c-tape-size value        Integer to specify length of brainfuck tape (default: 30000)
---c-tape-init value        Integer value used to initialize all elements in brainfuck tape (default: 0)
---c-cell-type value        Type used for brainfuck tape in intermediate representation (default: "int")
+--c-tape-size value        Integer to specify length of BF tape (default: 30000)
+--c-tape-init value        Integer value used to initialize all elements in BF tape (default: 0)
+--c-cell-type value        Type used for BF tape in intermediate representation (default: "int")
 --d-dump-ir                Dump intermediate representation (default: false)
 --d-keep-temp              Do not remove temporary IR files (default: false)
 --d-print-ir-filepath      Dump temporary IR filepath, use -d-keep-temp to keep them from being deleted (default: false)

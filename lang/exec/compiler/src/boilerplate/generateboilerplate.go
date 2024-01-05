@@ -3,7 +3,7 @@ package boilerplate
 import (
 	"fmt"
 
-	"github.com/baris-inandi/brainfuck/lang"
+	"github.com/baris-inandi/bfgo/lang"
 )
 
 func GenerateIRBoilerplate(intermediate string, c lang.Code) string {

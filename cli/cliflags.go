@@ -24,9 +24,9 @@ func Flags() []c.Flag {
 
 		// IR related options
 		&c.StringFlag{Name: "c-compiler-flags", Usage: "Pass arbitrary flags to the compiler (gcc, clang or javac)"},
-		&c.Int64Flag{Name: "c-tape-size", Value: 30000, Usage: "Integer to specify length of brainfuck tape"},
-		&c.IntFlag{Name: "c-tape-init", Value: 0, Usage: "Integer value used to initialize all elements in brainfuck tape"},
-		&c.StringFlag{Name: "c-cell-type", Value: "int", Usage: "Type used for brainfuck tape in intermediate representation"},
+		&c.Int64Flag{Name: "c-tape-size", Value: 30000, Usage: "Integer to specify length of BF tape"},
+		&c.IntFlag{Name: "c-tape-init", Value: 0, Usage: "Integer value used to initialize all elements in BF tape"},
+		&c.StringFlag{Name: "c-cell-type", Value: "int", Usage: "Type used for BF tape in intermediate representation"},
 
 		// debug options
 		&c.BoolFlag{Name: "d-dump-ir", Usage: "Dump intermediate representation"},

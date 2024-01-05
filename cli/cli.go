@@ -10,5 +10,5 @@ var Cli = &cli.App{
 	Flags:                  Flags(),
 	Action:                 CmdHandler,
 	UseShortOptionHandling: true,
-	Usage:                  "A blazingly fast, optimizing brainfuck compiler and interpreter",
+	Usage:                  "A blazingly fast, optimizing BF compiler and interpreter",
 }

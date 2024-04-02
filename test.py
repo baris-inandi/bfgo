@@ -2,7 +2,7 @@ import time
 from os import system
 from sys import argv
 
-RUNS = 100
+RUNS = 10
 cmd = " ".join(argv[1:])
 
 mean = 0.0

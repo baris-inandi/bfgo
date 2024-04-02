@@ -3,9 +3,9 @@ package exec
 import (
 	"fmt"
 
-	"github.com/baris-inandi/brainfuck/lang"
-	"github.com/baris-inandi/brainfuck/lang/exec/compiler"
-	"github.com/baris-inandi/brainfuck/lang/exec/interpreter"
+	"github.com/baris-inandi/bfgo/lang"
+	"github.com/baris-inandi/bfgo/lang/exec/compiler"
+	"github.com/baris-inandi/bfgo/lang/exec/interpreter"
 	"github.com/urfave/cli/v2"
 )
 

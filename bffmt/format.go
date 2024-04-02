@@ -4,8 +4,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/baris-inandi/brainfuck/lang/exec/interpreter"
-	"github.com/baris-inandi/brainfuck/lang/readcode"
+	"github.com/baris-inandi/bfgo/lang/exec/interpreter"
+	"github.com/baris-inandi/bfgo/lang/readcode"
 )
 
 const BF_OP = "+-<>"
@@ -68,7 +68,7 @@ func format(code string) string {
 
 func FormatFile(files ...string) {
 	for _, f := range files {
-		formatted := format(readcode.ReadBrainfuck(f))
+		formatted := format(readcode.ReadBFCode(f))
 		err := os.WriteFile(f, []byte(formatted), 0644)
 		if err != nil {
 			panic(err)

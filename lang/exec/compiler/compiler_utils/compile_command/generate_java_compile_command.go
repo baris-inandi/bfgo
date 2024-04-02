@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/baris-inandi/brainfuck/lang"
+	"github.com/baris-inandi/bfgo/lang"
 )
 
 func generateJavaCompileCommand(c *lang.Code, tempFile *os.File) string {

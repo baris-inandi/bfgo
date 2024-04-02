@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/baris-inandi/brainfuck/lang"
-	"github.com/baris-inandi/brainfuck/lang/exec/compiler/compiler_utils/generate_out_file"
+	"github.com/baris-inandi/bfgo/lang"
+	"github.com/baris-inandi/bfgo/lang/exec/compiler/compiler_utils/generate_out_file"
 )
 
 func CompileCodeIntoFileDebug(c lang.Code) string {

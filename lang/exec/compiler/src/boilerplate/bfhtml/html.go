@@ -14,7 +14,7 @@ const BOILERPLATE = `<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Description of your page">
   <script defer src="/%s"></script>
-  <title>Brainfuck</title>
+  <title>BFGO</title>
 </head>
 <body></body>
 </html>

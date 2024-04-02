@@ -9,7 +9,7 @@ func MatchLoopIndices(index int, code string) (int, int, string) {
 		func matchLoopIndices
 			returns the start and end indices of a loop expression
 			where index is the index of the opening bracket
-			and code is a string of the whole brainfuck code
+			and code is a string of the whole BF code
 	*/
 	indexEnd := index
 	depth := 0
@@ -38,7 +38,7 @@ func EvalExpr(code string) {
 }
 
 func (ctx *BfContext) EvalExprContextually(code string) {
-	// evaluates brainfuck code where code is a string of brainfuck code
+	// evaluates given BF code
 	skipChars := 0
 	for index, char := range code {
 		if skipChars > 0 {

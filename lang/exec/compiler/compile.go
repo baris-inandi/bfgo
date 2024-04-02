@@ -7,12 +7,12 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/baris-inandi/brainfuck/lang"
-	"github.com/baris-inandi/brainfuck/lang/exec/compiler/compiler_utils/compile_command"
-	"github.com/baris-inandi/brainfuck/lang/exec/compiler/compiler_utils/generate_out_file"
-	"github.com/baris-inandi/brainfuck/lang/exec/compiler/compiler_utils/strip"
-	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/boilerplate/bfhtml"
-	"github.com/baris-inandi/brainfuck/lang/exec/compiler/src/intermediate"
+	"github.com/baris-inandi/bfgo/lang"
+	"github.com/baris-inandi/bfgo/lang/exec/compiler/compiler_utils/compile_command"
+	"github.com/baris-inandi/bfgo/lang/exec/compiler/compiler_utils/generate_out_file"
+	"github.com/baris-inandi/bfgo/lang/exec/compiler/compiler_utils/strip"
+	"github.com/baris-inandi/bfgo/lang/exec/compiler/src/boilerplate/bfhtml"
+	"github.com/baris-inandi/bfgo/lang/exec/compiler/src/intermediate"
 )
 
 func compileIntermediateIntoFile(c *lang.Code, intermediate string, outFile string) string {
@@ -21,11 +21,11 @@ func compileIntermediateIntoFile(c *lang.Code, intermediate string, outFile stri
 	}
 
 	// generate temp ir file
-	f, _ := os.CreateTemp("", "baris-inandi__brainfuck_go_*."+c.CompileTarget)
+	f, _ := os.CreateTemp("", "baris-inandi__bfgo_*."+c.CompileTarget)
 	err := os.WriteFile(f.Name(), []byte(intermediate), 0644)
 	if err != nil {
 		fmt.Print(err)
-		fmt.Println("Brainfuck Error: Could not write temporary file.")
+		fmt.Println("BFGO Error: Could not write temporary file.")
 	}
 	c.VerboseOut("compile.go: generated temporary IR file at ", f.Name())
 
@@ -50,7 +50,7 @@ func compileIntermediateIntoFile(c *lang.Code, intermediate string, outFile stri
 		err = irccmd.Run()
 	}
 	if err != nil {
-		fmt.Println("Brainfuck Compilation Error:\nERROR: ", ircstderr.String())
+		fmt.Println("BFGO Compilation Error:\nERROR: ", ircstderr.String())
 	}
 
 	if c.OLevel == 3 && !c.Context.Bool("compile-only") && !c.Context.Bool("jvm") {
@@ -95,7 +95,7 @@ func compileIntermediateIntoFile(c *lang.Code, intermediate string, outFile stri
 
 func CompileCodeIntoFile(c lang.Code) string {
 	/*
-		compiles code, a brainfuck string to a binary
+		compiles code, a BF string to a binary
 		where fileOut is the name of the output file.
 		if fileOut is an empty string, the output file
 		will be named automatically according to the

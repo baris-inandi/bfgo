@@ -21,7 +21,7 @@
         "ucli",
         "urfave"
     ],
-    "licenser.projectName": "brainfuck",
+    "licenser.projectName": "bfgo",
     "licenser.author": "baris-inandi",
     "licenser.license": "GPLv3",
     "files.associations": {
@@ -35,5 +35,6 @@
         "floatn.h": "c",
         "math-vector.h": "c",
         "mathcalls-helper-functions.h": "c"
-    }
+    },
+    "python.analysis.typeCheckingMode": "basic"
 }

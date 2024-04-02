@@ -1,6 +1,6 @@
 package ir_constants
 
-import "github.com/baris-inandi/brainfuck/lang"
+import "github.com/baris-inandi/bfgo/lang"
 
 func ResolveCompileTargetIR(c *lang.Code, key string) string {
 	if c.UsingJVM() {

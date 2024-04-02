@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/baris-inandi/brainfuck/lang"
+	"github.com/baris-inandi/bfgo/lang"
 )
 
 func GenerateOutFile(c lang.Code) string {

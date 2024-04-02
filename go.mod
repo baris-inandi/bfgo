@@ -1,4 +1,4 @@
-module github.com/baris-inandi/brainfuck
+module github.com/baris-inandi/bfgo
 
 go 1.18
 

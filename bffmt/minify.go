@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/baris-inandi/brainfuck/lang/readcode"
-	"github.com/baris-inandi/brainfuck/utils"
+  "github.com/baris-inandi/bfgo/utils"
+	"github.com/baris-inandi/bfgo/lang/readcode"
 )
 
 func MinifyFile(files ...string) {
@@ -224,7 +224,7 @@ func MinifyFile(files ...string) {
 	}
 
 	for _, f := range files {
-		minified := minify(readcode.ReadBrainfuck(f))
+		minified := minify(readcode.ReadBFCode(f))
 		err := os.WriteFile(f, []byte(minified), 0o644)
 		if err != nil {
 			panic(err)

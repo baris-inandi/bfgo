@@ -1,7 +1,7 @@
 package deadcode
 
 import (
-	"github.com/baris-inandi/brainfuck/lang"
+	"github.com/baris-inandi/bfgo/lang"
 )
 
 func RemoveLeadingDeadcode(c lang.Code) lang.Code {

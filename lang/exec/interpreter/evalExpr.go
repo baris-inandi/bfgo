@@ -34,10 +34,10 @@ func MatchLoopIndices(index int, code string) (int, int, string) {
 
 func EvalExpr(code string) {
 	context := NewBfContext()
-	context.EvalExprContextually(code)
+	context.EvalExprWithContext(code)
 }
 
-func (ctx *BfContext) EvalExprContextually(code string) {
+func (ctx *BfContext) EvalExprWithContext(code string) {
 	// evaluates given BF code
 	skipChars := 0
 	for index, char := range code {
@@ -66,7 +66,7 @@ func (ctx *BfContext) EvalExprContextually(code string) {
 				skipCount := endIndex - startIndex
 				if ctx.tape[ctx.ptr] != 0 {
 					for ctx.tape[ctx.ptr] > 0 {
-						ctx.EvalExprContextually(loopExpr)
+						ctx.EvalExprWithContext(loopExpr)
 					}
 				}
 				skipChars = skipCount

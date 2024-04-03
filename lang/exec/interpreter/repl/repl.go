@@ -26,7 +26,7 @@ func Repl() {
 		if input == "quit" {
 			fmt.Println("Type 'exit' to exit.")
 		}
-		context.EvalExprContextually(readcode.ToValidBF(input))
+		context.EvalExprWithContext(readcode.ToValidBF(input))
 		// print an empty line if a print statement is present in the input
 		if utils.RuneInSlice('.', []rune(input)) {
 			fmt.Println()

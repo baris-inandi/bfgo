@@ -19,7 +19,7 @@ func Flags() []c.Flag {
 		&c.BoolFlag{Name: "o-performance", Aliases: []string{"O"}, Usage: "Enable optimizations: fast execution, slow compile time"},
 
 		// alternate interpreted modes
-		&c.BoolFlag{Name: "interpret", Usage: "Interpret file instead of compiling"},
+		&c.BoolFlag{Name: "interpret", Aliases: []string{"interp"}, Usage: "Interpret file instead of compiling"},
 		&c.BoolFlag{Name: "repl", Usage: "Start a read-eval-print loop"},
 
 		// IR related options
@@ -40,5 +40,6 @@ func Flags() []c.Flag {
 		// utils
 		&c.BoolFlag{Name: "fmt", Usage: "Format code (omits comments)"},
 		&c.BoolFlag{Name: "minify", Usage: "Minify code"},
+		&c.PathFlag{Name: "memory", Aliases: []string{"mem"}, Usage: "Import a file to the BF tape when using the interpreter"},
 	}
 }

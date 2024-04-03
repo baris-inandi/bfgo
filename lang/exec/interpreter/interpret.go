@@ -10,7 +10,27 @@ import (
 )
 
 func Interpret(code lang.Code) {
-	EvalExpr(code.Inner)
+	context := NewBfContext()
+	applyMemory(&code, &context)
+	context.EvalExprWithContext(code.Inner)
+}
+
+func applyMemory(code *lang.Code, ctx *BfContext) {
+	memoryPath := code.Context.Path("memory")
+	if memoryPath != "" {
+		mem, err := os.ReadFile(memoryPath)
+		if err != nil {
+			fmt.Println("Error reading memory file:", err)
+			os.Exit(1)
+		}
+		for i, val := range mem {
+			if i < len(ctx.tape) {
+				ctx.tape[i] = val
+			} else {
+				break
+			}
+		}
+	}
 }
 
 func Repl() {

@@ -5,20 +5,20 @@ import (
 	"regexp"
 	"strings"
 
-  "github.com/baris-inandi/bfgo/utils"
+	"github.com/baris-inandi/bfgo/utils"
 	"github.com/baris-inandi/bfgo/lang/readcode"
 )
 
 func MinifyFile(files ...string) {
-	// minified `-` uncondtional cell reseter
+	// canonical `-` unconditional cell reseter
 	const ODD_RESET = "[-]"
-	// minified `-` condtional (halt-if-even) cell reseter
+	// canonical `-` conditional (break-if-even) cell reseter
 	const EVEN_RESET = "[--]"
 
 	// matches any odd (unconditional) reseters, except ODD_RESET
 	var isOddReset = regexp.MustCompile(`\[(?:(?:\+\+)*\+|(?:--)+-)\]`)
 
-	// matches any even (conditional halt) reseters, except EVEN_RESET
+	// matches any even (conditional break) reseters, except EVEN_RESET
 	var isEvenReset = regexp.MustCompile(`\[(?:(?:\+\+)+|(?:--){2,})\]`)
 
 	// matches ODD_RESET, preceded by 1 or more "+" or "-" (mixed)
@@ -46,7 +46,8 @@ func MinifyFile(files ...string) {
 		// avoid double-counting "["
 		start++
 		depth := 0
-
+		// this covers the edge-case where
+		// "[" is located just before EOF (start >= size)
 		close := -1
 		for start < size {
 			c := s[start]
@@ -138,6 +139,16 @@ func MinifyFile(files ...string) {
 		// relative memory pointer
 		var ptr int = 0
 
+		/* # pseudo-code
+		0. split s by IOBrace (consecutives are treated as 1).
+		1. sim each substr in the resulting array,
+		such that each sub has its own isolated mem.
+		2. replace each substr by its "canonical form"
+		derived from mem.
+		3. re-insert delimiters at corresponding positions.
+		*/
+		// we need an outer loop to cleanup mem.
+		// and inner loop should break whenever it finds IOBrace
 		for i := indexNoIOBrace(s, 0); i < len(s) && i > -1; i = indexNoIOBrace(s, i+1) {
 			switch s[i] {
 			case '+':

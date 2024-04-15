@@ -19,6 +19,7 @@ type Code struct {
 	// compileTarget
 	// "c" 		-> binary using gcc/clang
 	// "java" 	-> class file using javac
+	// "js" 	-> JavaScript for the browser
 }
 
 func NewBfCode(c *cli.Context, filepath string) Code {

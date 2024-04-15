@@ -256,3 +256,4 @@ Cargo.lock
 
 ignore/
 debug-*/
+bfgo

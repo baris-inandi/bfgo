@@ -26,8 +26,6 @@ const (
 	LIB Level = iota
 	// assume all code will be run as-is
 	MAIN Level = iota
-	// same as FULL, but with multi-pass enabled (slow)
-	MAX Level = iota
 
 )
 */
@@ -110,14 +108,14 @@ func MinifyFile( /*l Level,*/ files ...string) {
 	// removes consecutive loops, keeping the 1st.
 	//
 	// current impl is identity fn
-	var removeConsecutiveLoop = func(s string) string {
+	var rmLoopLoop = func(s string) string {
 		return s
 	}
 
 	// removes all loops before any memory write is done.
 	//
 	// this is safe, because memory is all-zeros, and loops are guaranteed to never run.
-	var zeroLoopRemover = func(s string) string {
+	var rm0Loop = func(s string) string {
 		for i := 0; i < len(s); i++ {
 			c := s[i]
 			if c == ',' || c == '+' || c == '-' {
@@ -142,7 +140,7 @@ func MinifyFile( /*l Level,*/ files ...string) {
 	// 1. continues execution
 	//
 	// 2. halts/crashes the program
-	var removeAfterLastEffect = func(s string) string {
+	var rmAfterEffects = func(s string) string {
 		// reverse iter
 		for i := len(s) - 1; i >= 0; i-- {
 			c := s[i]
@@ -161,7 +159,7 @@ func MinifyFile( /*l Level,*/ files ...string) {
 	// It assumes `IOBrace` is a black-box with potential-side effects.
 	//
 	// current implementation is identity fn
-	var memSimulator = func(s string) string {
+	var memSim = func(s string) string {
 		// simulated BF memory/tape
 		var mem = map[int]uint8{}
 		// relative memory pointer
@@ -225,7 +223,7 @@ func MinifyFile( /*l Level,*/ files ...string) {
 		// If (while counting) we were to allocate a list of indices to all ocurrences
 		// of ODD_RESET and EVEN_RESET, space would become O(n),
 		// but time would still be O(n) (despite being practically faster).
-		// So we should iterate over the whole s, instead of iter over a list of pointers to s.
+		// So we should iterate over the whole s, rather than a list of pointers to s.
 		//
 		// CPU cache already helps a bit.
 		// allocating more memory just reduces the available cache space,
@@ -247,20 +245,29 @@ func MinifyFile( /*l Level,*/ files ...string) {
 	//
 	// [#2]: https://github.com/baris-inandi/brainfuck-go/issues/2
 	var minify = func(s string) string {
-		s = utils.Apply(
-			s,
-			// calling this 1st may speed up the others
-			removeAfterLastEffect,
-			// order matters, (from this point onwards)
-			memSimulator,
-			removeConsecutiveLoop,
-			zeroLoopRemover,
-		)
-		// these 3 are "amplified" by mem-sim
-		s = isEvenReset.ReplaceAllLiteralString(s, EVEN_RESET)
-		s = isOddReset.ReplaceAllLiteralString(s, ODD_RESET)
-		s = isPrefixedReset.ReplaceAllLiteralString(s, ODD_RESET)
-		return optimizeCompress(s)
+		for {
+			tmp := s
+			s = utils.Apply(
+				s,
+				// calling this 1st may speed up the others
+				rmAfterEffects,
+				// order matters, (from this point onwards)
+				memSim,
+				rmLoopLoop,
+				rm0Loop,
+			)
+			// these 3 are "amplified" by mem-sim
+			s = isEvenReset.ReplaceAllLiteralString(s, EVEN_RESET)
+			s = isOddReset.ReplaceAllLiteralString(s, ODD_RESET)
+			s = isPrefixedReset.ReplaceAllLiteralString(s, ODD_RESET)
+
+			// prevent potential infinite loop and OOM panic
+			// by using `>=` rather than `==`
+			if len(s) >= len(tmp) {
+				// ensure smallest s
+				return optimizeCompress(tmp)
+			}
+		}
 	}
 
 	for _, f := range files {

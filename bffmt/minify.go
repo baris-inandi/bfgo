@@ -5,11 +5,33 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/baris-inandi/bfgo/utils"
 	"github.com/baris-inandi/bfgo/lang/readcode"
+	"github.com/baris-inandi/bfgo/utils"
 )
 
-func MinifyFile(files ...string) {
+/*
+// Minification level
+type Level int
+
+// enum emulation
+// https://stackoverflow.com/a/14426447
+const (
+
+	// only removes non-BF chars,
+	// therefore it has maximum portability
+	// across implementations.
+	BASIC Level = iota
+	// assumes code isn't a main program.
+	// useful for "libraries" and "modules", such as subroutines.
+	LIB Level = iota
+	// assume all code will be run as-is
+	MAIN Level = iota
+	// same as FULL, but with multi-pass enabled (slow)
+	MAX Level = iota
+
+)
+*/
+func MinifyFile( /*l Level,*/ files ...string) {
 	// canonical `-` unconditional cell reseter
 	const ODD_RESET = "[-]"
 	// canonical `-` conditional (break-if-even) cell reseter
@@ -102,25 +124,20 @@ func MinifyFile(files ...string) {
 		return s
 	}
 
-	// removes all runes after last ".",
-	// [iff] there's no `,` or `]` in the part to be removed,
+	// removes all bytes after last char in the set ".,]".
 	// this ensures `stdin` side effects still happen,
 	// and infinite loops are still executed.
 	//
-	// a mismatched `[` doesn't matter, because it either:
+	// a mismatched '[' doesn't matter, because it either:
 	//
 	// 1. continues execution
 	//
 	// 2. halts/crashes the program
-	//
-	// [iff]: https://en.wikipedia.org/wiki/If_and_only_if
-	var removeAfterLastDot = func(s string) string {
+	var removeAfterLastEffect = func(s string) string {
+		// reverse iter
 		for i := len(s) - 1; i >= 0; i-- {
 			c := s[i]
-			if c == ',' || c == ']' {
-				break
-			}
-			if c == '.' {
+			if c == '.' || c == ',' || c == ']' {
 				s = s[0 : i+1]
 				break
 			}
@@ -130,7 +147,9 @@ func MinifyFile(files ...string) {
 
 	// # Memory Simulator
 	//
-	// Statically analyses non-loop code, to remove some no-ops.
+	// Statically analyses code, removing some no-ops.
+	//
+	// It assumes `IOBrace` is a black-box with potential-side effects.
 	//
 	// current implementation is identity fn
 	var memSimulator = func(s string) string {
@@ -222,12 +241,13 @@ func MinifyFile(files ...string) {
 		s = utils.Apply(
 			s,
 			// calling this 1st may speed up the others
-			removeAfterLastDot,
+			removeAfterLastEffect,
 			// order matters, (from this point onwards)
 			memSimulator,
 			removeConsecutiveLoop,
 			zeroLoopRemover,
 		)
+		// these 3 are "amplified" by mem-sim
 		s = isEvenReset.ReplaceAllLiteralString(s, EVEN_RESET)
 		s = isOddReset.ReplaceAllLiteralString(s, ODD_RESET)
 		s = isPrefixedReset.ReplaceAllLiteralString(s, ODD_RESET)

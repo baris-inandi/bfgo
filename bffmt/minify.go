@@ -117,8 +117,6 @@ func MinifyFile( /*l Level,*/ files ...string) {
 	// removes all loops before any memory write is done.
 	//
 	// this is safe, because memory is all-zeros, and loops are guaranteed to never run.
-	//
-	// current impl is identity fn
 	var zeroLoopRemover = func(s string) string {
 		for i := 0; i < len(s); i++ {
 			c := s[i]

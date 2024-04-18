@@ -50,13 +50,12 @@ func MinifyFile( /*l Level,*/ files ...string) {
 	// -1 if not found
 	//
 	// `start` ignores all runes before that index.
-	// If start is negative, it becomes relative to the end.
+	// If `start` is negative, it becomes relative to the end.
 	var getMatchingBraces = func(s string, start int) (int, int) {
-		size := len(s)
-		start = utils.RelativeIndex(start, size)
+		start = utils.RelativeIndex(start, len(s))
 
 		open := -1
-		for start < size {
+		for start < len(s) {
 			c := s[start]
 			if c == '[' {
 				open = start
@@ -71,7 +70,7 @@ func MinifyFile( /*l Level,*/ files ...string) {
 		// this covers the edge-case where
 		// "[" is located just before EOF (start >= size)
 		close := -1
-		for start < size {
+		for start < len(s) {
 			c := s[start]
 			if c == '[' {
 				depth++

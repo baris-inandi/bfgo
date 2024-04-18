@@ -88,7 +88,7 @@ func MinifyFile( /*l Level,*/ files ...string) {
 		return open, close
 	}
 
-	// finds index of 1st rune that isn't in the charset "[],.", or -1 if not found.
+	// finds index of 1st byte that isn't in the charset "[],.", or -1 if not found.
 	//
 	// `start` ignores all runes before that index.
 	// If start is negative, it becomes relative to the end.
@@ -120,6 +120,18 @@ func MinifyFile( /*l Level,*/ files ...string) {
 	//
 	// current impl is identity fn
 	var zeroLoopRemover = func(s string) string {
+		for i := 0; i < len(s); i++ {
+			c := s[i]
+			if c == ',' || c == '+' || c == '-' {
+				// can't guarantee cell is 0
+				break
+			}
+			if c == '[' {
+				open, close := getMatchingBraces(s, i)
+				// assert open == i
+				s = s[0:open] + s[close+1:]
+			}
+		}
 		return s
 	}
 

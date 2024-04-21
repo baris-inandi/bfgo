@@ -12,11 +12,6 @@ import (
 
 func CmdHandler(c *ucli.Context) error {
 	startTime := time.Now()
-	if c.Path("memory") != "" && c.Path("interpret") == "" {
-		fmt.Println("You can only read files into memory in interpreter mode for now.")
-		fmt.Println("Please use -interpret flag to run bfgo in interpreter mode.")
-		os.Exit(1)
-	}
 	if c.Bool("repl") {
 		bfexec.Repl(c)
 		os.Exit(0)

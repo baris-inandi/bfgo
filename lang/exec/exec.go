@@ -6,6 +6,7 @@ import (
 	"github.com/baris-inandi/bfgo/lang"
 	"github.com/baris-inandi/bfgo/lang/exec/compiler"
 	"github.com/baris-inandi/bfgo/lang/exec/interpreter"
+	"github.com/baris-inandi/bfgo/lang/exec/interpreter/repl"
 	"github.com/urfave/cli/v2"
 )
 
@@ -38,5 +39,5 @@ func Repl(ctx *cli.Context) {
 	if ctx.Bool("verbose") {
 		fmt.Println("exec.go: using run mode REPL")
 	}
-	interpreter.Repl()
+	repl.Repl()
 }

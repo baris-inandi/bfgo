@@ -1,6 +1,6 @@
 module github.com/baris-inandi/bfgo
 
-go 1.17
+go 1.18
 
 require (
 	github.com/urfave/cli/v2 v2.27.1

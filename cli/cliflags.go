@@ -40,6 +40,5 @@ func Flags() []c.Flag {
 		// utils
 		&c.BoolFlag{Name: "fmt", Usage: "Format code (omits comments)"},
 		&c.BoolFlag{Name: "minify", Usage: "Minify code"},
-		&c.PathFlag{Name: "memory", Aliases: []string{"mem"}, Usage: "Import a file to the BF tape when using the interpreter"},
 	}
 }
